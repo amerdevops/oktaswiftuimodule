@@ -8,6 +8,7 @@
 import Foundation
 import OktaOidc
 import OktaAuthNative
+import os
 
 /**
  * Okta View Model
@@ -41,6 +42,8 @@ public class OktaViewModel : ObservableObject {
     @Published
     public var isUserSet: Bool = false
     
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
+    
     public init( _ repo: OktaRepository, _ isUITest: Bool ) {
         self.repo = repo
         self.isUITest = isUITest
@@ -56,16 +59,17 @@ public class OktaViewModel : ObservableObject {
      * If the internally saved state is valid, kick off getUser().  Otherwise, print error
      */
     func initCheckState() {
-        print("CHECKING STATE....")
+        let loggerInit = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
+        loggerInit.log("CHECKING STATE....")
         let error = repo.checkValidState()
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (initCheckState)....")
+            loggerInit.log("UI TEST (initCheckState)....")
             return
         }
         if let err = error {
-            print("SAVE STATE ERR \(err.localizedDescription)")
+            loggerInit.log("SAVE STATE ERR \(err.localizedDescription, privacy: .public)")
         } else {
             self.isMFA = true
             self.isAuthenticated = true
@@ -80,18 +84,19 @@ public class OktaViewModel : ObservableObject {
     private func onError(msg: String) {
         alert = msg
         showAlert = true
+        self.logger.log("\(msg, privacy: .public)")
     }
     
     /**
      * Handle Sign in with name and password
      */
     public func signIn( name: String, cred: String ) {
-        print("SIGNING IN....")
+        self.logger.log("SIGNING IN....")
 
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { (factors: [OktaFactor]) -> Void in
-            print("SIGN IN SUCCESS: [\(factors.count) factors]")
+            self.logger.log("SIGN IN SUCCESS: [\(factors.count, privacy: .public) factors]")
             //---------------------------------------------------------
             // Change state if sign in was successful
             self.factors.removeAll()
@@ -102,7 +107,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (signIn)....")
+            self.logger.log("UI TEST (signIn)....")
             onSuccess(UtilMocks.getOktaFactors())
             return
         }
@@ -116,17 +121,17 @@ public class OktaViewModel : ObservableObject {
      * Handle sending factor push (i.e. send SMS text, call, or email MFA)
      */
     public func sendFactor( factor: OktaFactor ) {
-        print("SENDING FACTOR....")
+        self.logger.log("SENDING FACTOR....")
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
-            print("SENT FACTOR SUCCESS: [\(status.user?.id ?? "unknown")][\(status.stateToken)]")
+            self.logger.log("SENT FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
         }
 
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (sendFactor)....")
+            self.logger.log("UI TEST (sendFactor)....")
             return
         }
 
@@ -144,7 +149,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (cancelFactor)....")
+            self.logger.log("UI TEST (cancelFactor)....")
             return
         }
         repo.cancelFactor()
@@ -154,16 +159,16 @@ public class OktaViewModel : ObservableObject {
      * Handle resending a factor push (if user requests)
      */
     public func resendFactor( factor: OktaFactor ) {
-        print("RESENDING FACTOR....")
+        self.logger.log("RESENDING FACTOR....")
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
-            print("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown")][\(status.stateToken)]")
+            self.logger.log("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
         }
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (resendFactor)....")
+            self.logger.log("UI TEST (resendFactor)....")
             return
         }
         //-----------------------------------------------
@@ -175,11 +180,11 @@ public class OktaViewModel : ObservableObject {
      * Handle verifying a factor's passcode attempt
      */
     public func verifyFactor( passCode: String ) {
-        print("VERIFYING FACTOR....")
+        self.logger.log("VERIFYING FACTOR....")
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatus) -> Void in
-            print("VERIFYING FACTOR SUCCESS: [\(status.user?.id ?? "unknown")][\(status.statusType.rawValue)]")
+            self.logger.log("VERIFYING FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.statusType.rawValue, privacy: .public)]")
             //---------------------------------------------------------
             // Change state if MFA verify was successful
             self.isAuthenticated = true
@@ -192,7 +197,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (verifyFactor)....")
+            self.logger.log("UI TEST (verifyFactor)....")
             onSuccess(UtilMocks.getOktaAuthStatus())
             return
         }
@@ -208,7 +213,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Stop early if user is already set
         if (self.isUserSet) {
-            print("User is already loaded....")
+            self.logger.log("User is already loaded....")
             return
         }
         
@@ -216,7 +221,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { (user: UserInfo) -> Void in
-            print("USER SUCCESS: [\(user.given_name)]")
+            self.logger.log("USER SUCCESS: [\(user.given_name, privacy: .public)]")
             
             //---------------------------------------------------------
             // Load user info into state
@@ -227,7 +232,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (getUserInfo)....")
+            self.logger.log("UI TEST (getUserInfo)....")
             onSuccess(UtilMocks.getUserInfo())
             return
         }
@@ -238,7 +243,7 @@ public class OktaViewModel : ObservableObject {
     }
     
     public func logout() {
-        print("LOGOUT....")
+        self.logger.log("LOGOUT....")
         //-----------------------------------------------
         // Clear state indicators
         self.isMFA = false
@@ -247,7 +252,7 @@ public class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
-            print("UI TEST (logout)....")
+            self.logger.log("UI TEST (logout)....")
             return
         }
         repo.logout()

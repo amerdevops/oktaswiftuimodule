@@ -8,6 +8,7 @@
 import Foundation
 import OktaOidc
 import OktaAuthNative
+import os
 
 /**
  * Okta Repository Protocol
@@ -42,15 +43,18 @@ public class OktaRepositoryImpl : OktaRepository {
     var stateManager: OktaOidcStateManager?
     var user: OktaOidcStateManager?
     var oktaStatus: OktaAuthStatus?
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
+    let urlString = "https://ameritas-d.oktapreview.com"
     
     public init() {
+        let loggerInst = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
             do {
                 //---------------------------------------------------------------
                 // Pull Okta OIDC configuration from Okta.plist
                 oktaOidc = try OktaOidc()
             } catch let error {
                 DispatchQueue.main.async {
-                    print(error)
+                    loggerInst.error("\(error.localizedDescription)")
                 }
                 return
             }
@@ -63,22 +67,8 @@ public class OktaRepositoryImpl : OktaRepository {
                 // NOTE: the access token may be expired (that is checked in getUser())
                 self.stateManager = sm
             } else {
-                print ("Okta OIDC State manager not loaded")
+                loggerInst.error("Okta OIDC State manager not loaded")
             }
-        // NOTE: Pulled from Okta Native example, but doesn't refresh Access token if expired
-//            if  let oktaOidc = oktaOidc,
-//                let _ = OktaOidcStateManager.readFromSecureStorage(for: oktaOidc.configuration)?.accessToken {
-//                self.stateManager = OktaOidcStateManager.readFromSecureStorage(for: oktaOidc.configuration)
-//                print("STATE MAN LOADED: \(self.stateManager?.accessToken ?? "unknown")")
-//                if let error = self.stateManager?.validateToken(idToken: self.stateManager?.idToken) {
-//                    print("INVALID ID TOKEN?: \(error.localizedDescription)")
-//                } else {
-//                    print("VALID TOKEN")
-//                }
-//
-//            } else {
-//                print ("Okta OIDC State manager not loaded")
-//            }
     }
 
     /**
@@ -102,10 +92,10 @@ public class OktaRepositoryImpl : OktaRepository {
                 if let smNew = stateManagerNew {
                     smNew.writeToSecureStorage()
                     self?.stateManager = smNew
-                    print("Token Refreshed! [\(smNew.accessToken ?? "noAccessToken")]")
+                    self?.logger.log("Token Refreshed! [\(smNew.accessToken ?? "noAccessToken")]")
                     onSuccess()
                 } else {
-                    print("That's a bummer....")
+                    self?.logger.log("That's a bummer....")
                 }
             })
         }
@@ -123,7 +113,7 @@ public class OktaRepositoryImpl : OktaRepository {
      */
     public func checkValidState() -> Error? {
         if let mgr = self.stateManager {
-            print("STATE MAN LOADED: \(mgr.accessToken ?? "unknown")")
+            self.logger.log("STATE MAN LOADED: \(mgr.accessToken ?? "unknown", privacy: .public)")
             return mgr.validateToken(idToken: mgr.idToken)
         }
         return OktaOidcError.JWTValidationError("State manager not loaded")
@@ -142,7 +132,6 @@ public class OktaRepositoryImpl : OktaRepository {
     public func signIn(username: String, password: String,
                 onSuccess: @escaping (([OktaFactor])) -> Void,
                 onError: @escaping ((String)) -> Void) {
-        let urlString = "https://ameritas-d.oktapreview.com"
 
         //-----------------------------------------------
         // Define Success / Failure closures
@@ -229,7 +218,7 @@ public class OktaRepositoryImpl : OktaRepository {
     public func cancelFactor() {
         if let status = oktaStatus as? OktaAuthStatusFactorChallenge {
             if status.canCancel() {
-                print("Cancelling STATUS: [\(status.stateToken)][\(status.statusType.rawValue)")
+                self.logger.log("Cancelling STATUS: [\(status.stateToken, privacy: .public)][\(status.statusType.rawValue, privacy: .public)")
                 oktaStatus?.cancel()
             }
         }
@@ -255,7 +244,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 //---------------------------------------------------------------------
                 // If MFA was successful, Trigger OIDC authentication to create state
                 // manager.  Pass along the onSuccess status
-                print("MFA successful, triggering OIDC")
+                self?.logger.log("MFA successful, triggering OIDC")
                 let onOIDCSuccess = { onSuccess(status) }
                 self?.authenticateOIDC(onSuccess: onOIDCSuccess, onError: onError)
             }
@@ -286,7 +275,7 @@ public class OktaRepositoryImpl : OktaRepository {
             // if the stored access token expired, need to trigger refresh (if possible)
             // BEFORE getting user
             if (sm.accessToken == nil) {
-                print("REFRESH TOKEN BEFORE getUser....")
+                self.logger.log("REFRESH TOKEN BEFORE getUser....")
                 let onSuccessRefresh : () -> Void = { [weak self] in
                     // if refresh successful, call get user NOW
                     self?.helper_getUser(onSuccess: onSuccess, onError: onError)
@@ -323,11 +312,11 @@ public class OktaRepositoryImpl : OktaRepository {
                 try sm.removeFromSecureStorage()
                 self.stateManager = nil
             } catch let error {
-                print(error)
+                self.logger.error("\(error.localizedDescription, privacy: .public)")
                 return
             }
         } else {
-            print("no OIDC State manager to logout from")
+            self.logger.log("No OIDC State manager to logout from")
         }
     }
     
@@ -338,11 +327,11 @@ public class OktaRepositoryImpl : OktaRepository {
      */
     public func helper() {
         if let status = oktaStatus {
-            print("HELPER: ")
+            self.logger.log("HELPER: ")
             logStatus(status)
             if let mfaStatus = status as? OktaAuthStatusFactorChallenge {
-                print("DETAIL: [\(mfaStatus.stateToken)][\(mfaStatus.factor.type)]")
-                print("LINKS: [\(String(describing: mfaStatus.links))]")
+                self.logger.log("DETAIL: [\(mfaStatus.stateToken, privacy: .public)][\(mfaStatus.factor.type.rawValue, privacy: .public)]")
+                self.logger.log("LINKS: [\(String(describing: mfaStatus.links), privacy: .public)]")
             }
         }
     }
@@ -387,7 +376,7 @@ public class OktaRepositoryImpl : OktaRepository {
         print(oktaOidc)
         if let oidcClient = oktaOidc,
            let status = oktaStatus as? OktaAuthStatusSuccess {
-            print("Asking OIDC client for access token...")
+            self.logger.log("Asking OIDC client for access token...")
             oidcClient.authenticate(withSessionToken: status.sessionToken!, callback: { [weak self] stateManager, error in
                 if let err = error {
                     onError(err.localizedDescription)
@@ -397,7 +386,7 @@ public class OktaRepositoryImpl : OktaRepository {
                         // Successfully logged in, store it to device and to repo
                         sm.writeToSecureStorage()
                         self?.stateManager = sm
-                        print("StateManager: [\(sm.accessToken ?? "noAccessToken")]")
+                        self?.logger.log("StateManager: [\(sm.accessToken ?? "noAccessToken", privacy: .public)]")
                         
                         //-------------------------------------------------------------
                         // Let caller know they successfully logged in
@@ -410,7 +399,7 @@ public class OktaRepositoryImpl : OktaRepository {
     }
     
     func logStatus(_ status: OktaAuthStatus) {
-        print("STATUS: \(status.statusType.rawValue)")
+        self.logger.log("STATUS: \(status.statusType.rawValue, privacy: .public)")
     }
 
     /**
@@ -422,7 +411,7 @@ public class OktaRepositoryImpl : OktaRepository {
                  return mfaRequiredStatus.availableFactors
              }
         for factor in factors {
-            print("Factor: \(factor.type)")
+            self.logger.log("Factor: \(factor.type.rawValue, privacy: .public)")
         }
     }
     /**
