@@ -47,8 +47,6 @@ public class OktaViewModel : ObservableObject {
     public init( _ repo: OktaRepository, _ isUITest: Bool ) {
         self.repo = repo
         self.isUITest = isUITest
-        
-        let args = ProcessInfo.processInfo.arguments
         //------------------------------------------------------
         // Check saved state for validity
         initCheckState()

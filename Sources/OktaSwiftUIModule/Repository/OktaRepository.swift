@@ -373,7 +373,8 @@ public class OktaRepositoryImpl : OktaRepository {
      * with the single use session token to pull back the refresh / access / ID tokens
      */
     private func authenticateOIDC(onSuccess: @escaping () -> Void, onError: @escaping ((String)) -> Void) {
-        print(oktaOidc)
+        
+        self.logger.log("Starting authenticateOIDC()...")
         if let oidcClient = oktaOidc,
            let status = oktaStatus as? OktaAuthStatusSuccess {
             self.logger.log("Asking OIDC client for access token...")

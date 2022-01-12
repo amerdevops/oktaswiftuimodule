@@ -8,10 +8,12 @@
 import Foundation
 import OktaOidc
 import OktaAuthNative
+import os
 
 class UtilMocks {
 
     private static let decoder = JSONDecoder()
+    private static let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "MockOktaRepositoryImpl")
     
     private static let sample_json_oktaFactors = """
     [
@@ -134,7 +136,7 @@ class UtilMocks {
 
             return oFactors
         } catch {
-            print(error)
+            logger.error("\(error.localizedDescription, privacy: .public)")
         }
         return []
     }
@@ -157,7 +159,7 @@ class UtilMocks {
             let data = sample_json_successResponse.data(using: .utf8)!
             return try decoder.decode(OktaAPISuccessResponse.self, from: data)
         } catch {
-            print(error)
+            logger.error("\(error.localizedDescription, privacy: .public)")
         }
         return nil
     }
@@ -172,7 +174,7 @@ class UtilMocks {
                 return try OktaAuthStatusFactorChallenge(currentState: getOktaAuthStatus(), model: successResponse)
             }
         } catch {
-            print(error)
+            logger.error("\(error.localizedDescription, privacy: .public)")
         }
         return nil
     }
@@ -201,14 +203,16 @@ class MockOktaRepositoryImpl : OktaRepository {
     var resendPass = true
     var verifyPass = true
     var userPass = true
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "MockOktaRepositoryImpl")
+    
     
     func checkValidState() -> Error? {
-        print("mock repo checkValidState()")
+        logger.log("mock repo checkValidState()")
         return OktaError.internalError("State not set")
     }
     
     func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void){
-        print("mock repo signIn()")
+        logger.log("mock repo signIn()")
         if (signInPass) {
             onSuccess(UtilMocks.getOktaFactors())
         } else {
@@ -216,7 +220,7 @@ class MockOktaRepositoryImpl : OktaRepository {
         }
     }
     func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void){
-        print("mock repo sendFactor()")
+        logger.log("mock repo sendFactor()")
         if sendFactorPass,
            let factorChallenge = UtilMocks.getOktaAuthStatusFactorChallenge() {
             onSuccess(factorChallenge)
@@ -225,10 +229,10 @@ class MockOktaRepositoryImpl : OktaRepository {
         }
     }
     func cancelFactor() {
-        print("mock repo cancelFactor()")
+        logger.log("mock repo cancelFactor()")
     }
     func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void) {
-        print("mock repo resendFactor()")
+        logger.log("mock repo resendFactor()")
         if resendPass,
             let factorChallenge = UtilMocks.getOktaAuthStatusFactorChallenge() {
             onSuccess(factorChallenge)
@@ -237,7 +241,7 @@ class MockOktaRepositoryImpl : OktaRepository {
         }
     }
     func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void) {
-        print("mock repo verifyFactor()")
+        logger.log("mock repo verifyFactor()")
         if (verifyPass) {
             onSuccess(UtilMocks.getOktaAuthStatus())
         } else {
@@ -245,7 +249,7 @@ class MockOktaRepositoryImpl : OktaRepository {
         }
     }
     func getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
-        print("mock repo getUser()")
+        logger.log("mock repo getUser()")
         if (userPass) {
             onSuccess(UtilMocks.getUserInfo())
         } else {
@@ -253,9 +257,9 @@ class MockOktaRepositoryImpl : OktaRepository {
         }
     }
     func logout() {
-        print("mock repo logout()")
+        logger.log("mock repo logout()")
     }
     func helper() {
-        print("mock repo helper()")
+        logger.log("mock repo helper()")
     }
 }

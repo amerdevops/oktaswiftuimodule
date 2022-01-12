@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUI
 import OktaOidc
 import OktaAuthNative
+import os
 
 // NOTE: Need this to make sure only iOS compile creates view
 // System will fail compile because macOS doesn't support a few SwiftUI methods
@@ -25,6 +26,8 @@ public struct OktaMFAView: View {
     var onVerifyClick: (_ passCode: String) -> Void
     var onCancelClick: () -> Void
     var factors = [OktaFactor]()
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMFASelectView")
+    
     @State var selectedFactor: OktaFactor? = nil
 
     /**
@@ -52,7 +55,7 @@ public struct OktaMFAView: View {
                         onSendCodeClick: onSendCodeClick,
                         onVerifyClick: onVerifyClick,
                         onGoBack: {
-                            print("GO BACK")
+                            logger.log("Clicked goBack()")
                             selectedFactor = nil
                             onCancelClick()
                         })
@@ -81,6 +84,7 @@ struct UniqueOktaFactor: Identifiable {
 public struct OktaMFASelectView: View {
     var onSelectFactor: (_ factor: OktaFactor) -> Void
     var uFactors: [UniqueOktaFactor] = []
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMFASelectView")
     
     /**
      * Initialize MFASelectView with factors and the event when selecting a factor
@@ -100,7 +104,7 @@ public struct OktaMFASelectView: View {
                 .foregroundColor(Color.white)
             ForEach(uFactors, id: \.id) { uFactor in
                 Button(uFactor.factor.type.rawValue) {
-                    print("Clicked on \(uFactor.factor.type.rawValue)")
+                    logger.log("Clicked on \(uFactor.factor.type.rawValue, privacy: .public)")
                     onSelectFactor( uFactor.factor )
                 }
                     .foregroundColor(Color.white)

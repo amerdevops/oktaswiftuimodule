@@ -19,6 +19,8 @@ public struct OktaMainView: View {
     @EnvironmentObject
     var oktaViewModel: OktaViewModel
     
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMainView")
+    
     var demoMode: Bool
     // This lets us dismiss the screen when the back nav button is clicked
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -54,19 +56,19 @@ public struct OktaMainView: View {
                     let onSendCodeClick = { ( factor: OktaFactor, isResend: Bool) -> Void in
                         if(!isResend) {
                             oktaViewModel.sendFactor(factor: factor)
-                            print("Send Code: \(factor.type.rawValue)")
+                            logger.log("Send Code: \(factor.type.rawValue)")
                         } else {
                             oktaViewModel.resendFactor(factor: factor)
-                            print("Resend Code: \(factor.type.rawValue)")
+                            logger.log("Resend Code: \(factor.type.rawValue)")
                         }
                     }
                     let onCancelClick = { () -> Void in
                         oktaViewModel.cancelFactor()
-                        print("Cancel MFA")
+                        logger.log("Cancel MFA")
                     }
                     let onVerifyClick = { (passCode: String) -> Void in
                         oktaViewModel.verifyFactor(passCode: passCode)
-                        print("Verify Click: [\(passCode)]")
+                        logger.log("Verify Click: [\(passCode)]")
                     }
 
                     //-----------------------------------------------------
