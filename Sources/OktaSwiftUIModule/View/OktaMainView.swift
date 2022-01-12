@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OktaAuthNative
+import os
 
 // NOTE: Need this to make sure only iOS compile creates view
 // System will fail compile because macOS doesn't support a few SwiftUI methods
