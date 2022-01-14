@@ -28,7 +28,7 @@ let package = Package(
             name: "OktaSwiftUIModule",
             dependencies: ["OktaAuthNative","OktaOidc"],
             resources: [
-                .process("ameritas_logo.png")
+                .process("ameritas_logo_okta.png")
             ]),
         .testTarget(
             name: "OktaSwiftUIModuleTests",

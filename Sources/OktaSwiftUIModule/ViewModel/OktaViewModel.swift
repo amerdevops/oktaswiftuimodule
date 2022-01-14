@@ -106,7 +106,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (signIn)....")
-            onSuccess(UtilMocks.getOktaFactors())
+            onSuccess(OktaUtilMocks.getOktaFactors())
             return
         }
 
@@ -196,7 +196,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (verifyFactor)....")
-            onSuccess(UtilMocks.getOktaAuthStatus())
+            onSuccess(OktaUtilMocks.getOktaAuthStatus())
             return
         }
 
@@ -231,7 +231,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (getUserInfo)....")
-            onSuccess(UtilMocks.getUserInfo())
+            onSuccess(OktaUtilMocks.getUserInfo())
             return
         }
 
@@ -266,7 +266,7 @@ public class OktaViewModel : ObservableObject {
     public func demoMode() {
         //---------------------------------------------------------
         // Change state to demo mode user
-        self.userInfo = UtilMocks.getUserInfo()
+        self.userInfo = OktaUtilMocks.getUserInfo()
         self.isUserSet = true
         self.isMFA = true
         self.isAuthenticated = true

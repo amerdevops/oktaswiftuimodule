@@ -41,7 +41,7 @@ public struct OktaLoginView: View {
         VStack(alignment: .center) {
             HStack(alignment: .center) {
                 Spacer()
-                Image("ameritas_logo", bundle: .module)
+                Image("ameritas_logo_okta", bundle: .module)
                     .frame(alignment: .center)
                 Spacer()
             }.frame(alignment: .center)
