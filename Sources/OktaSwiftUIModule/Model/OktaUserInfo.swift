@@ -1,13 +1,13 @@
 //
-//  UserInfo.swift
-//  
+//  OktaUserInfo.swift
+//
 //
 //  Created by Nathan DeGroff on 12/10/21.
 //
 
 import Foundation
 
-public struct UserInfo {
+public struct OktaUserInfo {
     public let uclUserid: String
     public let email: String
     public let given_name: String

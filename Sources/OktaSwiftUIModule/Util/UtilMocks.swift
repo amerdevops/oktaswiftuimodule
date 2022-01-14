@@ -179,8 +179,8 @@ class UtilMocks {
         return nil
     }
     
-    static func getUserInfo() -> UserInfo {
-        return UserInfo(
+    static func getUserInfo() -> OktaUserInfo {
+        return OktaUserInfo(
             uclUserid: "testAccount",
             email: "joe@somewhere.com",
             given_name: "Joe Smith",
@@ -248,7 +248,7 @@ class MockOktaRepositoryImpl : OktaRepository {
             onError("Fail")
         }
     }
-    func getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
+    func getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
         logger.log("mock repo getUser()")
         if (userPass) {
             onSuccess(UtilMocks.getUserInfo())
