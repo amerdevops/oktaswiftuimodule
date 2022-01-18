@@ -221,7 +221,7 @@ struct OktaMFAView_Previews: PreviewProvider {
     static var previews: some View {
         //-----------------------------------------------------
         // Get Factors
-        let factors = UtilMocks.getOktaFactors()
+        let factors = OktaUtilMocks.getOktaFactors()
         Group {
             OktaMFAView(factors: factors,
                     onSendCodeClick: onSendCodeClick,
@@ -255,7 +255,7 @@ struct OktaMFAPushView_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        let factor = UtilMocks.getOktaFactor()
+        let factor = OktaUtilMocks.getOktaFactor()
         Group {
             OktaMFAPushView(factor: factor,
                         onSendCodeClick: OktaMFAView_Previews.onSendCodeClick,
