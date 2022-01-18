@@ -37,7 +37,7 @@ public class OktaViewModel : ObservableObject {
     public var factors = [OktaFactor]()
 
     @Published
-    public var user: UserInfo? = nil
+    public var userInfo: OktaUserInfo? = nil
     
     @Published
     public var isUserSet: Bool = false
@@ -106,7 +106,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (signIn)....")
-            onSuccess(UtilMocks.getOktaFactors())
+            onSuccess(OktaUtilMocks.getOktaFactors())
             return
         }
 
@@ -196,7 +196,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (verifyFactor)....")
-            onSuccess(UtilMocks.getOktaAuthStatus())
+            onSuccess(OktaUtilMocks.getOktaAuthStatus())
             return
         }
 
@@ -218,12 +218,12 @@ public class OktaViewModel : ObservableObject {
         print("LOADING USER....")
         //-----------------------------------------------
         // Define Success closure
-        let onSuccess = { (user: UserInfo) -> Void in
-            self.logger.log("USER SUCCESS: [\(user.given_name, privacy: .public)]")
+        let onSuccess = { (userInfo: OktaUserInfo) -> Void in
+            self.logger.log("USER SUCCESS: [\(userInfo.given_name, privacy: .public)]")
             
             //---------------------------------------------------------
             // Load user info into state
-            self.user = user
+            self.userInfo = userInfo
             self.isUserSet = true
         }
         
@@ -231,7 +231,7 @@ public class OktaViewModel : ObservableObject {
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (getUserInfo)....")
-            onSuccess(UtilMocks.getUserInfo())
+            onSuccess(OktaUtilMocks.getUserInfo())
             return
         }
 
@@ -266,7 +266,7 @@ public class OktaViewModel : ObservableObject {
     public func demoMode() {
         //---------------------------------------------------------
         // Change state to demo mode user
-        self.user = UtilMocks.getUserInfo()
+        self.userInfo = OktaUtilMocks.getUserInfo()
         self.isUserSet = true
         self.isMFA = true
         self.isAuthenticated = true

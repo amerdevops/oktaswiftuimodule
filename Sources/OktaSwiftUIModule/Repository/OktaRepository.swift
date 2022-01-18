@@ -26,7 +26,7 @@ public protocol OktaRepository {
     func cancelFactor()
     func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void)
-    func getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void)
+    func getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void)
     func logout()
     func helper()
 }
@@ -264,9 +264,9 @@ public class OktaRepositoryImpl : OktaRepository {
     /**
      * Get OIDC user info (Async)
      *
-     * Using the OIDC State Manager, make a call to pull and load the UserInfo
+     * Using the OIDC State Manager, make a call to pull and load the OktaUserInfo
      */
-    public func getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
+    public func getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
         //---------------------------------------------------------------------
         // get state manager
         if let sm = self.stateManager {
@@ -339,7 +339,7 @@ public class OktaRepositoryImpl : OktaRepository {
 //------------------------------------------------------------------
 // HELPER Functions
 //------------------------------------------------------------------
-    func helper_getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
+    func helper_getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
         
         if let sm = self.stateManager {
             //-------------------------------------------------------------
@@ -349,7 +349,7 @@ public class OktaRepositoryImpl : OktaRepository {
                     onError(err.localizedDescription)
                 } else {
                     if let atts = attributes {
-                        let userInfo = UserInfo(
+                        let userInfo = OktaUserInfo(
                             uclUserid: atts["uclUserid"] as? String ?? "",
                             email: atts["email"] as? String ?? "",
                             given_name: atts["given_name"] as? String ?? "",
