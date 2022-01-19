@@ -223,8 +223,7 @@ public class OktaViewModel : ObservableObject {
             
             //---------------------------------------------------------
             // Load user info into state
-            self.userInfo = userInfo
-            self.isUserSet = true
+            self.setOktaUserInfo(userInfo: userInfo)
         }
         
         //-----------------------------------------------
@@ -266,10 +265,20 @@ public class OktaViewModel : ObservableObject {
     public func demoMode() {
         //---------------------------------------------------------
         // Change state to demo mode user
-        self.userInfo = OktaUtilMocks.getUserInfo()
-        self.isUserSet = true
+        self.setOktaUserInfo(userInfo: OktaUtilMocks.getUserInfo())
         self.isMFA = true
         self.isAuthenticated = true
-
+    }
+    
+    /**
+     * Capture the event when setting the UserInfo is set
+     * Can be used in applications to override and trap the event when the user info is set by
+     * asyncrhonous API
+     */
+    public func setOktaUserInfo(userInfo: OktaUserInfo) {
+        //---------------------------------------------------------
+        // Change state to demo mode user
+        self.userInfo = userInfo
+        self.isUserSet = true
     }
 }

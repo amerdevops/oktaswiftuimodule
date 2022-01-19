@@ -105,6 +105,8 @@ public struct OktaLoginView: View {
  */
 struct LoginView_Previews: PreviewProvider {
 
+    
+    let a = MockOktaRepositoryImpl()
     static var previews: some View {
         let onLoginClick = { ( name: String, cred: String) -> Void in
             print("\(name), \(cred)")
