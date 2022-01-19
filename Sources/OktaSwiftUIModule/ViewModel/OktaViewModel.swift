@@ -15,7 +15,7 @@ import os
  * This view model maintains the authenticated state of the app which the UI uses to draw appropriate screens.
  *
  */
-public class OktaViewModel : ObservableObject {
+open class OktaViewModel : ObservableObject {
     
     private let repo : OktaRepository
     
@@ -83,6 +83,7 @@ public class OktaViewModel : ObservableObject {
         alert = msg
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
+        eventOnError(msg)
     }
     
     /**
@@ -100,6 +101,10 @@ public class OktaViewModel : ObservableObject {
             self.factors.removeAll()
             self.factors.append(contentsOf: factors)
             self.isMFA = true
+            
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSignInSuccess()
         }
 
         //-----------------------------------------------
@@ -124,6 +129,9 @@ public class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("SENT FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSendFactorSuccess()
         }
 
         //-----------------------------------------------
@@ -162,6 +170,9 @@ public class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventResendFactorSuccess()
         }
         //-----------------------------------------------
         // Mock Data if UI Test
@@ -190,6 +201,10 @@ public class OktaViewModel : ObservableObject {
             //---------------------------------------------------------
             // Trigger get user
             self.getUser()
+
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventVerifyFactorSuccess()
         }
         
         //-----------------------------------------------
@@ -280,5 +295,25 @@ public class OktaViewModel : ObservableObject {
         // Change state to demo mode user
         self.userInfo = userInfo
         self.isUserSet = true
+        eventSetOktaUserInfo(userInfo)
+    }
+    
+    open func eventSetOktaUserInfo(_ userInfo: OktaUserInfo) {
+        // Override event in usage application
+    }
+    open func eventSignInSuccess() {
+        // Override event in usage application
+    }
+    open func eventSendFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventResendFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventVerifyFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventOnError(_ msg: String) {
+        // Override event in usage application
     }
 }
