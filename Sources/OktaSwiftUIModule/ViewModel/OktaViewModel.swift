@@ -21,6 +21,8 @@ open class OktaViewModel : ObservableObject {
     
     private let isUITest : Bool
     
+    public var isDemoMode: Bool = false
+    
     @Published
     public var isAuthenticated : Bool = false
     
@@ -261,6 +263,8 @@ open class OktaViewModel : ObservableObject {
         self.isMFA = false
         self.isAuthenticated = false
         self.isUserSet = false
+        self.isDemoMode = false
+
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
@@ -279,7 +283,9 @@ open class OktaViewModel : ObservableObject {
      */
     public func demoMode() {
         //---------------------------------------------------------
-        // Change state to demo mode user
+        // Change state to demo mode user and bypass additional
+        // Okta checkpoints
+        self.isDemoMode = true
         self.setOktaUserInfo(userInfo: OktaUtilMocks.getUserInfo())
         self.isMFA = true
         self.isAuthenticated = true
