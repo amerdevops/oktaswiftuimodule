@@ -15,11 +15,13 @@ import os
  * This view model maintains the authenticated state of the app which the UI uses to draw appropriate screens.
  *
  */
-public class OktaViewModel : ObservableObject {
+open class OktaViewModel : ObservableObject {
     
     private let repo : OktaRepository
     
     private let isUITest : Bool
+    
+    public var isDemoMode: Bool = false
     
     @Published
     public var isAuthenticated : Bool = false
@@ -37,7 +39,7 @@ public class OktaViewModel : ObservableObject {
     public var factors = [OktaFactor]()
 
     @Published
-    public var user: UserInfo? = nil
+    public var userInfo: OktaUserInfo? = nil
     
     @Published
     public var isUserSet: Bool = false
@@ -83,6 +85,7 @@ public class OktaViewModel : ObservableObject {
         alert = msg
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
+        eventOnError(msg)
     }
     
     /**
@@ -100,13 +103,17 @@ public class OktaViewModel : ObservableObject {
             self.factors.removeAll()
             self.factors.append(contentsOf: factors)
             self.isMFA = true
+            
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSignInSuccess()
         }
 
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (signIn)....")
-            onSuccess(UtilMocks.getOktaFactors())
+            onSuccess(OktaUtilMocks.getOktaFactors())
             return
         }
 
@@ -124,6 +131,9 @@ public class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("SENT FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSendFactorSuccess()
         }
 
         //-----------------------------------------------
@@ -162,6 +172,9 @@ public class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventResendFactorSuccess()
         }
         //-----------------------------------------------
         // Mock Data if UI Test
@@ -190,13 +203,17 @@ public class OktaViewModel : ObservableObject {
             //---------------------------------------------------------
             // Trigger get user
             self.getUser()
+
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventVerifyFactorSuccess()
         }
         
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (verifyFactor)....")
-            onSuccess(UtilMocks.getOktaAuthStatus())
+            onSuccess(OktaUtilMocks.getOktaAuthStatus())
             return
         }
 
@@ -218,20 +235,19 @@ public class OktaViewModel : ObservableObject {
         print("LOADING USER....")
         //-----------------------------------------------
         // Define Success closure
-        let onSuccess = { (user: UserInfo) -> Void in
-            self.logger.log("USER SUCCESS: [\(user.given_name, privacy: .public)]")
+        let onSuccess = { (userInfo: OktaUserInfo) -> Void in
+            self.logger.log("USER SUCCESS: [\(userInfo.given_name, privacy: .public)]")
             
             //---------------------------------------------------------
             // Load user info into state
-            self.user = user
-            self.isUserSet = true
+            self.setOktaUserInfo(userInfo: userInfo)
         }
         
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (getUserInfo)....")
-            onSuccess(UtilMocks.getUserInfo())
+            onSuccess(OktaUtilMocks.getUserInfo())
             return
         }
 
@@ -247,6 +263,8 @@ public class OktaViewModel : ObservableObject {
         self.isMFA = false
         self.isAuthenticated = false
         self.isUserSet = false
+        self.isDemoMode = false
+
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
@@ -265,11 +283,43 @@ public class OktaViewModel : ObservableObject {
      */
     public func demoMode() {
         //---------------------------------------------------------
-        // Change state to demo mode user
-        self.user = UtilMocks.getUserInfo()
-        self.isUserSet = true
+        // Change state to demo mode user and bypass additional
+        // Okta checkpoints
+        self.isDemoMode = true
+        self.setOktaUserInfo(userInfo: OktaUtilMocks.getUserInfo())
         self.isMFA = true
         self.isAuthenticated = true
-
+    }
+    
+    /**
+     * Capture the event when setting the UserInfo is set
+     * Can be used in applications to override and trap the event when the user info is set by
+     * asyncrhonous API
+     */
+    public func setOktaUserInfo(userInfo: OktaUserInfo) {
+        //---------------------------------------------------------
+        // Change state to demo mode user
+        self.userInfo = userInfo
+        self.isUserSet = true
+        eventSetOktaUserInfo(userInfo)
+    }
+    
+    open func eventSetOktaUserInfo(_ userInfo: OktaUserInfo) {
+        // Override event in usage application
+    }
+    open func eventSignInSuccess() {
+        // Override event in usage application
+    }
+    open func eventSendFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventResendFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventVerifyFactorSuccess() {
+        // Override event in usage application
+    }
+    open func eventOnError(_ msg: String) {
+        // Override event in usage application
     }
 }

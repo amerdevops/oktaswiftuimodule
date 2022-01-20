@@ -1,6 +1,6 @@
 //
-//  UtilMocks.swift
-//  
+//  OktaUtilMocks.swift
+//
 //
 //  Created by Nathan DeGroff on 12/10/21.
 //
@@ -10,7 +10,7 @@ import OktaOidc
 import OktaAuthNative
 import os
 
-class UtilMocks {
+public class OktaUtilMocks {
 
     private static let decoder = JSONDecoder()
     private static let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "MockOktaRepositoryImpl")
@@ -121,7 +121,7 @@ class UtilMocks {
     /**
      * Generate a list of Mock Factors
      */
-    static func getOktaFactors() -> [OktaFactor] {
+    public static func getOktaFactors() -> [OktaFactor] {
         
         let data = sample_json_oktaFactors.data(using: .utf8)!
         do {
@@ -143,14 +143,14 @@ class UtilMocks {
     /**
      * Get Single mock factor
      */
-    static func getOktaFactor() -> OktaFactor {
+    public static func getOktaFactor() -> OktaFactor {
         return getOktaFactors()[1]
     }
     
     /**
      * Generate Okta Success Response
      */
-    static func getOktaAPISuccessResponse() -> OktaAPISuccessResponse? {
+    public static func getOktaAPISuccessResponse() -> OktaAPISuccessResponse? {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
@@ -164,11 +164,11 @@ class UtilMocks {
         return nil
     }
     
-    static func getOktaAuthStatus() -> OktaAuthStatus {
+    public static func getOktaAuthStatus() -> OktaAuthStatus {
         return OktaAuthStatus(oktaDomain: URL(fileURLWithPath: ""))
     }
     
-    static func getOktaAuthStatusFactorChallenge() -> OktaAuthStatusFactorChallenge? {
+    public static func getOktaAuthStatusFactorChallenge() -> OktaAuthStatusFactorChallenge? {
         do {
             if let successResponse = getOktaAPISuccessResponse() {
                 return try OktaAuthStatusFactorChallenge(currentState: getOktaAuthStatus(), model: successResponse)
@@ -179,8 +179,8 @@ class UtilMocks {
         return nil
     }
     
-    static func getUserInfo() -> UserInfo {
-        return UserInfo(
+    public static func getUserInfo() -> OktaUserInfo {
+        return OktaUserInfo(
             uclUserid: "testAccount",
             email: "joe@somewhere.com",
             given_name: "Joe Smith",
@@ -196,7 +196,7 @@ class UtilMocks {
 /**
  * Mock Okta Implementation for testing / preview purposes
  */
-class MockOktaRepositoryImpl : OktaRepository {
+public class MockOktaRepositoryImpl : OktaRepository {
 
     var signInPass = true
     var sendFactorPass = true
@@ -205,61 +205,64 @@ class MockOktaRepositoryImpl : OktaRepository {
     var userPass = true
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "MockOktaRepositoryImpl")
     
+    public init() {
+        
+    }
     
-    func checkValidState() -> Error? {
+    public func checkValidState() -> Error? {
         logger.log("mock repo checkValidState()")
         return OktaError.internalError("State not set")
     }
     
-    func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void){
+    public func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void){
         logger.log("mock repo signIn()")
         if (signInPass) {
-            onSuccess(UtilMocks.getOktaFactors())
+            onSuccess(OktaUtilMocks.getOktaFactors())
         } else {
             onError("Fail")
         }
     }
-    func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void){
+    public func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void){
         logger.log("mock repo sendFactor()")
         if sendFactorPass,
-           let factorChallenge = UtilMocks.getOktaAuthStatusFactorChallenge() {
+           let factorChallenge = OktaUtilMocks.getOktaAuthStatusFactorChallenge() {
             onSuccess(factorChallenge)
         } else {
             onError("Fail")
         }
     }
-    func cancelFactor() {
+    public func cancelFactor() {
         logger.log("mock repo cancelFactor()")
     }
-    func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void) {
+    public func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void) {
         logger.log("mock repo resendFactor()")
         if resendPass,
-            let factorChallenge = UtilMocks.getOktaAuthStatusFactorChallenge() {
+            let factorChallenge = OktaUtilMocks.getOktaAuthStatusFactorChallenge() {
             onSuccess(factorChallenge)
         } else {
             onError("Fail")
         }
     }
-    func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void) {
+    public func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void) {
         logger.log("mock repo verifyFactor()")
         if (verifyPass) {
-            onSuccess(UtilMocks.getOktaAuthStatus())
+            onSuccess(OktaUtilMocks.getOktaAuthStatus())
         } else {
             onError("Fail")
         }
     }
-    func getUser(onSuccess: @escaping ((UserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
+    public func getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void) {
         logger.log("mock repo getUser()")
         if (userPass) {
-            onSuccess(UtilMocks.getUserInfo())
+            onSuccess(OktaUtilMocks.getUserInfo())
         } else {
             onError("Fail")
         }
     }
-    func logout() {
+    public func logout() {
         logger.log("mock repo logout()")
     }
-    func helper() {
+    public func helper() {
         logger.log("mock repo helper()")
     }
 }

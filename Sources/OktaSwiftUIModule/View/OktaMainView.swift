@@ -45,7 +45,7 @@ public struct OktaMainView: View {
                 // Passed login and passed mfa
                 if ( isMFA && isAuthenticated ) {
                     VStack {
-                        Text("Should not be here... Navigation Container should handle")
+                        Text("Retrieving user info...")
                     }
                 }
                 //-----------------------------------------------------
