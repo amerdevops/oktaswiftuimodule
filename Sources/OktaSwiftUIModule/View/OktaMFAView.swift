@@ -101,15 +101,16 @@ public struct OktaMFASelectView: View {
     public var body: some View {
         VStack(alignment: .center) {
             Text("Select MFA factor: ")
-                .foregroundColor(Color.white)
+                .foregroundColor(Color.black)
             ForEach(uFactors, id: \.id) { uFactor in
                 Button(uFactor.factor.type.rawValue) {
                     logger.log("Clicked on \(uFactor.factor.type.rawValue, privacy: .public)")
                     onSelectFactor( uFactor.factor )
                 }
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity, maxHeight: 30)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.blue))
+                .foregroundColor(Color.white)
+                .padding()
+                .frame(maxHeight: 30)
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color.blue))
             }
         }
         .frame(maxWidth: 300, maxHeight: 470, alignment: .center)

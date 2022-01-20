@@ -39,56 +39,67 @@ public struct OktaLoginView: View {
      */
     public var body: some View {
         VStack(alignment: .center) {
+            
+            //-----------------------------------------------
+            // Draw Logo
             HStack(alignment: .center) {
                 Spacer()
                 Image("ameritas_logo_okta", bundle: .module)
                     .frame(alignment: .center)
                 Spacer()
             }.frame(alignment: .center)
-            Form {
-                TextField("Username", text: $name)
-                    .padding()
-                    .border(Color.black)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                SecureField("Password", text: $cred)
-                    .padding()
-                    .border(Color.black)
-
-                Button(action: { acceptTAndC = !acceptTAndC }){
-                    HStack{
-                        Image(systemName: acceptTAndC ? "checkmark.square": "square")
-                        Text("I accept Ameritas Terms and Conditions")
-                            .foregroundColor(Color.black)
-                    }
+            
+            //-----------------------------------------------
+            // Draw username / password
+            TextField("Username", text: $name)
+                .padding()
+                .border(Color.black)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+            SecureField("Password", text: $cred)
+                .padding()
+                .border(Color.black)
+            
+            //-----------------------------------------------
+            // Draw Accept Terms / Conditions
+            Button(action: { acceptTAndC = !acceptTAndC }){
+                HStack{
+                    Image(systemName: acceptTAndC ? "checkmark.square": "square")
+                    Text("I accept Ameritas Terms and Conditions")
+                        .foregroundColor(Color.black)
                 }
-                if demoMode {
-                    Toggle(isOn: $demoAccept) {
-                        Text("Demo Mode")
-                    }
-                }
-                
-                Button("Login") {
-                    print("Pressing Login button...")
-                    //-----------------------------------------------
-                    // If demo mode is available and was selected...
-                    if demoMode && demoAccept {
-                        self.onDemoModeClick()
-                    }
-                    //-----------------------------------------------
-                    // Otherwise, login like normal
-                    else {
-                        self.onLoginClick(name, cred)
-                    }
-                }
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity, maxHeight: 100)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(buttonColor))
-                    .disabled(acceptTAndC == false)
             }
-            .frame(maxWidth: 300, maxHeight: 470, alignment: .center)
-            .cornerRadius(5)
+            //-----------------------------------------------
+            // Draw DemoMode Switch (if Applicable)
+            if demoMode {
+                Toggle(isOn: $demoAccept) {
+                    Text("Demo Mode")
+                }
+            }
+            
+            //-----------------------------------------------
+            // Draw Login Button
+            Button("Login") {
+                print("Pressing Login button...")
+                //-----------------------------------------------
+                // If demo mode is available and was selected...
+                if demoMode && demoAccept {
+                    self.onDemoModeClick()
+                }
+                //-----------------------------------------------
+                // Otherwise, login like normal
+                else {
+                    self.onLoginClick(name, cred)
+                }
+            }
+            .foregroundColor(Color.white)
+            .padding()
+            .frame(maxHeight: 30)
+            .background(RoundedRectangle(cornerRadius: 8).fill(buttonColor))
+            .disabled(acceptTAndC == false)
         }
+        .frame(maxWidth: 300, maxHeight: 470, alignment: .center)
+        .cornerRadius(5)
     }
     
     var buttonColor : Color {
@@ -105,6 +116,8 @@ public struct OktaLoginView: View {
  */
 struct LoginView_Previews: PreviewProvider {
 
+    
+    let a = MockOktaRepositoryImpl()
     static var previews: some View {
         let onLoginClick = { ( name: String, cred: String) -> Void in
             print("\(name), \(cred)")
