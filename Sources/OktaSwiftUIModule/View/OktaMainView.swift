@@ -39,8 +39,12 @@ public struct OktaMainView: View {
     public var body: some View {
         let isAuthenticated = oktaViewModel.isAuthenticated
         let isMFA = oktaViewModel.isMFA
-        NavigationView {
-            ZStack {
+        ScrollView {
+            VStack(spacing: 0) {
+                //-----------------------------------------------
+                // Draw Logo
+                Image("agent-app-logo").background(Color.white)
+                
                 //-----------------------------------------------------
                 // Passed login and passed mfa
                 if ( isMFA && isAuthenticated ) {
@@ -97,20 +101,86 @@ public struct OktaMainView: View {
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
                                   onDemoModeClick: onDemoModeClick)
+                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
+                Spacer()
             }
+            .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
         }
+        .edgesIgnoringSafeArea(.top)
     }
 }
 
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
-struct OktaMainView_Previews: PreviewProvider {
+class MockOktaViewModel : OktaViewModel {
+    
+    init(isMFA: Bool = false, isAuthenticated: Bool = false, isUserSet: Bool = false) {
+        super.init(MockOktaRepositoryImpl(), true)
+        super.isMFA = isMFA
+        super.isAuthenticated = isAuthenticated
+        super.isUserSet = isUserSet
+        super.factors = OktaUtilMocks.getOktaFactors()
+    }
+}
+
+struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
     static var previews: some View {
-        let oktaViewModel = OktaViewModel(MockOktaRepositoryImpl(), true)
-        OktaMainView()
-            .environmentObject(oktaViewModel)
+        let oktaViewModel : OktaViewModel = MockOktaViewModel()
+        Group {
+            OktaMainView()
+                .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("Login Light Mode (iPhone 12)")
+            
+            OktaMainView()
+                .preferredColorScheme(.dark)
+                .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("Login Dark Mode (iPhone 12)")
+        }
+    }
+}
+
+struct OktaMainView_iPod_Login_Previews: PreviewProvider {
+    static var previews: some View {
+        let oktaViewModel : OktaViewModel = MockOktaViewModel()
+        Group {
+            OktaMainView()
+                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("Login Light Mode (iPod touch)")
+            
+            OktaMainView()
+                .preferredColorScheme(.dark)
+                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("Login Dark Mode (iPod touch)")
+        }
+    }
+}
+
+struct OktaMainView_MFA_Previews: PreviewProvider {
+
+    static var previews: some View {
+        let oktaViewModel : OktaViewModel = MockOktaViewModel(isMFA: true)
+        Group {
+            OktaMainView()
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("MFA Light Mode")
+            
+            OktaMainView()
+                .preferredColorScheme(.dark)
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("MFA Dark Mode")
+        }
     }
 }
 #endif

@@ -100,20 +100,22 @@ public struct OktaMFASelectView: View {
 
     public var body: some View {
         VStack(alignment: .center) {
+            //-----------------------------------------------
+            // Draw Welcome
             Text("Select MFA factor: ")
-                .foregroundColor(Color.black)
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                .frame(alignment: .center)
+            //-----------------------------------------------
+            // Draw Factor buttons
             ForEach(uFactors, id: \.id) { uFactor in
                 Button(uFactor.factor.type.rawValue) {
                     logger.log("Clicked on \(uFactor.factor.type.rawValue, privacy: .public)")
                     onSelectFactor( uFactor.factor )
                 }
-                .foregroundColor(Color.white)
-                .padding()
-                .frame(maxHeight: 30)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.blue))
+                .buttonStyle(CustomButton())
             }
         }
-        .frame(maxWidth: 300, maxHeight: 470, alignment: .center)
+        .frame(maxWidth: 318, maxHeight: 470, alignment: .center)
         .cornerRadius(5)
     }
     
@@ -144,46 +146,62 @@ public struct OktaMFAPushView: View {
     
     @ViewBuilder
     public var body: some View {
+        let sendButtonText = "Resend Code"
 
         VStack{
-            let sendButtonText = "Resend Code"
-
+            Text("Verify Your Identity.")
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                .frame(alignment: .center)
+            
             if let fac = factor {
-                switch fac.type {
-                case FactorType.email:
-                    Text("Email: \(fac.profile?.email ?? "unknown")")
-                        .foregroundColor(Color.white)
-                case FactorType.sms:
-                    Text("SMS: \(fac.profile?.phoneNumber ?? "unknown")")
-                        .foregroundColor(Color.white)
-                case FactorType.call:
-                    Text("Call: \(fac.profile?.phoneNumber ?? "unknown")")
-                        .foregroundColor(Color.white)
-                default:
-                    Text("Default")
-                        .foregroundColor(Color.white)
+                HStack {
+                    switch fac.type {
+                    case FactorType.email:
+                        Text("Email:")
+                            .modifier(K.BrandFontMod.label)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                            .frame( width: 90, alignment: .topLeading )
+                        Text("\(fac.profile?.email ?? "unknown")")
+                            .modifier(K.BrandFontMod.contrast)
+                            .frame( maxWidth: .infinity, alignment: .topLeading )
+                    case FactorType.sms:
+                        Text("SMS:")
+                            .modifier(K.BrandFontMod.label)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                            .frame( width: 90, alignment: .topLeading )
+                        Text("\(fac.profile?.phoneNumber ?? "unknown")")
+                            .modifier(K.BrandFontMod.contrast)
+                            .frame( maxWidth: .infinity, alignment: .topLeading )
+                    case FactorType.call:
+                        Text("Call:")
+                            .modifier(K.BrandFontMod.label)
+                            .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                            .frame( width: 90, alignment: .topLeading )
+                        Text("\(fac.profile?.phoneNumber ?? "unknown")")
+                            .modifier(K.BrandFontMod.contrast)
+                            .frame( maxWidth: .infinity, alignment: .topLeading )
+                    default:
+                        Text("Default")
+                            .foregroundColor(Color.white)
+                    }
                 }
-                TextField("Passcode", text: $passCode)
-                        .background(Color(.systemBackground))
-                        .padding()
-                        .border(Color.black)
+                HStack {
+                    Text("Code:")
+                        .modifier(K.BrandFontMod.label)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame( width: 90, alignment: .topLeading )
+                    TextField("Passcode", text: $passCode)
+                        .modifier(K.BrandFontMod.contrast)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
+                }
+                
                 Button("Verify") { self.onVerifyClick(passCode) }
-                    .padding()
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(buttonColor(passCode.isEmpty)))
-                    .disabled( passCode.isEmpty )
+                    .buttonStyle(CustomButton(disabled: passCode.isEmpty))
                 Button(sendButtonText) { self.onSendCodeClick(fac, true) }
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.blue))
+                    .buttonStyle(CustomOutlineButton())
                 Button("Go Back") { self.onGoBack() }
-                    .padding()
-                    .foregroundColor(Color.white)
-                    .frame(maxWidth: .infinity, maxHeight: 40)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.blue))
+                    .buttonStyle(CustomPlainButton())
                 
             } else {
                 Text("Loading...")
@@ -230,7 +248,7 @@ struct OktaMFAView_Previews: PreviewProvider {
                     onCancelClick: onCancelClick)
                 .previewLayout(PreviewLayout.sizeThatFits)
                 .padding()
-                //.background(Color(.systemBackground))
+                .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode MFAView")
             
@@ -256,24 +274,26 @@ struct OktaMFAPushView_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        let factor = OktaUtilMocks.getOktaFactor()
+        let factors = OktaUtilMocks.getOktaFactors()
+        let factor1 = factors[1]
+        let factor2 = factors[2]
+        
         Group {
-            OktaMFAPushView(factor: factor,
+            OktaMFAPushView(factor: factor1,
                         onSendCodeClick: OktaMFAView_Previews.onSendCodeClick,
                         onVerifyClick: OktaMFAView_Previews.onVerifyClick,
                         onGoBack: OktaMFAView_Previews.onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
-                    //.background(Color(.systemBackground))
                     .environment(\.colorScheme, .light)
                     .previewDisplayName("Light Mode MFAPushView")
-            OktaMFAPushView(factor: factor,
+            OktaMFAPushView(factor: factor2,
                         onSendCodeClick: OktaMFAView_Previews.onSendCodeClick,
                         onVerifyClick: OktaMFAView_Previews.onVerifyClick,
                         onGoBack: OktaMFAView_Previews.onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
-                    //.background(Color(.systemBackground))
+                    .background(Color(.systemBackground))
                     .environment(\.colorScheme, .dark)
                     .previewDisplayName("Dark Mode MFAPushView")
         }

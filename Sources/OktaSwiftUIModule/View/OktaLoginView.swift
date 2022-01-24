@@ -41,34 +41,40 @@ public struct OktaLoginView: View {
         VStack(alignment: .center) {
             
             //-----------------------------------------------
-            // Draw Logo
-            HStack(alignment: .center) {
-                Spacer()
-                Image("ameritas_logo_okta", bundle: .module)
-                    .frame(alignment: .center)
-                Spacer()
-            }.frame(alignment: .center)
-            
+            // Draw Welcome
+            Text("Welcome to the Agent App")
+                .modifier(K.BrandFontMod.contrast)
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                .frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                
             //-----------------------------------------------
             // Draw username / password
-            TextField("Username", text: $name)
-                .padding()
-                .border(Color.black)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-            SecureField("Password", text: $cred)
-                .padding()
-                .border(Color.black)
-            
-            //-----------------------------------------------
-            // Draw Accept Terms / Conditions
-            Button(action: { acceptTAndC = !acceptTAndC }){
-                HStack{
-                    Image(systemName: acceptTAndC ? "checkmark.square": "square")
-                    Text("I accept Ameritas Terms and Conditions")
-                        .foregroundColor(Color.black)
-                }
+            HStack() {
+                Text("ID")
+                    .modifier(K.BrandFontMod.label)
+                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                    .frame( width: 90, alignment: .topLeading )
+
+                TextField("Add UserName", text: $name)
+                    .modifier(K.BrandFontMod.contrast)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                
             }
+            Divider()
+            HStack() {
+                Text("Password")
+                    .modifier(K.BrandFontMod.label)
+                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                    .frame( width: 90, alignment: .topLeading )
+                SecureField("Add Password", text: $cred)
+                    .modifier(K.BrandFontMod.contrast)
+            }
+            .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+            Divider()
+            
+            
+
             //-----------------------------------------------
             // Draw DemoMode Switch (if Applicable)
             if demoMode {
@@ -79,7 +85,7 @@ public struct OktaLoginView: View {
             
             //-----------------------------------------------
             // Draw Login Button
-            Button("Login") {
+            Button("Sign In") {
                 print("Pressing Login button...")
                 //-----------------------------------------------
                 // If demo mode is available and was selected...
@@ -92,13 +98,34 @@ public struct OktaLoginView: View {
                     self.onLoginClick(name, cred)
                 }
             }
-            .foregroundColor(Color.white)
-            .padding()
-            .frame(maxHeight: 30)
-            .background(RoundedRectangle(cornerRadius: 8).fill(buttonColor))
-            .disabled(acceptTAndC == false)
+            .buttonStyle(CustomButton(disabled: acceptTAndC == false))
+            
+            //-----------------------------------------------
+            // Draw face ID / Forgot Password
+            HStack(spacing: 50) {
+                Text("FaceID")
+                Text("Forgot Password")
+            }
+            .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+            .frame(maxWidth: .infinity)
+            
+            //-----------------------------------------------
+            // Draw Accept Terms / Conditions
+            Button(action: { acceptTAndC = !acceptTAndC }){
+                HStack{
+                    Toggle("", isOn: $acceptTAndC)
+                        .labelsHidden()
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
+                    Text("I accept Ameritas Terms and Conditions")
+                        .modifier(K.BrandFontMod.supplemental)
+                        .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                        .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                }
+                .frame(maxWidth: .infinity)
+            }
         }
-        .frame(maxWidth: 300, maxHeight: 470, alignment: .center)
+        //.frame(maxWidth: 300, maxHeight: 470, alignment: .top)
+        .frame(maxWidth: 300, alignment: .top)
         .cornerRadius(5)
     }
     
@@ -114,10 +141,8 @@ public struct OktaLoginView: View {
 /**
  * Preview Login View
  */
-struct LoginView_Previews: PreviewProvider {
+struct LoginView_DemoMode_Previews: PreviewProvider {
 
-    
-    let a = MockOktaRepositoryImpl()
     static var previews: some View {
         let onLoginClick = { ( name: String, cred: String) -> Void in
             print("\(name), \(cred)")
@@ -125,9 +150,52 @@ struct LoginView_Previews: PreviewProvider {
         let onDemoModeClick = { () -> Void in
             print("demo mode")
         }
-        OktaLoginView( demoMode: true,
-            onLoginClick: onLoginClick,
-            onDemoModeClick: onDemoModeClick )
+        Group {
+            OktaLoginView( demoMode: true,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .previewDisplayName("Demo Mode: Light Mode")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            
+            OktaLoginView( demoMode: true,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Demo Mode: Dark Mode")
+                .previewLayout(PreviewLayout.sizeThatFits)
+        }
+        
+    }
+}
+/**
+ * Preview Login View
+ */
+struct LoginView_Previews: PreviewProvider {
+    static var previews: some View {
+        let onLoginClick = { ( name: String, cred: String) -> Void in
+            print("\(name), \(cred)")
+        }
+        let onDemoModeClick = { () -> Void in
+        }
+        Group {
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .previewDisplayName("Light Mode")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Dark Mode")
+                .previewLayout(PreviewLayout.sizeThatFits)
+        }
     }
 }
 #endif
