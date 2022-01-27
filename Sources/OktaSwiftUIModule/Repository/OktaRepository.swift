@@ -23,6 +23,7 @@ public protocol OktaRepository {
     func checkValidState() -> Error?
     func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void)
     func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
+    func changeFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func cancelFactor()
     func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void)
@@ -154,7 +155,7 @@ public class OktaRepositoryImpl : OktaRepository {
     }
 
     /**
-     * Send factor (Async)
+     * Change factor (Async)
      *
      * This method will take in an OktaFactor and trigger the factor.
      *
@@ -178,6 +179,36 @@ public class OktaRepositoryImpl : OktaRepository {
         //-----------------------------------------------
         // Trigger send factor
         factor.select(onStatusChange: successBlock, onError: errorBlock)
+    }
+    
+    /**
+     * Send factor (Async)
+     *
+     * This method will cancel the existing factor and then request the new factor
+     *
+     * If the factor is successful, it will return a success factor challenge.  The calling function must pass a closure that accepts the
+     * challenge and changes UI based on result.
+     */
+    public func changeFactor(factor: OktaFactor,
+                    onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void,
+                    onError: @escaping ((String)) -> Void) {
+        
+        //-----------------------------------------------
+        // Define Success / Failure closures
+        let successCancelBlock: (() -> Void) = { [weak self] in
+
+            self?.logger.log("CANCEL SUCCESS: Old factor cancelled, now sending new...")
+            //-----------------------------------------------
+            // Send new factor
+            self?.sendFactor(factor: factor, onSuccess: onSuccess, onError: onError)
+        }
+        let errorCancelBlock: ((String) -> Void) = { errorString in
+            onError(errorString)
+        }
+
+        //-----------------------------------------------
+        // Send Cancel existing factor
+        cancelFullFactor(onSuccess: successCancelBlock, onError: errorCancelBlock)
     }
 
     /**
@@ -211,17 +242,47 @@ public class OktaRepositoryImpl : OktaRepository {
     }
 
     /**
+     * Allow trapping cancel factor
+     */
+    private func cancelFullFactor(onSuccess: (() -> Void)? = nil,
+                            onError: ((String) -> Void)? = nil) {
+        
+        if let status = oktaStatus as? OktaAuthStatusFactorChallenge {
+            if status.canCancel() {
+                //-----------------------------------------------
+                // Define Success / Failure closures
+                let successBlock: () -> Void = {
+                    if (onSuccess != nil ) {
+                        onSuccess!()
+                    }
+                }
+                let errorBlock: (OktaError) -> Void = { error in
+                    if (onError != nil ) { 
+                        onError!(error.localizedDescription)
+                    }
+                }
+                //-----------------------------------------------
+                // Trigger cancel factor
+                self.logger.log("Cancelling STATUS: [\(status.stateToken, privacy: .public)][\(status.statusType.rawValue, privacy: .public)")
+                oktaStatus?.cancel(onSuccess: successBlock, onError: errorBlock)
+            }
+        }
+        
+    }
+    
+    /**
      * Cancel the current factor status (if possible)
      *
      * This method will cancel a given MFA Factor challenge
      */
     public func cancelFactor() {
-        if let status = oktaStatus as? OktaAuthStatusFactorChallenge {
-            if status.canCancel() {
-                self.logger.log("Cancelling STATUS: [\(status.stateToken, privacy: .public)][\(status.statusType.rawValue, privacy: .public)")
-                oktaStatus?.cancel()
-            }
-        }
+        cancelFullFactor()
+//        if let status = oktaStatus as? OktaAuthStatusFactorChallenge {
+//            if status.canCancel() {
+//                self.logger.log("Cancelling STATUS: [\(status.stateToken, privacy: .public)][\(status.statusType.rawValue, privacy: .public)")
+//                oktaStatus?.cancel()
+//            }
+//        }
     }
     
     /**

@@ -1,5 +1,5 @@
 //
-//  OktaUtilMocks.swift
+//  OktaUtilMocksNew.swift
 //
 //
 //  Created by Nathan DeGroff on 12/10/21.
@@ -224,6 +224,15 @@ public class MockOktaRepositoryImpl : OktaRepository {
     }
     public func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void){
         logger.log("mock repo sendFactor()")
+        if sendFactorPass,
+           let factorChallenge = OktaUtilMocks.getOktaAuthStatusFactorChallenge() {
+            onSuccess(factorChallenge)
+        } else {
+            onError("Fail")
+        }
+    }
+    public func changeFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void) {
+        logger.log("mock repo changeFactor()")
         if sendFactorPass,
            let factorChallenge = OktaUtilMocks.getOktaAuthStatusFactorChallenge() {
             onSuccess(factorChallenge)
