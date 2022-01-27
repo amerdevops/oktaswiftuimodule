@@ -149,6 +149,35 @@ open class OktaViewModel : ObservableObject {
     }
     
     /**
+     * Handle changing factor
+     * If you want to send a different factor, you have to cancel the first.  This method will
+     * call the OktaRepository change factor which will handle cancelling before sending new
+     */
+    public func changeFactor( factor: OktaFactor ) {
+        self.logger.log("Changing FACTOR....")
+        //-----------------------------------------------
+        // Define Success closure
+        let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
+            self.logger.log("CHANGE FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSendFactorSuccess()
+        }
+
+        //-----------------------------------------------
+        // Mock Data if UI Test
+        if (isUITest) {
+            self.logger.log("UI TEST (switchFactor)....")
+            return
+        }
+
+        //-----------------------------------------------
+        // Call change factor
+        repo.changeFactor(factor: factor, onSuccess: onSuccess, onError: self.onError)
+    }
+    
+    
+    /**
      * Handle cancelling a factor (probably not used...)
      */
     public func cancelFactor () {
