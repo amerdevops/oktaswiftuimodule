@@ -17,6 +17,18 @@ public struct OktaUserInfo {
     public let uclAgentid: String
     public let phone: String
     public let businessPhone: String
-    public init() {
+
+    public init(uclUserid: String, email: String, given_name: String,
+                corpName: String, ont_roledn: [String], uclAccesscodes: String,
+                uclAgentid: String, phone: String, businessPhone: String) {
+        self.uclUserid = uclUserid
+        self.email = email
+        self.given_name = given_name
+        self.corpName = corpName
+        self.ont_roledn = ont_roledn
+        self.uclAccesscodes = uclAccesscodes
+        self.uclAgentid = uclAgentid
+        self.phone = phone
+        self.businessPhone = businessPhone
     }
 }
