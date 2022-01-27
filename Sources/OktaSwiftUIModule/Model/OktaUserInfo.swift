@@ -17,4 +17,6 @@ public struct OktaUserInfo {
     public let uclAgentid: String
     public let phone: String
     public let businessPhone: String
+    public init() {
+    }
 }
