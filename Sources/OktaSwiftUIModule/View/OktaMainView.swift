@@ -46,7 +46,8 @@ public struct OktaMainView: View {
             VStack(spacing: 0) {
                 //-----------------------------------------------
                 // Draw Logo
-                Image("agent-app-logo").background(Color.white)
+                let file = Bundle.moduleResources.path(forResource: "agent-app-logo")
+                    return Image(from: file)
                 
                 //-----------------------------------------------------
                 // Passed login and passed mfa
