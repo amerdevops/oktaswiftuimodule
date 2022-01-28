@@ -38,95 +38,104 @@ public struct OktaLoginView: View {
      * Allow the client to login with name / password
      */
     public var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .center, spacing: 50) {
             
             //-----------------------------------------------
             // Draw Welcome
             Text("Welcome to the Agent App")
                 .modifier(K.BrandFontMod.contrast)
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                //.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                 
             //-----------------------------------------------
             // Draw username / password
-            HStack() {
-                Text("ID")
-                    .modifier(K.BrandFontMod.label)
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                    .frame( width: 90, alignment: .topLeading )
+            VStack {
+                HStack() {
+                    Text("ID")
+                        .modifier(K.BrandFontMod.label)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame( width: 90, alignment: .topLeading )
 
-                TextField("Add UserName", text: $name)
-                    .modifier(K.BrandFontMod.contrast)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
+                    TextField("Add UserName", text: $name)
+                        .modifier(K.BrandFontMod.contrast)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                    
+                }
+                Divider()
+                HStack() {
+                    Text("Password")
+                        .modifier(K.BrandFontMod.label)
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame( width: 90, alignment: .topLeading )
+                    SecureField("Add Password", text: $cred)
+                        .modifier(K.BrandFontMod.contrast)
+                }
+                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+                Divider()
+            }
+            
+            VStack {
+                //-----------------------------------------------
+                // Draw Login Button
+                Button("Sign In") {
+                    print("Pressing Login button...")
+                    //-----------------------------------------------
+                    // If demo mode is available and was selected...
+                    if demoMode && demoAccept {
+                        self.onDemoModeClick()
+                    }
+                    //-----------------------------------------------
+                    // Otherwise, login like normal
+                    else {
+                        self.onLoginClick(name, cred)
+                    }
+                }
+                .buttonStyle(CustomButton(disabled: acceptTAndC == false))
+                .disabled(acceptTAndC == false)
                 
-            }
-            Divider()
-            HStack() {
-                Text("Password")
-                    .modifier(K.BrandFontMod.label)
-                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                    .frame( width: 90, alignment: .topLeading )
-                SecureField("Add Password", text: $cred)
-                    .modifier(K.BrandFontMod.contrast)
-            }
-            .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-            Divider()
-            
-            
-
-            //-----------------------------------------------
-            // Draw DemoMode Switch (if Applicable)
-            if demoMode {
-                Toggle(isOn: $demoAccept) {
-                    Text("Demo Mode")
-                }
-            }
-            
-            //-----------------------------------------------
-            // Draw Login Button
-            Button("Sign In") {
-                print("Pressing Login button...")
                 //-----------------------------------------------
-                // If demo mode is available and was selected...
-                if demoMode && demoAccept {
-                    self.onDemoModeClick()
+                // Draw face ID / Forgot Password
+                HStack(spacing: 50) {
+                    HStack {
+                        Image(systemName: "faceid")
+                        Text("FaceID")
+                    }
+                    
+                    Text("Forgot Password")
                 }
-                //-----------------------------------------------
-                // Otherwise, login like normal
-                else {
-                    self.onLoginClick(name, cred)
-                }
-            }
-            .buttonStyle(CustomButton(disabled: acceptTAndC == false))
-            
-            //-----------------------------------------------
-            // Draw face ID / Forgot Password
-            HStack(spacing: 50) {
-                Text("FaceID")
-                Text("Forgot Password")
-            }
-            .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-            .frame(maxWidth: .infinity)
-            
-            //-----------------------------------------------
-            // Draw Accept Terms / Conditions
-            Button(action: { acceptTAndC = !acceptTAndC }){
-                HStack{
-                    Toggle("", isOn: $acceptTAndC)
-                        .labelsHidden()
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                    Text("I accept Ameritas Terms and Conditions")
-                        .modifier(K.BrandFontMod.supplemental)
-                        .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                        .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
-                }
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                 .frame(maxWidth: .infinity)
+            
+                //-----------------------------------------------
+                // Draw Accept Terms / Conditions
+                Button(action: { acceptTAndC = !acceptTAndC }){
+                    HStack{
+                        Toggle("", isOn: $acceptTAndC)
+                            .labelsHidden()
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
+                        Text("I accept Ameritas Terms and Conditions")
+                            .modifier(K.BrandFontMod.supplemental)
+                            .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                //-----------------------------------------------
+                // Draw DemoMode Switch (if Applicable)
+                if demoMode {
+                    Toggle(isOn: $demoAccept) {
+                        Text("Demo Mode")
+                    }
+                }
             }
+            Spacer()
         }
         //.frame(maxWidth: 300, maxHeight: 470, alignment: .top)
         .frame(maxWidth: 300, alignment: .top)
         .cornerRadius(5)
+        
     }
     
     var buttonColor : Color {

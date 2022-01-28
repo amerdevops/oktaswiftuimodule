@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Nathan DeGroff on 12/10/21.
 //
@@ -22,22 +22,38 @@ import os
  * allows them to trigger the push and/or verify the code
  */
 public struct OktaMFAView: View {
-    var onSendCodeClick: (_ factor: OktaFactor, _ isResend: Bool) -> Void
+    var onSendCodeClick: (_ factor: OktaFactor, _ isChange: Bool) -> Void
+    var onResendClick: (_ factor: OktaFactor) -> Void
     var onVerifyClick: (_ passCode: String) -> Void
     var onCancelClick: () -> Void
     var factors = [OktaFactor]()
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMFASelectView")
     
     @State var selectedFactor: OktaFactor? = nil
-
+   
+    /**
+     * Determine if  this is the first time we sent MFA (may need in future to switch MFA otpion
+     */
+    public func firstTime() -> Bool{
+        return (selectedFactor == nil)
+    }
+    
+    public func getMsg() -> String {
+        if (firstTime()) {
+            return "Select a method below to verify your identity"
+        }
+        return "Verify Your Identity."
+    }
     /**
      * Initialize the class
      */
     public init( factors: [OktaFactor],
-        onSendCodeClick: @escaping (_ factor: OktaFactor, _ isResend: Bool) -> Void,
+        onSendCodeClick: @escaping (_ factor: OktaFactor, _ isChange: Bool) -> Void,
+        onResendClick: @escaping (_ factor: OktaFactor) -> Void,
         onVerifyClick: @escaping (_ passCode: String) -> Void,
         onCancelClick: @escaping () -> Void) {
         self.onSendCodeClick = onSendCodeClick
+        self.onResendClick = onResendClick
         self.onVerifyClick = onVerifyClick
         self.onCancelClick = onCancelClick
         self.factors.removeAll()
@@ -49,24 +65,45 @@ public struct OktaMFAView: View {
      * Draw the view (either select which MFA factor to use or the specific MFA factor
      */
     public var body: some View {
-        if let factor = selectedFactor {
-            // Draw the specific factor screen
-            OktaMFAPushView(factor: factor,
-                        onSendCodeClick: onSendCodeClick,
-                        onVerifyClick: onVerifyClick,
-                        onGoBack: {
-                            logger.log("Clicked goBack()")
-                            selectedFactor = nil
-                            onCancelClick()
-                        })
-        } else {
-            // Select MFA option
-            OktaMFASelectView(factors: self.factors,
-                          onSelectFactor: { ( factor: OktaFactor ) -> Void in
-                self.selectedFactor = factor
-                onSendCodeClick(factor, false)
-            } )
+        VStack (alignment: .leading) {
+            
+            //-----------------------------------------------
+            // Draw message
+            Text(getMsg())
+                .multilineTextAlignment(.center)
+                .padding(EdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0))
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            if let factor = selectedFactor {
+                //-----------------------------------------------
+                // Draw the specific factor view
+                OktaMFAPushView(factor: factor,
+                            onResendClick: onResendClick,
+                            onVerifyClick: onVerifyClick,
+                            onGoBack: {
+                                logger.log("Clicked goBack()")
+                                selectedFactor = nil
+                                onCancelClick()
+                            })
+            } else {
+                //-----------------------------------------------
+                // Draw the Select MFA view
+                OktaDropdownMFA(factors: self.factors,
+                                onSelectFactor: { ( factor: OktaFactor ) -> Void in
+                                    // Check to see if user selected same factor
+                                    if(factor.type.rawValue.caseInsensitiveCompare(self.selectedFactor?.type.rawValue ?? "") != .orderedSame) {
+                                        
+                                        //-----------------------------------------------
+                                        // Trigger Send OTP Push
+                                        self.logger.log("FirstTime: \(firstTime())")
+                                        onSendCodeClick(factor, firstTime())
+                                        self.selectedFactor = factor
+                                    }
+                                })
+            }
         }
+        .frame(maxWidth: .infinity)
+        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
     }
 }
 
@@ -79,15 +116,52 @@ struct UniqueOktaFactor: Identifiable {
 }
 
 /**
- * Select which MFA option should be used
+ * Otka MFA Dropdown element
  */
-public struct OktaMFASelectView: View {
-    var onSelectFactor: (_ factor: OktaFactor) -> Void
-    var uFactors: [UniqueOktaFactor] = []
-    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMFASelectView")
+struct OktaDropdownMFAElement: View {
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaDropdownMFAElement")
     
+    var onSelectFactor: (_ factor: OktaFactor) -> Void
+    var factor: OktaFactor
     /**
      * Initialize MFASelectView with factors and the event when selecting a factor
+     */
+    public init( factor: OktaFactor,
+          onSelectFactor: @escaping (_ factor: OktaFactor ) -> Void) {
+        self.onSelectFactor = onSelectFactor
+        self.factor = factor
+    }
+        
+    public var body: some View {
+        let facType = factor.type
+        Button {
+            logger.log("Clicked on \(factor.type.rawValue, privacy: .public)")
+            onSelectFactor( factor )
+        } label: {
+            switch facType {
+            case FactorType.email:
+                Label("Email", systemImage: "envelope.fill")
+            case FactorType.sms:
+                Label("Text", systemImage: "text.bubble.fill")
+            case FactorType.call:
+                Label("Call", systemImage: "phone.fill")
+            default:
+                Label("unknown", systemImage: "email")
+            }
+            
+        }
+    }
+}
+
+/**
+ * Otka MFA Dropdown
+ */
+struct OktaDropdownMFA: View {
+    let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "Dropdown")
+    var onSelectFactor: (_ factor: OktaFactor) -> Void
+    var uFactors: [UniqueOktaFactor] = []
+    /**
+     * Initialize Dropdown with factors and the event when selecting a factor
      */
     public init( factors: [OktaFactor],
           onSelectFactor: @escaping (_ factor: OktaFactor ) -> Void) {
@@ -97,62 +171,56 @@ public struct OktaMFASelectView: View {
             self.uFactors.append(UniqueOktaFactor(factor: factor))
         }
     }
-
+    
+    /**
+     * Only allow SMS / Text / Call MFA factors to show
+     */
+    public func isValidFactor( _ factorValue: String ) -> Bool {
+        return factorValue.caseInsensitiveCompare("email") == .orderedSame ||
+            factorValue.caseInsensitiveCompare("sms") == .orderedSame ||
+            factorValue.caseInsensitiveCompare("call") == .orderedSame
+    }
+    
+    /**
+     * Draw select dropdown
+     */
     public var body: some View {
-        VStack(alignment: .center) {
-            //-----------------------------------------------
-            // Draw Welcome
-            Text("Select MFA factor: ")
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-                .frame(alignment: .center)
+        Menu("Select") {
             //-----------------------------------------------
             // Draw Factor buttons
             ForEach(uFactors, id: \.id) { uFactor in
-                Button(uFactor.factor.type.rawValue) {
-                    logger.log("Clicked on \(uFactor.factor.type.rawValue, privacy: .public)")
-                    onSelectFactor( uFactor.factor )
+                let factorValue = uFactor.factor.type.rawValue
+                if isValidFactor(factorValue) {
+                    OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
                 }
-                .buttonStyle(CustomButton())
             }
         }
-        .frame(maxWidth: 318, maxHeight: 470, alignment: .center)
-        .cornerRadius(5)
     }
-    
-
 }
-
-
 
 /**
  * Handle MFA transactions
  */
 public struct OktaMFAPushView: View {
-    var onSendCodeClick: (_ factor: OktaFactor, _ isResend: Bool) -> Void = {_,_ in }
+    var onResendClick: (_ factor: OktaFactor ) -> Void = {_ in }
     var onVerifyClick: (_ passCode: String) -> Void = {_ in }
     var onGoBack: () -> Void = {}
     var factor: OktaFactor? = nil
     @State var passCode: String = ""
     
     public init( factor: OktaFactor,
-        onSendCodeClick: @escaping (_ factor: OktaFactor, _ isResend: Bool) -> Void,
+        onResendClick: @escaping (_ factor: OktaFactor ) -> Void,
         onVerifyClick: @escaping (_ passCode: String) -> Void,
         onGoBack: @escaping () -> Void) {
         self.factor = factor
-        self.onSendCodeClick = onSendCodeClick
+        self.onResendClick = onResendClick
         self.onVerifyClick = onVerifyClick
         self.onGoBack = onGoBack
     }
     
     @ViewBuilder
     public var body: some View {
-        let sendButtonText = "Resend Code"
-
         VStack{
-            Text("Verify Your Identity.")
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-                .frame(alignment: .center)
-            
             if let fac = factor {
                 HStack {
                     switch fac.type {
@@ -185,6 +253,7 @@ public struct OktaMFAPushView: View {
                             .foregroundColor(Color.white)
                     }
                 }
+                Divider()
                 HStack {
                     Text("Code:")
                         .modifier(K.BrandFontMod.label)
@@ -195,12 +264,15 @@ public struct OktaMFAPushView: View {
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                 }
+                Divider()
                 
                 Button("Verify") { self.onVerifyClick(passCode) }
                     .buttonStyle(CustomButton(disabled: passCode.isEmpty))
-                Button(sendButtonText) { self.onSendCodeClick(fac, true) }
+                    .padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
+                    .disabled(passCode.isEmpty)
+                Button("Resend") { self.onResendClick(fac) }
                     .buttonStyle(CustomOutlineButton())
-                Button("Go Back") { self.onGoBack() }
+                Button("Cancel") { self.onGoBack() }
                     .buttonStyle(CustomPlainButton())
                 
             } else {
@@ -227,7 +299,10 @@ public struct OktaMFAPushView: View {
  */
 struct OktaMFAView_Previews: PreviewProvider {
 
-    static func onSendCodeClick( factor: OktaFactor, isResend: Bool ) {
+    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
+        // Do Nothing
+    }
+    static func onResendClick( factor: OktaFactor ) {
         // Do Nothing
     }
     static func onVerifyClick(passCode: String) {
@@ -244,6 +319,7 @@ struct OktaMFAView_Previews: PreviewProvider {
         Group {
             OktaMFAView(factors: factors,
                     onSendCodeClick: onSendCodeClick,
+                    onResendClick: onResendClick,
                     onVerifyClick: onVerifyClick,
                     onCancelClick: onCancelClick)
                 .previewLayout(PreviewLayout.sizeThatFits)
@@ -251,9 +327,11 @@ struct OktaMFAView_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode MFAView")
+                //.previewLayout(PreviewLayout.fixed(width: 400, height: 400))
             
             OktaMFAView(factors: factors,
                     onSendCodeClick: onSendCodeClick,
+                    onResendClick: onResendClick,
                     onVerifyClick: onVerifyClick,
                     onCancelClick: onCancelClick)
                 .previewLayout(PreviewLayout.sizeThatFits)
@@ -261,6 +339,7 @@ struct OktaMFAView_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode MFAView")
+                // .previewLayout(PreviewLayout.fixed(width: 400, height: 400))
             
         }
 
@@ -280,7 +359,7 @@ struct OktaMFAPushView_Previews: PreviewProvider {
         
         Group {
             OktaMFAPushView(factor: factor1,
-                        onSendCodeClick: OktaMFAView_Previews.onSendCodeClick,
+                        onResendClick: OktaMFAView_Previews.onResendClick,
                         onVerifyClick: OktaMFAView_Previews.onVerifyClick,
                         onGoBack: OktaMFAView_Previews.onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)
@@ -288,7 +367,7 @@ struct OktaMFAPushView_Previews: PreviewProvider {
                     .environment(\.colorScheme, .light)
                     .previewDisplayName("Light Mode MFAPushView")
             OktaMFAPushView(factor: factor2,
-                        onSendCodeClick: OktaMFAView_Previews.onSendCodeClick,
+                        onResendClick: OktaMFAView_Previews.onResendClick,
                         onVerifyClick: OktaMFAView_Previews.onVerifyClick,
                         onGoBack: OktaMFAView_Previews.onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)

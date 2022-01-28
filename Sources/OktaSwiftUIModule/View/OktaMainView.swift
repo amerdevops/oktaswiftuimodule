@@ -17,6 +17,9 @@ import os
  * This view holds the primary Okta screens and handles navigating between login and MFA views.
  */
 public struct OktaMainView: View {
+    
+    @ScaledMetric var heightPad: CGFloat = UIScreen.main.bounds.height * 0.1
+    
     @EnvironmentObject
     var oktaViewModel: OktaViewModel
     
@@ -58,14 +61,15 @@ public struct OktaMainView: View {
                     //-----------------------------------------------------
                     // Define the actions outside of view so it can be tested
                     // separately
-                    let onSendCodeClick = { ( factor: OktaFactor, isResend: Bool) -> Void in
-                        if(!isResend) {
-                            oktaViewModel.sendFactor(factor: factor)
-                            logger.log("Send Code: \(factor.type.rawValue)")
-                        } else {
-                            oktaViewModel.resendFactor(factor: factor)
-                            logger.log("Resend Code: \(factor.type.rawValue)")
-                        }
+                    let onSendCodeClick = { ( factor: OktaFactor, isChange: Bool) -> Void in
+                        // NOTE: Not using isChange now... this will be
+                        // if Okta can fix sending a different MFA factor
+                        oktaViewModel.sendFactor(factor: factor)
+                        logger.log("Send Code: \(factor.type.rawValue)")
+                    }
+                    let onResendClick = { ( factor: OktaFactor ) -> Void in
+                        oktaViewModel.resendFactor(factor: factor)
+                        logger.log("Resend Code: \(factor.type.rawValue)")
                     }
                     let onCancelClick = { () -> Void in
                         oktaViewModel.cancelFactor()
@@ -80,6 +84,7 @@ public struct OktaMainView: View {
                     // Draw view
                     OktaMFAView(factors: oktaViewModel.factors,
                             onSendCodeClick: onSendCodeClick,
+                            onResendClick: onResendClick,
                             onVerifyClick: onVerifyClick,
                             onCancelClick: onCancelClick)
                 }
@@ -103,9 +108,8 @@ public struct OktaMainView: View {
                                   onDemoModeClick: onDemoModeClick)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
-                Spacer()
             }
-            .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
+            .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))
         }
         .edgesIgnoringSafeArea(.top)
     }

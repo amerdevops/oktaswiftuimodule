@@ -149,7 +149,9 @@ open class OktaViewModel : ObservableObject {
     }
     
     /**
+     * NOTE: NOT USED YET.... Right now Okta changing MFA factor is broken... it won't return back to the success / error factor
      * Handle changing factor
+     *
      * If you want to send a different factor, you have to cancel the first.  This method will
      * call the OktaRepository change factor which will handle cancelling before sending new
      */

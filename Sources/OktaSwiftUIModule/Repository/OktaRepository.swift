@@ -49,27 +49,27 @@ public class OktaRepositoryImpl : OktaRepository {
     
     public init() {
         let loggerInst = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
-            do {
-                //---------------------------------------------------------------
-                // Pull Okta OIDC configuration from Okta.plist
-                oktaOidc = try OktaOidc()
-            } catch let error {
-                DispatchQueue.main.async {
-                    loggerInst.error("\(error.localizedDescription)")
-                }
-                return
-            }
-        
+        do {
             //---------------------------------------------------------------
-            // Pull / store Okta status from secure storage
-            if  let oktaOidc = oktaOidc,
-                let sm : OktaOidcStateManager = OktaOidcStateManager.readFromSecureStorage(for: oktaOidc.configuration) {
-                // Hold onto the stored state manager
-                // NOTE: the access token may be expired (that is checked in getUser())
-                self.stateManager = sm
-            } else {
-                loggerInst.error("Okta OIDC State manager not loaded")
+            // Pull Okta OIDC configuration from Okta.plist
+            oktaOidc = try OktaOidc()
+        } catch let error {
+            DispatchQueue.main.async {
+                loggerInst.error("\(error.localizedDescription)")
             }
+            return
+        }
+    
+        //---------------------------------------------------------------
+        // Pull / store Okta status from secure storage
+        if  let oktaOidc = oktaOidc,
+            let sm : OktaOidcStateManager = OktaOidcStateManager.readFromSecureStorage(for: oktaOidc.configuration) {
+            // Hold onto the stored state manager
+            // NOTE: the access token may be expired (that is checked in getUser())
+            self.stateManager = sm
+        } else {
+            loggerInst.error("Okta OIDC State manager not loaded")
+        }
     }
 
     /**
@@ -90,10 +90,13 @@ public class OktaRepositoryImpl : OktaRepository {
                     onError(error.localizedDescription)
                     return
                 }
+                // If have a new state manager...
                 if let smNew = stateManagerNew {
+                    // Save to secure storage
                     smNew.writeToSecureStorage()
                     self?.stateManager = smNew
                     self?.logger.log("Token Refreshed! [\(smNew.accessToken ?? "noAccessToken")]")
+                    // handle success
                     onSuccess()
                 } else {
                     self?.logger.log("That's a bummer....")
@@ -178,7 +181,10 @@ public class OktaRepositoryImpl : OktaRepository {
         }
         //-----------------------------------------------
         // Trigger send factor
-        factor.select(onStatusChange: successBlock, onError: errorBlock)
+        if ( factor.canSelect() ) {
+            factor.select(onStatusChange: successBlock, onError: errorBlock)
+        }
+        
     }
     
     /**
@@ -257,7 +263,7 @@ public class OktaRepositoryImpl : OktaRepository {
                     }
                 }
                 let errorBlock: (OktaError) -> Void = { error in
-                    if (onError != nil ) { 
+                    if (onError != nil ) {
                         onError!(error.localizedDescription)
                     }
                 }
@@ -277,12 +283,6 @@ public class OktaRepositoryImpl : OktaRepository {
      */
     public func cancelFactor() {
         cancelFullFactor()
-//        if let status = oktaStatus as? OktaAuthStatusFactorChallenge {
-//            if status.canCancel() {
-//                self.logger.log("Cancelling STATUS: [\(status.stateToken, privacy: .public)][\(status.statusType.rawValue, privacy: .public)")
-//                oktaStatus?.cancel()
-//            }
-//        }
     }
     
     /**
@@ -537,3 +537,4 @@ public class OktaRepositoryImpl : OktaRepository {
         }
     }
 }
+
