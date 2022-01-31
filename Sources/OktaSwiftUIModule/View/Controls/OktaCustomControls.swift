@@ -1,5 +1,5 @@
 //
-//  OktaCustomButtons.swift
+//  OktaCustomControls.swift
 //
 //  Created by Nathan DeGroff on 1/21/22.
 //
@@ -13,7 +13,7 @@ struct CustomButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : Color.blue)
+        return (disabled ? Color.gray : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
@@ -26,7 +26,6 @@ struct CustomButton: ButtonStyle {
             .padding()
             .frame(maxWidth: 322, maxHeight: 50)
             .background(RoundedRectangle(cornerRadius: 8).fill(buttonColor))
-            .disabled(disabled)
     }
 }
 
@@ -37,7 +36,7 @@ struct CustomOutlineButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : Color.blue)
+        return (disabled ? Color.gray : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
@@ -51,7 +50,6 @@ struct CustomOutlineButton: ButtonStyle {
             .frame(maxWidth: 290, maxHeight: 50)
             .cornerRadius(6)
             .overlay(RoundedRectangle(cornerRadius: 8).stroke(buttonColor, lineWidth: 2))
-            .disabled(disabled)
     }
 }
 
@@ -63,7 +61,7 @@ struct CustomPlainButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : Color.blue)
+        return (disabled ? Color.gray : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
@@ -76,12 +74,45 @@ struct CustomPlainButton: ButtonStyle {
             .foregroundColor(buttonColor)
             .frame(maxWidth: 322, maxHeight: 50)
             .cornerRadius(6)
-            //.overlay(RoundedRectangle(cornerRadius: 8).stroke(buttonColor, lineWidth: 2))
-           // .padding([.top, .bottom], 2)
-            .disabled(disabled)
     }
 }
 
+/**
+ * Custom SecureView
+ * iOS doesn't have a password field that allows you to show / hide your view
+ * Got code for this view from https://stackoverflow.com/questions/63095851/show-hide-password-how-can-i-add-this-feature
+ */
+struct SecureInputView: View {
+    
+    @Binding private var text: String
+    @State private var isSecured: Bool = true
+    private var title: String
+    
+    init(_ title: String, text: Binding<String>) {
+        self.title = title
+        self._text = text
+    }
+    
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            if isSecured {
+                SecureField(title, text: $text)
+            } else {
+                TextField(title, text: $text)
+            }
+            Button(action: {
+                isSecured.toggle()
+            }) {
+                Image(systemName: self.isSecured ? "eye.slash" : "eye")
+                    .accentColor(.gray)
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------
+// PREVIEWS
+//------------------------------------------------------------------
 struct CustomOutlineButton_Previews: PreviewProvider {
     
     static var previews: some View {
@@ -110,6 +141,31 @@ struct CustomOutlineButton_Previews: PreviewProvider {
                 .buttonStyle(CustomPlainButton(disabled: true))
                 .previewDisplayName("CustomPlainButton()")
                 .previewLayout(PreviewLayout.fixed(width: 400, height: 70))
+        }
+
+    }
+}
+
+
+/**
+ * MFAView Previews
+ */
+struct SecureInputView_Wrapper : View {
+     @State
+     private var cred = ""
+
+     var body: some View {
+        SecureInputView("Add Password", text: $cred)
+            .modifier(K.BrandFontMod.contrast)
+     }
+}
+struct SecureInputView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        Group {
+            SecureInputView_Wrapper()
+                .previewLayout(PreviewLayout.sizeThatFits)
+                .previewDisplayName("Secure Input")
         }
 
     }
