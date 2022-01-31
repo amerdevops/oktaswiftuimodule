@@ -110,9 +110,9 @@ struct SecureInputView: View {
     }
 }
 
-//------------------------------------------------------------------
-// PREVIEWS
-//------------------------------------------------------------------
+//---------------------------------------------------------
+// Previews
+//---------------------------------------------------------
 struct CustomOutlineButton_Previews: PreviewProvider {
     
     static var previews: some View {
@@ -148,7 +148,7 @@ struct CustomOutlineButton_Previews: PreviewProvider {
 
 
 /**
- * MFAView Previews
+ * SecureInputView Wrapper class to handle binding string when using preview
  */
 struct SecureInputView_Wrapper : View {
      @State
@@ -159,6 +159,9 @@ struct SecureInputView_Wrapper : View {
             .modifier(K.BrandFontMod.contrast)
      }
 }
+/**
+ * SecureInputView Previews
+ */
 struct SecureInputView_Previews: PreviewProvider {
     
     static var previews: some View {

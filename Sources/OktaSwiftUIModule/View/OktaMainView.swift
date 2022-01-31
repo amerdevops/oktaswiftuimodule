@@ -118,6 +118,9 @@ public struct OktaMainView: View {
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
+/**
+ * Mock Okta ViewModel for preview sake
+ */
 class MockOktaViewModel : OktaViewModel {
     
     init(isMFA: Bool = false, isAuthenticated: Bool = false, isUserSet: Bool = false) {
@@ -129,6 +132,9 @@ class MockOktaViewModel : OktaViewModel {
     }
 }
 
+/**
+ * PREVIEW: iPhone12 previews
+ */
 struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel()
@@ -149,6 +155,9 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
     }
 }
 
+/**
+ * PREVIEW: iPod previews
+ */
 struct OktaMainView_iPod_Login_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel()

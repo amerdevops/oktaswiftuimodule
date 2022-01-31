@@ -295,7 +295,7 @@ public struct OktaMFAPushView: View {
 // Previews
 //---------------------------------------------------------
 /**
- * MFAView Previews
+ * OktaMFAView Previews
  */
 struct OktaMFAView_Previews: PreviewProvider {
 
@@ -347,7 +347,7 @@ struct OktaMFAView_Previews: PreviewProvider {
 }
 
 /**
- * MFAView Previews
+ * OktaMFAPushView Previews
  */
 struct OktaMFAPushView_Previews: PreviewProvider {
     
