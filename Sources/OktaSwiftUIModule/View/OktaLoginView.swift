@@ -69,7 +69,7 @@ public struct OktaLoginView: View {
                         .modifier(K.BrandFontMod.label)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
-                    SecureField("Add Password", text: $cred)
+                    SecureInputView("Add Password", text: $cred)
                         .modifier(K.BrandFontMod.contrast)
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
