@@ -413,7 +413,7 @@ public class OktaRepositoryImpl : OktaRepository {
                         let userInfo = OktaUserInfo(
                             uclUserid: atts["uclUserid"] as? String ?? "",
                             email: atts["email"] as? String ?? "",
-                            given_name: atts["given_name"] as? String ?? "",
+                            given_name: atts["name"] as? String ?? "",
                             corpName: atts["corpName"] as? String ?? "",
                             ont_roledn: atts["ont_roledn"] as? [String] ?? [],
                             uclAccesscodes: atts["uclAccesscodes"] as? String ?? "",
@@ -537,4 +537,3 @@ public class OktaRepositoryImpl : OktaRepository {
         }
     }
 }
-

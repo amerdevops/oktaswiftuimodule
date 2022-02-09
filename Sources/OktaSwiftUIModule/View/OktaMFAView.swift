@@ -65,14 +65,18 @@ public struct OktaMFAView: View {
      * Draw the view (either select which MFA factor to use or the specific MFA factor
      */
     public var body: some View {
-        VStack (alignment: .leading) {
+        let onGoBack = {
+            logger.log("Clicked goBack()")
+            selectedFactor = nil
+            onCancelClick()
+        }
+        VStack (alignment: .center, spacing: 50) {
             
             //-----------------------------------------------
             // Draw message
             Text(getMsg())
                 .multilineTextAlignment(.center)
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0))
-                .frame(maxWidth: .infinity, alignment: .center)
 
             if let factor = selectedFactor {
                 //-----------------------------------------------
@@ -80,11 +84,7 @@ public struct OktaMFAView: View {
                 OktaMFAPushView(factor: factor,
                             onResendClick: onResendClick,
                             onVerifyClick: onVerifyClick,
-                            onGoBack: {
-                                logger.log("Clicked goBack()")
-                                selectedFactor = nil
-                                onCancelClick()
-                            })
+                            onGoBack: onGoBack)
             } else {
                 //-----------------------------------------------
                 // Draw the Select MFA view
@@ -100,9 +100,13 @@ public struct OktaMFAView: View {
                                         self.selectedFactor = factor
                                     }
                                 })
+                    .alignmentGuide(HorizontalAlignment.center, computeValue: { _ in 125})
+                Button("Cancel") { onGoBack() }
+                    .buttonStyle(CustomPlainButton())
+                    .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
             }
         }
-        .frame(maxWidth: .infinity)
+        // .frame(maxWidth: .infinity)
         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
     }
 }
@@ -220,7 +224,7 @@ public struct OktaMFAPushView: View {
     
     @ViewBuilder
     public var body: some View {
-        VStack{
+        VStack(alignment: .center){
             if let fac = factor {
                 HStack {
                     switch fac.type {
@@ -290,12 +294,11 @@ public struct OktaMFAPushView: View {
 
 
 
-
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
 /**
- * OktaMFAView Previews
+ * MFAView Previews
  */
 struct OktaMFAView_Previews: PreviewProvider {
 
@@ -347,10 +350,22 @@ struct OktaMFAView_Previews: PreviewProvider {
 }
 
 /**
- * OktaMFAPushView Previews
+ * MFAView Previews
  */
 struct OktaMFAPushView_Previews: PreviewProvider {
     
+    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
+        // Do Nothing
+    }
+    static func onResendClick( factor: OktaFactor ) {
+        // Do Nothing
+    }
+    static func onVerifyClick(passCode: String) {
+        // Do Nothing
+    }
+    static func onCancelClick() {
+        // Do Nothing
+    }
     static var previews: some View {
         
         let factors = OktaUtilMocks.getOktaFactors()
@@ -359,22 +374,90 @@ struct OktaMFAPushView_Previews: PreviewProvider {
         
         Group {
             OktaMFAPushView(factor: factor1,
-                        onResendClick: OktaMFAView_Previews.onResendClick,
-                        onVerifyClick: OktaMFAView_Previews.onVerifyClick,
-                        onGoBack: OktaMFAView_Previews.onCancelClick)
+                        onResendClick: onResendClick,
+                        onVerifyClick: onVerifyClick,
+                        onGoBack: onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
                     .environment(\.colorScheme, .light)
                     .previewDisplayName("Light Mode MFAPushView")
             OktaMFAPushView(factor: factor2,
-                        onResendClick: OktaMFAView_Previews.onResendClick,
-                        onVerifyClick: OktaMFAView_Previews.onVerifyClick,
-                        onGoBack: OktaMFAView_Previews.onCancelClick)
+                        onResendClick: onResendClick,
+                        onVerifyClick: onVerifyClick,
+                        onGoBack: onCancelClick)
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
                     .background(Color(.systemBackground))
                     .environment(\.colorScheme, .dark)
                     .previewDisplayName("Dark Mode MFAPushView")
+        }
+
+    }
+}
+
+/**
+ * MFAView Previews
+ */
+struct OktaMFAPushView2_Previews: PreviewProvider {
+    
+    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
+        // Do Nothing
+    }
+    static func onResendClick( factor: OktaFactor ) {
+        // Do Nothing
+    }
+    static func onVerifyClick(passCode: String) {
+        // Do Nothing
+    }
+    static func onCancelClick() {
+        // Do Nothing
+    }
+    static var previews: some View {
+        
+        let factors = OktaUtilMocks.getOktaFactors()
+        let factor1 = factors[1]
+        let factor2 = factors[2]
+        
+        Group {
+            OktaMFAView(factors: factors,
+                              onSendCodeClick: onSendCodeClick,
+                              onResendClick: onResendClick,
+                              onVerifyClick: onVerifyClick,
+                              onCancelClick: onCancelClick)
+                .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
+                .padding()
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .previewDisplayName("iPhone 12 OktaMFAView")
+
+            OktaMFAPushView(factor: factor1,
+                        onResendClick: onResendClick,
+                        onVerifyClick: onVerifyClick,
+                        onGoBack: onCancelClick)
+                    .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
+                    .padding()
+                    .environment(\.colorScheme, .light)
+                    .previewDisplayName("iPhone 12 OktaMFAPushView")
+            
+            OktaMFAView(factors: factors,
+                              onSendCodeClick: onSendCodeClick,
+                              onResendClick: onResendClick,
+                              onVerifyClick: onVerifyClick,
+                              onCancelClick: onCancelClick)
+                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                .padding()
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("iPod MFAView")
+            OktaMFAPushView(factor: factor2,
+                        onResendClick: onResendClick,
+                        onVerifyClick: onVerifyClick,
+                        onGoBack: onCancelClick)
+                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .environment(\.colorScheme, .dark)
+                    .previewDisplayName("iPod MFAPushView")
         }
 
     }
