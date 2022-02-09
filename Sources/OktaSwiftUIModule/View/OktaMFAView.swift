@@ -77,6 +77,9 @@ public struct OktaMFAView: View {
             Text(getMsg())
                 .multilineTextAlignment(.center)
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0))
+                .accessibilityLabel(getMsg())
+                .accessibilityAddTraits(.isStaticText)
+                .accessibilityIdentifier("Okta-Label")
 
             if let factor = selectedFactor {
                 //-----------------------------------------------
@@ -104,6 +107,9 @@ public struct OktaMFAView: View {
                 Button("Cancel") { onGoBack() }
                     .buttonStyle(CustomPlainButton())
                     .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
+                    .accessibilityLabel("Cancel Login")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Cancel-Login")
             }
         }
         // .frame(maxWidth: .infinity)
@@ -196,6 +202,9 @@ struct OktaDropdownMFA: View {
                 let factorValue = uFactor.factor.type.rawValue
                 if isValidFactor(factorValue) {
                     OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
+                        .accessibilityLabel("Trigger \(factorValue) code")
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityIdentifier("\(factorValue)-Factor")
                 }
             }
         }
@@ -233,25 +242,43 @@ public struct OktaMFAPushView: View {
                             .modifier(K.BrandFontMod.label)
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
+                            .accessibilityLabel("Email")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Label-Email")
                         Text("\(fac.profile?.email ?? "unknown")")
                             .modifier(K.BrandFontMod.contrast)
                             .frame( maxWidth: .infinity, alignment: .topLeading )
+                            .accessibilityLabel(fac.profile?.email ?? "unknown")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Value-Email")
                     case FactorType.sms:
                         Text("SMS:")
                             .modifier(K.BrandFontMod.label)
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
+                            .accessibilityLabel("SMS")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Label-SMS")
                         Text("\(fac.profile?.phoneNumber ?? "unknown")")
                             .modifier(K.BrandFontMod.contrast)
                             .frame( maxWidth: .infinity, alignment: .topLeading )
+                            .accessibilityLabel(fac.profile?.phoneNumber ?? "unknown")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Value-SMS")
                     case FactorType.call:
                         Text("Call:")
                             .modifier(K.BrandFontMod.label)
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
+                            .accessibilityLabel("Call")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Label-Call")
                         Text("\(fac.profile?.phoneNumber ?? "unknown")")
                             .modifier(K.BrandFontMod.contrast)
                             .frame( maxWidth: .infinity, alignment: .topLeading )
+                            .accessibilityLabel(fac.profile?.phoneNumber ?? "unknown")
+                            .accessibilityAddTraits(.isStaticText)
+                            .accessibilityIdentifier("Factor-Value-Call")
                     default:
                         Text("Default")
                             .foregroundColor(Color.white)
@@ -263,10 +290,16 @@ public struct OktaMFAPushView: View {
                         .modifier(K.BrandFontMod.label)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
+                        .accessibilityLabel("Code")
+                        .accessibilityAddTraits(.isStaticText)
+                        .accessibilityIdentifier("Passcode-Label")
                     TextField("Passcode", text: $passCode)
                         .modifier(K.BrandFontMod.contrast)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
+                        .accessibilityLabel("Enter passcode")
+                        .accessibilityAddTraits(.isSearchField)
+                        .accessibilityIdentifier("Passcode-Text")
                 }
                 Divider()
                 
@@ -274,13 +307,25 @@ public struct OktaMFAPushView: View {
                     .buttonStyle(CustomButton(disabled: passCode.isEmpty))
                     .padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
                     .disabled(passCode.isEmpty)
+                    .accessibilityLabel("Verify Passcode")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Button-Verify")
                 Button("Resend") { self.onResendClick(fac) }
                     .buttonStyle(CustomOutlineButton())
+                    .accessibilityLabel("Resend Passcode")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Button-Resend")
                 Button("Cancel") { self.onGoBack() }
                     .buttonStyle(CustomPlainButton())
+                    .accessibilityLabel("Cancel Login")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Button-Cancel")
                 
             } else {
                 Text("Loading...")
+                    .accessibilityLabel("Loading")
+                    .accessibilityAddTraits(.isStaticText)
+                    .accessibilityIdentifier("Loading-Text")
             }
         }
         .frame(maxWidth: 300, maxHeight: 470, alignment: .center)

@@ -47,6 +47,8 @@ public struct OktaMainView: View {
                 //-----------------------------------------------
                 // Draw Logo
                 Image("agent-app-logo").background(Color.white)
+                    .accessibilityLabel("Ameritas Logo")
+                    .accessibilityAddTraits(.isImage)
                 
                 //-----------------------------------------------------
                 // Passed login and passed mfa
