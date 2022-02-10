@@ -48,7 +48,7 @@ public struct OktaLoginView: View {
             Text(msg)
                 .modifier(K.BrandFontMod.contrast)
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .frame(alignment: .center)
                 .accessibilityLabel(msg)
                 .accessibilityAddTraits(.isStaticText)
                 .accessibilityIdentifier("Welcome")
@@ -137,8 +137,8 @@ public struct OktaLoginView: View {
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
                         Text("I accept Ameritas Terms and Conditions")
                             .modifier(K.BrandFontMod.supplemental)
-                            .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
                     }
                     .frame(maxWidth: .infinity)
                 }
