@@ -28,6 +28,7 @@ public protocol OktaRepository {
     func resendFactor(onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func verifyFactor(passCode: String, onSuccess: @escaping ((OktaAuthStatus)) -> Void, onError: @escaping ((String)) -> Void)
     func getUser(onSuccess: @escaping ((OktaUserInfo)) -> Void, onError: @escaping ((String)) -> Void)
+    func getAccessToken(onSuccess: @escaping ((String)) -> Void, onError: @escaping ((String)) -> Void)
     func logout()
     func helper()
 }
@@ -359,7 +360,43 @@ public class OktaRepositoryImpl : OktaRepository {
         }
 
     }
+    
+    /**
+     * Get Access Token
+     * If the token has expired, get a new token.
+     */
+    public func getAccessToken(onSuccess: @escaping ((String)) -> Void, onError: @escaping ((String)) -> Void) {       //---------------------------------------------------------------------
+        // Get state manager
+        
+        if let sm = self.stateManager {
+            self.logger.log("GET ACCESS TOKEN: \(sm.accessToken ?? "unknown", privacy: .public)")
+            //---------------------------------------------------------------------
+            // Access token will be nil if expired or invalid
+            if let accessToken = sm.accessToken {
+                onSuccess(accessToken)
+            } else {
+                //---------------------------------------------------------------------
+                // Setup success
+                let onSuccessRefresh : () -> Void = { [weak self] in
+                    self?.logger.log("GET ACCESS TOKEN: onSuccessRefresh")
+                    guard let sm1 = self?.stateManager,
+                          let token = sm1.accessToken else {
+                        onError("GET ACCESS TOKEN: Could not get new token")
+                        return
+                    }
+                    self?.logger.log("GET ACCESS TOKEN: Success \(token)")
+                    onSuccess(token);
+                }
+                //---------------------------------------------------------------------
+                // Refresh token
+                refreshToken(onSuccess: onSuccessRefresh, onError: onError)
+            }
+        } else {
+            onError("GET ACCESS TOKEN: State manager doesn't exist")
+        }
+    }
 
+    
     /**
      * Logout of app
      */
