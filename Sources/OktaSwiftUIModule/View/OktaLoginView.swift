@@ -18,6 +18,7 @@ public struct OktaLoginView: View {
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
     var demoMode: Bool
+    var msg: String
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -26,10 +27,12 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void) {
+                onDemoModeClick: @escaping () -> Void,
+                msg: String = "Welcome to the Agent App") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
+        self.msg = msg
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -42,11 +45,13 @@ public struct OktaLoginView: View {
             
             //-----------------------------------------------
             // Draw Welcome
-            Text("Welcome to the Agent App")
+            Text(msg)
                 .modifier(K.BrandFontMod.contrast)
-                //.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .accessibilityLabel(msg)
+                .accessibilityAddTraits(.isStaticText)
+                .accessibilityIdentifier("Welcome")
                 
             //-----------------------------------------------
             // Draw username / password
@@ -56,11 +61,17 @@ public struct OktaLoginView: View {
                         .modifier(K.BrandFontMod.label)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
+                        .accessibilityLabel("ID")
+                        .accessibilityAddTraits(.isStaticText)
+                        .accessibilityIdentifier("Label-ID")
 
                     TextField("Add UserName", text: $name)
                         .modifier(K.BrandFontMod.contrast)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
+                        .accessibilityLabel("Enter your username")
+                        //.accessibilityAddTraits(.isStaticText)
+                        .accessibilityIdentifier("Text-ID")
                     
                 }
                 Divider()
@@ -69,8 +80,14 @@ public struct OktaLoginView: View {
                         .modifier(K.BrandFontMod.label)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
+                        .accessibilityLabel("Password")
+                        .accessibilityAddTraits(.isStaticText)
+                        .accessibilityIdentifier("Label-Pass")
                     SecureInputView("Add Password", text: $cred)
                         .modifier(K.BrandFontMod.contrast)
+                        .accessibilityLabel("Enter your password")
+                        //.accessibilityAddTraits(.isStaticText)
+                        .accessibilityIdentifier("Text-Pass")
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Divider()
@@ -94,6 +111,9 @@ public struct OktaLoginView: View {
                 }
                 .buttonStyle(CustomButton(disabled: acceptTAndC == false))
                 .disabled(acceptTAndC == false)
+                .accessibilityLabel("Sign In")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("Button-SignIn")
                 
                 //-----------------------------------------------
                 // Draw face ID / Forgot Password
@@ -122,12 +142,18 @@ public struct OktaLoginView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityLabel("Accept Terms and Conditions")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("Button-Accept")
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
                     Toggle(isOn: $demoAccept) {
                         Text("Demo Mode")
                     }
+                    .accessibilityLabel("Demo Mode")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Button-Demo")
                 }
             }
             Spacer()
