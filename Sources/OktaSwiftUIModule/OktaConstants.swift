@@ -77,7 +77,9 @@ struct K
         static let statusOrange = FontViewModifier(color: "Orange", font: K.BrandFont.regular16)
         static let statusBlue = FontViewModifier(color: "Blue", font: K.BrandFont.regular16)
         static let label1Contrast = FontViewModifier(color: "SecondaryBlack", font: K.BrandFont.regular16)
+        static let mfalabelContrast = FontViewModifier(color: "SecondaryBlack", font: K.BrandFont.regular14)
         static let value1Contrast = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular16)
+        static let imageGrey = FontViewModifier(color: "Grey", font: K.BrandFont.regular24)
         
         static let contrast = FontViewModifier(color: "Contrast", font: K.BrandFont.regular17)
         static let normal = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
