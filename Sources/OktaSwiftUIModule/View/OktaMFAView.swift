@@ -76,7 +76,8 @@ public struct OktaMFAView: View {
             // Draw message
             Text(getMsg())
                 .multilineTextAlignment(.center)
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0))
+                .modifier(K.BrandFontMod.black)
+                .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
                 .accessibilityLabel(getMsg())
                 .accessibilityAddTraits(.isStaticText)
                 .accessibilityIdentifier("Okta-Label")
@@ -103,17 +104,17 @@ public struct OktaMFAView: View {
                                         self.selectedFactor = factor
                                     }
                                 })
-                    .alignmentGuide(HorizontalAlignment.center, computeValue: { _ in 125})
+                
+                OktaMFAOptionsView()
+                
                 Button("Cancel") { onGoBack() }
                     .buttonStyle(CustomPlainButton())
-                    .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
+                    .padding(EdgeInsets(top: 45, leading: 160, bottom: 96, trailing: 160))
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Cancel-Login")
             }
         }
-        // .frame(maxWidth: .infinity)
-        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
     }
 }
 
@@ -195,19 +196,34 @@ struct OktaDropdownMFA: View {
      * Draw select dropdown
      */
     public var body: some View {
-        Menu("Select") {
-            //-----------------------------------------------
-            // Draw Factor buttons
-            ForEach(uFactors, id: \.id) { uFactor in
-                let factorValue = uFactor.factor.type.rawValue
-                if isValidFactor(factorValue) {
-                    OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
-                        .accessibilityLabel("Trigger \(factorValue) code")
-                        .accessibilityAddTraits(.isButton)
-                        .accessibilityIdentifier("\(factorValue)-Factor")
+        VStack{
+            HStack{
+                Text("Select").modifier(K.BrandFontMod.black)
+                Spacer()
+                Menu{
+                    ForEach(uFactors, id: \.id) { uFactor in
+                            let factorValue = uFactor.factor.type.rawValue
+                            if isValidFactor(factorValue) {
+                                OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
+                                    .accessibilityLabel("Trigger \(factorValue) code")
+                                    .accessibilityAddTraits(.isButton)
+                                    .accessibilityIdentifier("\(factorValue)-Factor")
+                            }
+                    }
+                } label: {
+                    VStack(spacing: 0){
+                        Image(systemName: "chevron.down")
+                            .imageScale(.large)
+                            .foregroundColor(K.BrandColor.blue)
+                            .padding(EdgeInsets(top: 0, leading: 32, bottom: 10, trailing: 16))
+                        
+                    }
                 }
-            }
+            }.padding(EdgeInsets(top: 0, leading: 32, bottom: 10, trailing: 16))
+            Divider().padding(EdgeInsets(top: 0, leading: 32, bottom: 0, trailing: 16))
         }
+        
+        
     }
 }
 
