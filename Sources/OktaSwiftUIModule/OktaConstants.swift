@@ -81,6 +81,7 @@ struct K
         static let value1Contrast = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular16)
         static let imageGrey = FontViewModifier(color: "Grey", font: K.BrandFont.regular24)
         
+        static let black = FontViewModifier(color: "Black", font: K.BrandFont.regular17)
         static let contrast = FontViewModifier(color: "Contrast", font: K.BrandFont.regular17)
         static let normal = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
         static let label = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
