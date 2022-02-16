@@ -109,7 +109,7 @@ public struct OktaMFAView: View {
                 
                 Button("Cancel") { onGoBack() }
                     .buttonStyle(CustomPlainButton())
-                    .padding(EdgeInsets(top: 100, leading: 0, bottom: 0, trailing: 0))
+                    .padding(EdgeInsets(top: 45, leading: 160, bottom: 96, trailing: 160))
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Cancel-Login")
