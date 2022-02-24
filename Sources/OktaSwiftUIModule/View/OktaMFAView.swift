@@ -215,7 +215,7 @@ struct OktaDropdownMFA: View {
                         Image(systemName: "chevron.down")
                             .imageScale(.large)
                             .foregroundColor(K.BrandColor.blue)
-                            .padding(EdgeInsets(top: 0, leading: 72, bottom: 10, trailing: 16))
+                            .padding(EdgeInsets(top: 0, leading: 112, bottom: 50, trailing: 16))
                         
                     }
                 }
