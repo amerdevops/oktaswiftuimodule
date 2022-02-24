@@ -23,7 +23,7 @@ struct OktaMFAOptionsView: View {
                     VStack{
                         HStack{
                             Text("SMS Authentication")
-                                .modifier(K.BrandFontMod.mfalabelContrast)
+                                .modifier(K.BrandFontMod.imageDarkGreyForHeader)
                             Spacer()
                         }
                         
@@ -44,7 +44,7 @@ struct OktaMFAOptionsView: View {
                     VStack{
                         HStack{
                             Text("Email Authentication")
-                                .modifier(K.BrandFontMod.mfalabelContrast)
+                                .modifier(K.BrandFontMod.imageDarkGreyForHeader)
                             Spacer()
                         }
                         
@@ -65,7 +65,7 @@ struct OktaMFAOptionsView: View {
                     VStack{
                         HStack{
                             Text("Voice Call Authentication")
-                                .modifier(K.BrandFontMod.mfalabelContrast)
+                                .modifier(K.BrandFontMod.imageDarkGreyForHeader)
                             Spacer()
                         }
                         
