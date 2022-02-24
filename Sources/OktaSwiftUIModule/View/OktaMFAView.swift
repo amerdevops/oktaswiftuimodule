@@ -199,7 +199,7 @@ struct OktaDropdownMFA: View {
         VStack{
             HStack{
                 Text("Select").modifier(K.BrandFontMod.black)
-                    .padding(EdgeInsets(bottom: 20))
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
                 Spacer()
                 Menu{
                     ForEach(uFactors, id: \.id) { uFactor in
