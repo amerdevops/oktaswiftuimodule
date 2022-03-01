@@ -81,22 +81,18 @@ struct K
         static let mfalabelContrast = FontViewModifier(color: "LightDarkGray", font: K.BrandFont.regular14)
         static let value1Contrast = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular16)
         static let imageGrey = FontViewModifier(color: "Grey", font: K.BrandFont.regular24)
-        
         static let imageDarkGrey = FontViewModifier(color: "LightDarkGray", font: K.BrandFont.regular24)
-        
         static let imageDarkGreyForText = FontViewModifier(color: "SecondaryBlack", font: K.BrandFont.regular14)
         static let imageDarkGreyForHeader = FontViewModifier(color: "LightDarkGray", font: K.BrandFont.regular14)
-        
         static let black = FontViewModifier(color: "Black", font: K.BrandFont.regular17)
         static let contrast = FontViewModifier(color: "Contrast", font: K.BrandFont.regular17)
+        static let mfalabelContrastForLogin = FontViewModifier(color: "LightDarkGray", font: K.BrandFont.regular17)
         static let normal = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
         static let label = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
-        
         static let loginViewLabels = FontViewModifier(color: "SecondaryBlack", font: K.BrandFont.regular17)
-        
         static let placeholder = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular17)
         static let error = FontViewModifier(color: "RedError", font: K.BrandFont.regular17)
-        static let supplemental = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular14)
+        static let supplemental = FontViewModifier(color: "LightDarkGray", font: K.BrandFont.regular14)
     }
 
     // Static map which converts a policy status string to a color

@@ -66,7 +66,7 @@ public struct OktaLoginView: View {
                         .accessibilityIdentifier("Label-ID")
 
                     TextField("Add UserName", text: $name)
-                        .modifier(K.BrandFontMod.contrast)
+                        .modifier(K.BrandFontMod.mfalabelContrastForLogin)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .accessibilityLabel("Enter your username")
@@ -84,7 +84,7 @@ public struct OktaLoginView: View {
                         .accessibilityAddTraits(.isStaticText)
                         .accessibilityIdentifier("Label-Pass")
                     SecureInputView("Add Password", text: $cred)
-                        .modifier(K.BrandFontMod.contrast)
+                        .modifier(K.BrandFontMod.mfalabelContrastForLogin)
                         .accessibilityLabel("Enter your password")
                         //.accessibilityAddTraits(.isStaticText)
                         .accessibilityIdentifier("Text-Pass")
