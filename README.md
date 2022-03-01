@@ -31,7 +31,7 @@ The `K.getColor` takes in the `CustomColorScheme` enum and whether the OS is in 
 The following table helps translate the Sketch design.  Check the text values in image and then check table for corresponding modifier.  For example:
 | Screenshot | Resolves to: |
 | --- | --- |
-| <h4><b>Preferences</b></h4>![Proxy](./docs/img/SketchTextStyle.png) | `Headline, medium, #333333 = .headlineDark()` |
+| <h4><b>Preferences</b></h4>![Example Sketch](./docs/img/SketchTextStyle.png) | `Headline, medium, #333333 = .headlineDark()` |
 
 The code would look like:
 ```
