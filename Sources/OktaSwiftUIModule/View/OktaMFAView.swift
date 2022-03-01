@@ -29,6 +29,9 @@ public struct OktaMFAView: View {
     var factors = [OktaFactor]()
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMFASelectView")
     
+    @Environment(\.colorScheme) var colorScheme
+    var isDark : Bool { return colorScheme == .dark }
+
     @State var selectedFactor: OktaFactor? = nil
    
     /**
@@ -76,7 +79,7 @@ public struct OktaMFAView: View {
             // Draw message
             Text(getMsg())
                 .multilineTextAlignment(.center)
-                .modifier(K.BrandFontMod.black)
+                .headline()
                 .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
                 .accessibilityLabel(getMsg())
                 .accessibilityAddTraits(.isStaticText)
@@ -112,7 +115,7 @@ public struct OktaMFAView: View {
                     .padding(EdgeInsets(top: 45, leading: 160, bottom: 96, trailing: 160))
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
-                    .accessibilityIdentifier("Cancel-Login")
+                    .accessibilityIdentifier("Cancel-Login-ID")
             }
         }
     }
@@ -161,7 +164,13 @@ struct OktaDropdownMFAElement: View {
             }
             
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("ChooseFactor")
+        .accessibilityValue(factor.type.rawValue)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("Choose-Factor-ID")
     }
+
 }
 
 /**
@@ -198,7 +207,8 @@ struct OktaDropdownMFA: View {
     public var body: some View {
         VStack{
             HStack{
-                Text("Select").modifier(K.BrandFontMod.black)
+                Text("Select")
+                    .bodyGreyReg()
                     .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
                 Spacer()
                 Menu{
@@ -256,46 +266,46 @@ public struct OktaMFAPushView: View {
                     switch fac.type {
                     case FactorType.email:
                         Text("Email:")
-                            .modifier(K.BrandFontMod.label)
+                            .labelDark()
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
                             .accessibilityLabel("Email")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Label-Email")
+                            .accessibilityIdentifier("Factor-Label-Email-ID")
                         Text("\(fac.profile?.email ?? "unknown")")
-                            .modifier(K.BrandFontMod.contrast)
+                            .labelDark()
                             .frame( maxWidth: .infinity, alignment: .topLeading )
                             .accessibilityLabel(fac.profile?.email ?? "unknown")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Value-Email")
+                            .accessibilityIdentifier("Factor-Value-Email-ID")
                     case FactorType.sms:
                         Text("SMS:")
-                            .modifier(K.BrandFontMod.label)
+                            .labelDark()
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
                             .accessibilityLabel("SMS")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Label-SMS")
+                            .accessibilityIdentifier("Factor-Label-SMS-ID")
                         Text("\(fac.profile?.phoneNumber ?? "unknown")")
-                            .modifier(K.BrandFontMod.contrast)
+                            .labelDark()
                             .frame( maxWidth: .infinity, alignment: .topLeading )
                             .accessibilityLabel(fac.profile?.phoneNumber ?? "unknown")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Value-SMS")
+                            .accessibilityIdentifier("Factor-Value-SMS-ID")
                     case FactorType.call:
                         Text("Call:")
-                            .modifier(K.BrandFontMod.label)
+                            .labelDark()
                             .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                             .frame( width: 90, alignment: .topLeading )
                             .accessibilityLabel("Call")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Label-Call")
+                            .accessibilityIdentifier("Factor-Label-Call-ID")
                         Text("\(fac.profile?.phoneNumber ?? "unknown")")
-                            .modifier(K.BrandFontMod.contrast)
+                            .labelDark()
                             .frame( maxWidth: .infinity, alignment: .topLeading )
                             .accessibilityLabel(fac.profile?.phoneNumber ?? "unknown")
                             .accessibilityAddTraits(.isStaticText)
-                            .accessibilityIdentifier("Factor-Value-Call")
+                            .accessibilityIdentifier("Factor-Value-Call-ID")
                     default:
                         Text("Default")
                             .foregroundColor(Color.white)
@@ -304,19 +314,13 @@ public struct OktaMFAPushView: View {
                 Divider()
                 HStack {
                     Text("Code:")
-                        .modifier(K.BrandFontMod.label)
+                        .labelDark()
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
                         .accessibilityLabel("Code")
                         .accessibilityAddTraits(.isStaticText)
-                        .accessibilityIdentifier("Passcode-Label")
-                    TextField("Passcode", text: $passCode)
-                        .modifier(K.BrandFontMod.contrast)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
-                        .accessibilityLabel("Enter passcode")
-                        .accessibilityAddTraits(.isSearchField)
-                        .accessibilityIdentifier("Passcode-Text")
+                        .accessibilityIdentifier("Passcode-Label-ID")
+                    SuperTextField(title: "Passcode", text: $passCode, aLabel: "Enter passcode", aID: "Passcode-Text-ID")
                 }
                 Divider()
                 
@@ -326,23 +330,23 @@ public struct OktaMFAPushView: View {
                     .disabled(passCode.isEmpty)
                     .accessibilityLabel("Verify Passcode")
                     .accessibilityAddTraits(.isButton)
-                    .accessibilityIdentifier("Button-Verify")
+                    .accessibilityIdentifier("Button-Verify-ID")
                 Button("Resend") { self.onResendClick(fac) }
                     .buttonStyle(CustomOutlineButton())
                     .accessibilityLabel("Resend Passcode")
                     .accessibilityAddTraits(.isButton)
-                    .accessibilityIdentifier("Button-Resend")
+                    .accessibilityIdentifier("Button-Resend-ID")
                 Button("Cancel") { self.onGoBack() }
                     .buttonStyle(CustomPlainButton())
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
-                    .accessibilityIdentifier("Button-Cancel")
+                    .accessibilityIdentifier("Button-Cancel-ID")
                 
             } else {
                 Text("Loading...")
                     .accessibilityLabel("Loading")
                     .accessibilityAddTraits(.isStaticText)
-                    .accessibilityIdentifier("Loading-Text")
+                    .accessibilityIdentifier("Loading-Text-ID")
             }
         }
         .frame(maxWidth: 300, maxHeight: 470, alignment: .center)
@@ -364,29 +368,16 @@ public struct OktaMFAPushView: View {
  */
 struct OktaMFAView_Previews: PreviewProvider {
 
-    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
-        // Do Nothing
-    }
-    static func onResendClick( factor: OktaFactor ) {
-        // Do Nothing
-    }
-    static func onVerifyClick(passCode: String) {
-        // Do Nothing
-    }
-    static func onCancelClick() {
-        // Do Nothing
-    }
-    
     static var previews: some View {
         //-----------------------------------------------------
         // Get Factors
         let factors = OktaUtilMocks.getOktaFactors()
         Group {
             OktaMFAView(factors: factors,
-                    onSendCodeClick: onSendCodeClick,
-                    onResendClick: onResendClick,
-                    onVerifyClick: onVerifyClick,
-                    onCancelClick: onCancelClick)
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
                 .previewLayout(PreviewLayout.sizeThatFits)
                 .padding()
                 .background(Color(.systemBackground))
@@ -395,10 +386,10 @@ struct OktaMFAView_Previews: PreviewProvider {
                 //.previewLayout(PreviewLayout.fixed(width: 400, height: 400))
             
             OktaMFAView(factors: factors,
-                    onSendCodeClick: onSendCodeClick,
-                    onResendClick: onResendClick,
-                    onVerifyClick: onVerifyClick,
-                    onCancelClick: onCancelClick)
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
                 .previewLayout(PreviewLayout.sizeThatFits)
                 .padding()
                 .background(Color(.systemBackground))
@@ -415,19 +406,7 @@ struct OktaMFAView_Previews: PreviewProvider {
  * MFAView Previews
  */
 struct OktaMFAPushView_Previews: PreviewProvider {
-    
-    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
-        // Do Nothing
-    }
-    static func onResendClick( factor: OktaFactor ) {
-        // Do Nothing
-    }
-    static func onVerifyClick(passCode: String) {
-        // Do Nothing
-    }
-    static func onCancelClick() {
-        // Do Nothing
-    }
+
     static var previews: some View {
         
         let factors = OktaUtilMocks.getOktaFactors()
@@ -436,17 +415,17 @@ struct OktaMFAPushView_Previews: PreviewProvider {
         
         Group {
             OktaMFAPushView(factor: factor1,
-                        onResendClick: onResendClick,
-                        onVerifyClick: onVerifyClick,
-                        onGoBack: onCancelClick)
+                                  onResendClick: {_ -> Void in },
+                                  onVerifyClick: {_ -> Void in },
+                                  onGoBack: {})
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
                     .environment(\.colorScheme, .light)
                     .previewDisplayName("Light Mode MFAPushView")
             OktaMFAPushView(factor: factor2,
-                        onResendClick: onResendClick,
-                        onVerifyClick: onVerifyClick,
-                        onGoBack: onCancelClick)
+                                  onResendClick: {_ -> Void in },
+                                  onVerifyClick: {_ -> Void in },
+                                  onGoBack: {})
                     .previewLayout(PreviewLayout.sizeThatFits)
                     .padding()
                     .background(Color(.systemBackground))
@@ -461,19 +440,7 @@ struct OktaMFAPushView_Previews: PreviewProvider {
  * MFAView Previews
  */
 struct OktaMFAPushView2_Previews: PreviewProvider {
-    
-    static func onSendCodeClick( factor: OktaFactor, isChange: Bool ) {
-        // Do Nothing
-    }
-    static func onResendClick( factor: OktaFactor ) {
-        // Do Nothing
-    }
-    static func onVerifyClick(passCode: String) {
-        // Do Nothing
-    }
-    static func onCancelClick() {
-        // Do Nothing
-    }
+
     static var previews: some View {
         
         let factors = OktaUtilMocks.getOktaFactors()
@@ -482,10 +449,10 @@ struct OktaMFAPushView2_Previews: PreviewProvider {
         
         Group {
             OktaMFAView(factors: factors,
-                              onSendCodeClick: onSendCodeClick,
-                              onResendClick: onResendClick,
-                              onVerifyClick: onVerifyClick,
-                              onCancelClick: onCancelClick)
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                 .padding()
                 .background(Color(.systemBackground))
@@ -493,36 +460,111 @@ struct OktaMFAPushView2_Previews: PreviewProvider {
                 .previewDisplayName("iPhone 12 OktaMFAView")
 
             OktaMFAPushView(factor: factor1,
-                        onResendClick: onResendClick,
-                        onVerifyClick: onVerifyClick,
-                        onGoBack: onCancelClick)
+                    onResendClick: {_ -> Void in },
+                    onVerifyClick: {_ -> Void in },
+                    onGoBack: {})
                     .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                     .padding()
                     .environment(\.colorScheme, .light)
                     .previewDisplayName("iPhone 12 OktaMFAPushView")
             
             OktaMFAView(factors: factors,
-                              onSendCodeClick: onSendCodeClick,
-                              onResendClick: onResendClick,
-                              onVerifyClick: onVerifyClick,
-                              onCancelClick: onCancelClick)
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
                 .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                 .padding()
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("iPod MFAView")
             OktaMFAPushView(factor: factor2,
-                        onResendClick: onResendClick,
-                        onVerifyClick: onVerifyClick,
-                        onGoBack: onCancelClick)
+                                  onResendClick: {_ -> Void in },
+                                  onVerifyClick: {_ -> Void in },
+                                  onGoBack: {})
                 .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                     .padding()
                     .background(Color(.systemBackground))
                     .environment(\.colorScheme, .dark)
                     .previewDisplayName("iPod MFAPushView")
         }
+    }
+}
+/**
+ * MFAView Previews
+ */
+struct OktaMFAView_DyanmicTxt_Previews: PreviewProvider {
+
+    static var previews: some View {
+        //-----------------------------------------------------
+        // Get Factors
+        let factors = OktaUtilMocks.getOktaFactors()
+        Group {
+            OktaMFAView(factors: factors,
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
+                .previewLayout(PreviewLayout.sizeThatFits)
+                .padding()
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic: Extra Small")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            
+            OktaMFAView(factors: factors,
+                              onSendCodeClick: {_, _ -> Void in },
+                              onResendClick: {_ -> Void in },
+                              onVerifyClick: {_ -> Void in },
+                              onCancelClick: {})
+                .previewLayout(PreviewLayout.sizeThatFits)
+                .padding()
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .extraExtraExtraLarge)
+                .previewDisplayName("Dynamic: Extra Large")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            
+        }
 
     }
 }
+/**
+ * MFAView Previews
+ */
+struct OktaMFAPushView2_DyanmicTxt_Previews: PreviewProvider {
 
+    static var previews: some View {
+        
+        let factors = OktaUtilMocks.getOktaFactors()
+        let factor1 = factors[1]
+        let factor2 = factors[2]
+        
+        Group {
+
+            OktaMFAPushView(factor: factor1,
+                    onResendClick: {_ -> Void in },
+                    onVerifyClick: {_ -> Void in },
+                    onGoBack: {})
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .environment(\.colorScheme, .light)
+                    .environment(\.sizeCategory, .extraSmall)
+                    .previewDisplayName("Dynamic: Extra Small")
+                    .previewLayout(PreviewLayout.sizeThatFits)
+
+            OktaMFAPushView(factor: factor2,
+                                  onResendClick: {_ -> Void in },
+                                  onVerifyClick: {_ -> Void in },
+                                  onGoBack: {})
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .environment(\.colorScheme, .light)
+                    .environment(\.sizeCategory, .extraExtraExtraLarge)
+                    .previewDisplayName("Dynamic: Extra Large")
+                    .previewLayout(PreviewLayout.sizeThatFits)
+        }
+    }
+}
 #endif
