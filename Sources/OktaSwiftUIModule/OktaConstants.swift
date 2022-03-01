@@ -14,15 +14,15 @@ struct K
     struct BrandColor
     {
         static let lightGreen = Color(#colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1))
-        static let green = Color(#colorLiteral(red: 0.2729613781, green: 0.6303340793, blue: 0.2016084194, alpha: 1))
-        static let darkGreen = Color(#colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1))
-        static let lightOrange = Color(#colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1))
-        static let orange = Color(#colorLiteral(red: 0.8903892636, green: 0.416303575, blue: 0, alpha: 1))
+        static let green = Color(#colorLiteral(red: 0.2745098039, green: 0.631372549, blue: 0.2, alpha: 1)) // #46A133
+        static let darkGreen = Color(#colorLiteral(red: 0.1960784346, green: 0.3411764801, blue: 0.1019607857, alpha: 1)) // #32571A
+        static let lightOrange = Color(#colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)) // #F3AF22
+        static let orange = Color(#colorLiteral(red: 0.8901960784, green: 0.4156862745, blue: 0, alpha: 1)) // #E36A00
         static let blue = Color(#colorLiteral(red: 0.02745098039, green: 0.3450980392, blue: 0.6745098039, alpha: 1)) // #0758AC
         static let lightDarkGray = Color(red: 89/255, green: 89/255, blue: 89/255) //#595959
         static let secondaryBlack = Color(red: 51/255, green: 51/255, blue: 51/255) //#333333
         static let lightBlue = Color(#colorLiteral(red: 0.1516653001, green: 0.6443269849, blue: 1, alpha: 1))
-        static let grey = Color(#colorLiteral(red: 0.6101055741, green: 0.6101958752, blue: 0.610085845, alpha: 1))
+        static let grey = Color(#colorLiteral(red: 0.6117647059, green: 0.6117647059, blue: 0.6117647059, alpha: 1)) // #9C9C9C
         static let lightGrey = Color(red: 232/255, green: 232/255, blue: 233/255) //#E8E8E9
         static let lightGrey2 = Color(red: 238/255, green: 238/255, blue: 238/255) //#EEEEEE
         static let darkGrey = Color(red: 131/255, green: 131/255, blue: 135/255) //#838387
@@ -31,7 +31,7 @@ struct K
         static let white = Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)) // #FFFFFF
         static let veryLightGrey = Color(red: 249/255, green: 249/255, blue: 249/255) //#F9F9F9
         static let redError = Color(#colorLiteral(red: 0.8274509804, green: 0.1333333333, blue: 0.1647058824, alpha: 1))
-        static let lightRedError = Color(#colorLiteral(red: 0.7450980544, green: 0.377785946, blue: 0.391878865, alpha: 1))
+        static let lightRedError = Color(#colorLiteral(red: 0.7450980392, green: 0.3764705882, blue: 0.3921568627, alpha: 1))
         static let black = Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
         static let lavender2 = Color(#colorLiteral(red: 0.5058823529, green: 0.3882352941, blue: 0.8274509804, alpha: 1))
         static let chipBlue = Color(#colorLiteral(red: 0.1843137255, green: 0.4588235294, blue: 0.7921568627, alpha: 1))
@@ -213,5 +213,4 @@ extension View {
     func labelDark() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .body, weight: .regular )) }
     func footnote() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .footnote, weight: .regular )) }
     func footnoteHdr() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .footnote, weight: .medium )) }
-    func headline() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .headline, weight: .medium )) }
 }
