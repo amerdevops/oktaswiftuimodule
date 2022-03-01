@@ -58,7 +58,7 @@ public struct OktaLoginView: View {
             VStack {
                 HStack() {
                     Text("ID")
-                        .modifier(K.BrandFontMod.label)
+                        .modifier(K.BrandFontMod.loginViewLabels)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
                         .accessibilityLabel("ID")
@@ -77,7 +77,7 @@ public struct OktaLoginView: View {
                 Divider()
                 HStack() {
                     Text("Password")
-                        .modifier(K.BrandFontMod.label)
+                        .modifier(K.BrandFontMod.loginViewLabels)
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
                         .accessibilityLabel("Password")

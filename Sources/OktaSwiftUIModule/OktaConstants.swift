@@ -91,6 +91,9 @@ struct K
         static let contrast = FontViewModifier(color: "Contrast", font: K.BrandFont.regular17)
         static let normal = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
         static let label = FontViewModifier(color: "Grey", font: K.BrandFont.regular17)
+        
+        static let loginViewLabels = FontViewModifier(color: "SecondaryBlack", font: K.BrandFont.regular17)
+        
         static let placeholder = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular17)
         static let error = FontViewModifier(color: "RedError", font: K.BrandFont.regular17)
         static let supplemental = FontViewModifier(color: "PrimaryLightGrey", font: K.BrandFont.regular14)

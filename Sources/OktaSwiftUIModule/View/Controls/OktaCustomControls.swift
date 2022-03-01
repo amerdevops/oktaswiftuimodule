@@ -13,7 +13,7 @@ struct CustomButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : K.BrandColor.blue)
+        return (disabled ? K.BrandColor.primaryLightGrey : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
@@ -36,7 +36,7 @@ struct CustomOutlineButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : K.BrandColor.blue)
+        return (disabled ? K.BrandColor.primaryLightGrey : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
@@ -61,7 +61,7 @@ struct CustomPlainButton: ButtonStyle {
     let disabled: Bool
 
     var buttonColor : Color {
-        return (disabled ? Color.gray : K.BrandColor.blue)
+        return (disabled ? K.BrandColor.primaryLightGrey : K.BrandColor.blue)
     }
 
     init( disabled: Bool = false ) {
