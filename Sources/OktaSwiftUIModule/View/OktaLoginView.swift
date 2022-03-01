@@ -18,6 +18,7 @@ public struct OktaLoginView: View {
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
     var demoMode: Bool
+    var msg: String
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -26,10 +27,12 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void) {
+                onDemoModeClick: @escaping () -> Void,
+                msg: String = "Welcome") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
+        self.msg = msg
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -39,38 +42,46 @@ public struct OktaLoginView: View {
      */
     public var body: some View {
         VStack(alignment: .center, spacing: 50) {
-            
             //-----------------------------------------------
             // Draw Welcome
-            Text("Welcome to the Agent App")
-                .modifier(K.BrandFontMod.contrast)
-                //.padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
+            Text(msg)
+                .titleContrast()
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                .frame(alignment: .center)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(msg)
+                .accessibilityIdentifier("Welcome-ID")
+            
+            Text("Sign in to receive your access code.")
+                .headlineDark()
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .frame(alignment: .center)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Sign in to receive your access code.")
+                .accessibilityIdentifier("Second-Msg-ID")
                 
             //-----------------------------------------------
             // Draw username / password
             VStack {
                 HStack() {
                     Text("ID")
-                        .modifier(K.BrandFontMod.label)
+                        .labelDark()
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
-
-                    TextField("Add UserName", text: $name)
-                        .modifier(K.BrandFontMod.contrast)
-                        .autocapitalization(.none)
-                        .disableAutocorrection(true)
+                        .accessibilityHidden(true)
+                    
+                    SuperTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
                     
                 }
                 Divider()
                 HStack() {
                     Text("Password")
-                        .modifier(K.BrandFontMod.label)
+                        .labelDark()
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
-                    SecureInputView("Add Password", text: $cred)
-                        .modifier(K.BrandFontMod.contrast)
+                        .accessibilityHidden(true)
+                    SecureInputView("Add Password", $cred,
+                                          "Add Password", "Text-Password")
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Divider()
@@ -94,6 +105,9 @@ public struct OktaLoginView: View {
                 }
                 .buttonStyle(CustomButton(disabled: acceptTAndC == false))
                 .disabled(acceptTAndC == false)
+                .accessibilityLabel("Sign In")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("Button-SignIn-ID")
                 
                 //-----------------------------------------------
                 // Draw face ID / Forgot Password
@@ -102,8 +116,14 @@ public struct OktaLoginView: View {
                         Image(systemName: "faceid")
                         Text("FaceID")
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Face I D")
+                    .accessibilityIdentifier("FaceID-ID")
                     
                     Text("Forgot Password")
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Forgot Password")
+                        .accessibilityIdentifier("Forgot-Pass-ID")
                 }
                 .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
                 .frame(maxWidth: .infinity)
@@ -116,18 +136,27 @@ public struct OktaLoginView: View {
                             .labelsHidden()
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
                         Text("I accept Ameritas Terms and Conditions")
-                            .modifier(K.BrandFontMod.supplemental)
-                            .fixedSize(horizontal: false, vertical: /*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-                            .multilineTextAlignment(/*@START_MENU_TOKEN@*/.leading/*@END_MENU_TOKEN@*/)
+                            .footnote()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Accept Terms and Conditions")
+                .accessibilityValue(acceptTAndC ? "On" : "Off")
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("Button-Accept-TC-ID")
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
                     Toggle(isOn: $demoAccept) {
                         Text("Demo Mode")
                     }
+                    .accessibilityLabel("Demo Mode")
+                    .accessibilityValue(demoAccept ? "On" : "Off")
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("Button-Demo-ID")
                 }
             }
             Spacer()
@@ -137,48 +166,12 @@ public struct OktaLoginView: View {
         .cornerRadius(5)
         
     }
-    
-    var buttonColor : Color {
-        return (acceptTAndC ? Color.blue : Color.gray)
-    }
 
 }
 
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
-/**
- * Preview Login View
- */
-struct LoginView_DemoMode_Previews: PreviewProvider {
-
-    static var previews: some View {
-        let onLoginClick = { ( name: String, cred: String) -> Void in
-            print("\(name), \(cred)")
-        }
-        let onDemoModeClick = { () -> Void in
-            print("demo mode")
-        }
-        Group {
-            OktaLoginView( demoMode: true,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .light)
-                .previewDisplayName("Demo Mode: Light Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
-            
-            OktaLoginView( demoMode: true,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Demo Mode: Dark Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
-        }
-        
-    }
-}
 /**
  * Preview Login View
  */
@@ -203,6 +196,36 @@ struct LoginView_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode")
+                .previewLayout(PreviewLayout.sizeThatFits)
+        }
+    }
+}
+/**
+ * Show Dynamic text views
+ */
+struct LoginView_DyanmicTxt_Previews: PreviewProvider {
+    static var previews: some View {
+        let onLoginClick = { ( name: String, cred: String) -> Void in
+            print("\(name), \(cred)")
+        }
+        let onDemoModeClick = { () -> Void in
+        }
+        Group {
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .extraSmall)
+                .previewDisplayName("Dynamic: Extra Small")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .extraExtraExtraLarge)
+                .previewDisplayName("Dynamic: Extra Large")
                 .previewLayout(PreviewLayout.sizeThatFits)
         }
     }

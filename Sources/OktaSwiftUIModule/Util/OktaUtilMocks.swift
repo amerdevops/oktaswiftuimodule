@@ -198,6 +198,8 @@ public class OktaUtilMocks {
  */
 public class MockOktaRepositoryImpl : OktaRepository {
 
+    
+
     var signInPass = true
     var sendFactorPass = true
     var resendPass = true
@@ -264,6 +266,14 @@ public class MockOktaRepositoryImpl : OktaRepository {
         logger.log("mock repo getUser()")
         if (userPass) {
             onSuccess(OktaUtilMocks.getUserInfo())
+        } else {
+            onError("Fail")
+        }
+    }
+    public func getAccessToken(onSuccess: @escaping ((String)) -> Void, onError: @escaping ((String)) -> Void) {
+        logger.log("mock repo getAccessToken()")
+        if (userPass) {
+            onSuccess("Token")
         } else {
             onError("Fail")
         }

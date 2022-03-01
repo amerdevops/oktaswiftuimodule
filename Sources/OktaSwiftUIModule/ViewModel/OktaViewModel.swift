@@ -287,6 +287,17 @@ open class OktaViewModel : ObservableObject {
         repo.getUser(onSuccess: onSuccess, onError: self.onError)
     }
     
+    /**
+     * Get Access Token
+     * If access token is no longer valid (think expired) then it will asynchronously get new token
+     */
+    public func getAccessToken(onSuccess: @escaping ((String)) -> Void, onError: @escaping ((String)) -> Void) {
+        
+        //-----------------------------------------------
+        // Call Get Access Token
+        repo.getAccessToken(onSuccess: onSuccess, onError: onError)
+    }
+    
     public func logout() {
         self.logger.log("LOGOUT....")
         //-----------------------------------------------
