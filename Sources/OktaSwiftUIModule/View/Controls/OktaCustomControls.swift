@@ -96,11 +96,14 @@ struct CustomPlainButton: ButtonStyle {
  * Got code for this view from https://stackoverflow.com/questions/63095851/show-hide-password-how-can-i-add-this-feature
  */
 struct SecureInputView: View {
+    @Environment(\.colorScheme) var colorScheme
     
     var title: String
     @Binding var text: String
     var aLabel: String = "Accessibility Label Secure"
     var aID: String = "A-Secure-ID"
+    var isDark : Bool { return colorScheme == .dark }
+    
     @State private var isSecured: Bool = true
     
     init(_ title: String, _ text: Binding<String>,
@@ -127,7 +130,7 @@ struct SecureInputView: View {
                 isSecured.toggle()
             }) {
                 Image(systemName: self.isSecured ? "eye.slash" : "eye")
-                    .accentColor(.gray)
+                    .accentColor(K.getColor(.primaryLightGrey, isDark))
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(self.isSecured ? "Show Password" : "Hide Password")
