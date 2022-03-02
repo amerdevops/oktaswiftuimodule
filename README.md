@@ -41,7 +41,7 @@ The following table helps translate the Sketch design.  Check the text values in
     <tbody>
         <tr>
             <td><img src="docs/img/SketchTextStyle.png" alt="Example Sketch" width="500"/></td>
-            <td>`Headline, medium, #333333 = .headlineDark()`</td>
+            <td><code>Headline, medium, #333333 = .headlineDark()</code></td>
         </tr>
     </tbody>
 </table>
