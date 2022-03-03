@@ -53,7 +53,7 @@ public struct OktaLoginView: View {
                 .accessibilityIdentifier("Welcome-ID")
             
             Text("Sign in to receive your access code.")
-                .headlineDark()
+                .headline()
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .frame(alignment: .center)
                 .accessibilityElement(children: .ignore)

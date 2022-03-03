@@ -204,7 +204,6 @@ extension View {
 extension View {
     func titleContrast() -> some View  { self.modifier(FontViewModifier(color: .contrast, font: .title, weight: .medium )) }
     func titleGrey() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .title, weight: .medium )) }
-    func headlineDark() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .headline, weight: .medium )) }
     func bodyContrast() -> some View { self.modifier(FontViewModifier(color: .contrast, font: .body, weight: .medium )) }
     func bodyReverse() -> some View { self.modifier(FontViewModifier(color: .reverse, font: .body, weight: .medium )) }
     func bodyGrey() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .body, weight: .medium )) }
