@@ -213,4 +213,5 @@ extension View {
     func labelDark() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .body, weight: .regular )) }
     func footnote() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .footnote, weight: .regular )) }
     func footnoteHdr() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .footnote, weight: .medium )) }
+    func headline() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .headline, weight: .medium )) }
 }

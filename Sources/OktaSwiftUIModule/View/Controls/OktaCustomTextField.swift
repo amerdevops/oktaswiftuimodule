@@ -12,6 +12,8 @@ import os
  * CustomTextField
  * This SwiftUI view wraps the Custom UIKitTextField.  This gives us much more control
  * over how the text field is stylized than a SwiftUI TextField that meets accessibility audit reports.
+ *
+ * @see [OktaUIKitTextField]
  */
 struct CustomTextField: View {
     
@@ -104,6 +106,18 @@ struct CustomTextView_Previews: PreviewProvider {
                         aLabel: "lbl", aID: "id")
                 .previewLayout(PreviewLayout.sizeThatFits)
                 .previewDisplayName("Filled Text")
+            
+                CustomTextField(title: "Add Username", text: $textBlank,
+                            aLabel: "lbl", aID: "id")
+                    .preferredColorScheme(.dark)
+                    .previewLayout(PreviewLayout.sizeThatFits)
+                    .previewDisplayName("Blank Text Placeholder (Dark)")
+                CustomTextField(title: "Add Username", text: $text,
+                            aLabel: "lbl", aID: "id")
+                    .preferredColorScheme(.dark)
+                    .previewLayout(PreviewLayout.sizeThatFits)
+                    .previewDisplayName("Filled Text (Dark)")
+            
         }
 
     }

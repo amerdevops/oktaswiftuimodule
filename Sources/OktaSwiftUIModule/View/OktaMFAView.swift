@@ -79,7 +79,7 @@ public struct OktaMFAView: View {
             // Draw message
             Text(getMsg())
                 .multilineTextAlignment(.center)
-                .headlineDark()
+                .headline()
                 .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
                 .accessibilityLabel(getMsg())
                 .accessibilityAddTraits(.isStaticText)
@@ -111,8 +111,7 @@ public struct OktaMFAView: View {
                 OktaMFAOptionsView()
                 
                 Button("Cancel") { onGoBack() }
-                    .buttonStyle(CustomPlainButton())
-                    .padding(EdgeInsets(top: 45, leading: 160, bottom: 96, trailing: 160))
+                    .btnPlain()
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Cancel-Login-ID")
@@ -320,24 +319,24 @@ public struct OktaMFAPushView: View {
                         .accessibilityLabel("Code")
                         .accessibilityAddTraits(.isStaticText)
                         .accessibilityIdentifier("Passcode-Label-ID")
-                    SuperTextField(title: "Passcode", text: $passCode, aLabel: "Enter passcode", aID: "Passcode-Text-ID")
+                    CustomTextField(title: "Passcode", text: $passCode, aLabel: "Enter passcode", aID: "Passcode-Text-ID")
                 }
                 Divider()
                 
                 Button("Verify") { self.onVerifyClick(passCode) }
-                    .buttonStyle(CustomButton(disabled: passCode.isEmpty))
+                    .btnFilled(passCode.isEmpty)
                     .padding(EdgeInsets(top: 50, leading: 0, bottom: 0, trailing: 0))
                     .disabled(passCode.isEmpty)
                     .accessibilityLabel("Verify Passcode")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Button-Verify-ID")
                 Button("Resend") { self.onResendClick(fac) }
-                    .buttonStyle(CustomOutlineButton())
+                    .btnOutline()
                     .accessibilityLabel("Resend Passcode")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Button-Resend-ID")
                 Button("Cancel") { self.onGoBack() }
-                    .buttonStyle(CustomPlainButton())
+                    .btnPlain()
                     .accessibilityLabel("Cancel Login")
                     .accessibilityAddTraits(.isButton)
                     .accessibilityIdentifier("Button-Cancel-ID")
@@ -383,7 +382,6 @@ struct OktaMFAView_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode MFAView")
-                //.previewLayout(PreviewLayout.fixed(width: 400, height: 400))
             
             OktaMFAView(factors: factors,
                               onSendCodeClick: {_, _ -> Void in },
@@ -395,7 +393,6 @@ struct OktaMFAView_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode MFAView")
-                // .previewLayout(PreviewLayout.fixed(width: 400, height: 400))
             
         }
 
@@ -473,19 +470,21 @@ struct OktaMFAPushView2_Previews: PreviewProvider {
                               onResendClick: {_ -> Void in },
                               onVerifyClick: {_ -> Void in },
                               onCancelClick: {})
-                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                .preferredColorScheme(.dark)
                 .padding()
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
+                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                 .previewDisplayName("iPod MFAView")
             OktaMFAPushView(factor: factor2,
                                   onResendClick: {_ -> Void in },
                                   onVerifyClick: {_ -> Void in },
                                   onGoBack: {})
-                .previewDevice(PreviewDevice(rawValue: "iPod touch"))
+                    .preferredColorScheme(.dark)
                     .padding()
                     .background(Color(.systemBackground))
                     .environment(\.colorScheme, .dark)
+                    .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                     .previewDisplayName("iPod MFAPushView")
         }
     }

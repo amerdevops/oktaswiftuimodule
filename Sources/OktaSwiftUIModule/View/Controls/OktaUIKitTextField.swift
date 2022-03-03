@@ -1,6 +1,5 @@
 //
 //  OktaUIKitTextField.swift
-//  
 //
 //  Created by Nathan DeGroff on 3/2/22.
 //
@@ -17,6 +16,7 @@ import UIKit
  *
  * Finally, we need to turn off auto correction and auto capitalization
  * @see https://www.fivestars.blog/articles/how-to-customize-textfields/
+ * @see [OktaCustomTextField] for SwiftUI Wrapper
  */
 struct OktaUIKitTextField: UIViewRepresentable {
     
