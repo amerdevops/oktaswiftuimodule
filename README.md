@@ -41,22 +41,17 @@ The following table helps translate the Sketch design.  Check the text values in
     <tbody>
         <tr>
             <td><img src="docs/img/SketchTextStyle.png" alt="Example Sketch" width="500"/></td>
-            <td><code>Headline, medium, #333333 = .headlineDark()</code></td>
+            <td><code>headline (TextStyle), medium (weight), #333333 (color) = .headline()</code></td>
         </tr>
     </tbody>
 </table>
 
-The code would look like:
+In one method, you set the text color, weight, and style.  The code would look like:
 ```
 //-----------------------------------------------
 // Draw message
 Text(getMsg())
-    .multilineTextAlignment(.center)
-    .headlineDark()
-    .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
-    .accessibilityLabel(getMsg())
-    .accessibilityAddTraits(.isStaticText)
-    .accessibilityIdentifier("Okta-Label")
+    .headline()
 ```
 
 | Font.TextStyle | Weight | Color (light) | Custom View Modifier |
@@ -66,7 +61,7 @@ Text(getMsg())
 | title | medium | (#595959) - .lightDarkGray | `.titleGrey()` |
 | title2 |  |  |  |
 | title3 |  |  |  |
-| headline | medium | (#333333) -.secondaryBlack | `.headlineDark()` |
+| headline | medium | (#333333) -.secondaryBlack | `.headline()` |
 | subheadline |  |  |  |
 | body | medium | (#000000) - .contrast | `.bodyContrast()` |
 | body | medium | (#FFFFFF) - .reverse | `.bodyReverse()` |

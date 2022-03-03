@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Nathan DeGroff on 12/10/21.
 //
@@ -28,7 +28,7 @@ public struct OktaLoginView: View {
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
                 onDemoModeClick: @escaping () -> Void,
-                msg: String = "Welcome") {
+                msg: String = "Welcome!") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
@@ -53,7 +53,7 @@ public struct OktaLoginView: View {
                 .accessibilityIdentifier("Welcome-ID")
             
             Text("Sign in to receive your access code.")
-                .headlineDark()
+                .headline()
                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .frame(alignment: .center)
                 .accessibilityElement(children: .ignore)
@@ -70,7 +70,7 @@ public struct OktaLoginView: View {
                         .frame( width: 90, alignment: .topLeading )
                         .accessibilityHidden(true)
                     
-                    SuperTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
                     
                 }
                 Divider()
@@ -80,8 +80,8 @@ public struct OktaLoginView: View {
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
                         .frame( width: 90, alignment: .topLeading )
                         .accessibilityHidden(true)
-                    SecureInputView("Add Password", $cred,
-                                          "Add Password", "Text-Password")
+                    CustomSecureInput("Add Password", $cred,
+                                          "Add Password", "Text-Password-ID")
                 }
                 .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
                 Divider()
@@ -103,7 +103,7 @@ public struct OktaLoginView: View {
                         self.onLoginClick(name, cred)
                     }
                 }
-                .buttonStyle(CustomButton(disabled: acceptTAndC == false))
+                .btnFilled(acceptTAndC == false)
                 .disabled(acceptTAndC == false)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
@@ -112,15 +112,23 @@ public struct OktaLoginView: View {
                 //-----------------------------------------------
                 // Draw face ID / Forgot Password
                 HStack(spacing: 50) {
+                    Button (action: {}) {
                     HStack {
                         Image(systemName: "faceid")
                         Text("FaceID")
                     }
+                        .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    }
+                    .foregroundColor(K.BrandColor.black)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Face I D")
                     .accessibilityIdentifier("FaceID-ID")
                     
+                    Button (action: {}) {
                     Text("Forgot Password")
+                            .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    }
+                    .foregroundColor(K.BrandColor.black)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel("Forgot Password")
                         .accessibilityIdentifier("Forgot-Pass-ID")
@@ -140,7 +148,7 @@ public struct OktaLoginView: View {
                             .fixedSize(horizontal: false, vertical: true)
                             .multilineTextAlignment(.leading)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Accept Terms and Conditions")
