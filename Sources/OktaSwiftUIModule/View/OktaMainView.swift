@@ -153,6 +153,13 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
                 .environment(\.colorScheme, .dark)
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("Login Dark Mode (iPhone 12)")
+            OktaMainView()
+                .preferredColorScheme(.dark)
+                .background(Color(.systemBackground))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .environment(\.colorScheme, .dark)
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("MFA Dark Mode SUPER MEGA Extra Extra large")
         }
     }
 }
@@ -195,6 +202,14 @@ struct OktaMainView_MFA_Previews: PreviewProvider {
                 .environment(\.colorScheme, .dark)
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("MFA Dark Mode")
+            
+            OktaMainView()
+                .preferredColorScheme(.dark)
+                .background(Color(.systemBackground))
+                .environment(\.sizeCategory, .extraExtraExtraLarge)
+                .environment(\.colorScheme, .dark)
+                .environmentObject(oktaViewModel)
+                .previewDisplayName("MFA Dark Mode Extra large")
         }
     }
 }

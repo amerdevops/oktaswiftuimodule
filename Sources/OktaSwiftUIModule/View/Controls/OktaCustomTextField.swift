@@ -67,6 +67,7 @@ struct CustomSecureInput: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityValue("Secure Text Field")
                 .accessibilityLabel(aLabel)
+                .accessibilityIdentifier(aID)
             } else {
                 CustomTextField(title: title, text: $text, aLabel: aLabel, aID: aID)
             }
@@ -81,6 +82,7 @@ struct CustomSecureInput: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(self.isSecured ? "Show Password" : "Hide Password")
             .accessibilityAddTraits(.isButton)
+            .accessibilityIdentifier("Show-Hide-Password-ID")
         }
     }
 }

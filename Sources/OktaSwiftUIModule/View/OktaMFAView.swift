@@ -205,32 +205,38 @@ struct OktaDropdownMFA: View {
      */
     public var body: some View {
         VStack{
-            HStack{
-                Text("Select")
-                    .bodyGreyReg()
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
-                Spacer()
-                Menu{
-                    ForEach(uFactors, id: \.id) { uFactor in
-                            let factorValue = uFactor.factor.type.rawValue
-                            if isValidFactor(factorValue) {
-                                OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
-                                    .accessibilityLabel("Trigger \(factorValue) code")
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityIdentifier("\(factorValue)-Factor")
-                            }
-                    }
-                } label: {
-                    VStack(spacing: 0){
+            Menu{
+                ForEach(uFactors, id: \.id) { uFactor in
+                        let factorValue = uFactor.factor.type.rawValue
+                        if isValidFactor(factorValue) {
+                            OktaDropdownMFAElement(factor: uFactor.factor, onSelectFactor: onSelectFactor )
+                                .accessibilityLabel("Trigger \(factorValue) code")
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityIdentifier("\(factorValue)-Factor")
+                        }
+                }
+            } label: {
+                VStack(spacing: 0){
+                    HStack{
+                        Text("Select")
+                            .bodyGreyReg()
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
+                        Spacer()
                         Image(systemName: "chevron.down")
                             .imageScale(.large)
                             .foregroundColor(K.BrandColor.blue)
                             .padding(EdgeInsets(top: 0, leading: 112, bottom: 20, trailing: 16))
-                        
                     }
+                    .padding(EdgeInsets(top: 0, leading: 32, bottom: 10, trailing: 16))
                 }
-            }.padding(EdgeInsets(top: 0, leading: 32, bottom: 10, trailing: 16))
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Select Factor")
+            .accessibilityAddTraits(.isButton)
+            .accessibilityIdentifier("Select-Factor-ID")
+            
             Divider().padding(EdgeInsets(top: 0, leading: 32, bottom: 0, trailing: 16))
+
         }
         
         
