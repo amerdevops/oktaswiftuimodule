@@ -240,7 +240,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
-                .previewDisplayName("Dynamic: Extra Large")
+                .previewDisplayName("Dynamic: XXXLarge")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
@@ -248,7 +248,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
-                .previewDisplayName("Dynamic: Extra Large")
+                .previewDisplayName("Dynamic: SUPER MEGA Extra Extra large")
                 .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
@@ -280,7 +280,7 @@ struct OktaRegularIDPassView: View {
                    .frame( width: 90, alignment: .topLeading )
                    .accessibilityHidden(true)
                
-               CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+               CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "UserName-Text-ID")
                
            }
            Divider()
@@ -330,14 +330,12 @@ public struct OktaBigIDPassView: View {
                     Text("ID")
                         .labelDark()
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
                         .accessibilityHidden(true)
                     CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
                     Divider()
                     Text("Password")
                         .labelDark()
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
                         .accessibilityHidden(true)
                     CustomSecureInput("Add Password", $cred,
                                           "Add Password", "Text-Password-ID")
