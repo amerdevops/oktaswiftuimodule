@@ -63,28 +63,33 @@ public struct OktaLoginView: View {
             //-----------------------------------------------
             // Draw username / password
             VStack {
-                HStack() {
-                    Text("ID")
-                        .labelDark()
-                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
-                        .accessibilityHidden(true)
-                    
-                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
-                    
+                if #available(iOS 15.0, *) {
+                    OktaBigIDPassView($name, $cred)
+                } else {
+                    OktaRegularIDPassView($name, $cred)
                 }
-                Divider()
-                HStack() {
-                    Text("Password")
-                        .labelDark()
-                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
-                        .accessibilityHidden(true)
-                    CustomSecureInput("Add Password", $cred,
-                                          "Add Password", "Text-Password-ID")
-                }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                Divider()
+//                HStack() {
+//                    Text("ID")
+//                        .labelDark()
+//                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+//                        .frame( width: 90, alignment: .topLeading )
+//                        .accessibilityHidden(true)
+//
+//                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+//
+//                }
+//                Divider()
+//                HStack() {
+//                    Text("Password")
+//                        .labelDark()
+//                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+//                        .frame( width: 90, alignment: .topLeading )
+//                        .accessibilityHidden(true)
+//                    CustomSecureInput("Add Password", $cred,
+//                                          "Add Password", "Text-Password-ID")
+//                }
+//                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+//                Divider()
             }
             
             VStack {
@@ -177,6 +182,8 @@ public struct OktaLoginView: View {
 
 }
 
+
+
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
@@ -235,7 +242,111 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
                 .previewDisplayName("Dynamic: Extra Large")
                 .previewLayout(PreviewLayout.sizeThatFits)
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+                .previewDisplayName("Dynamic: Extra Large")
+                .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
 }
 #endif
+
+/**
+ * Draw the Name / password
+ * Have to separate this out because of Accessibility.  Can't determine dynamic font size unless iOS 15
+ * So... we create this abomination and use it when font text is smaller than xxx Large
+ */
+struct OktaRegularIDPassView: View {
+    
+    @Binding var name: String
+    @Binding var cred: String
+    
+    init( _ name: Binding<String>,
+          _ cred: Binding<String>) {
+        self._name = name
+        self._cred = cred
+    }
+
+   var body: some View {
+       VStack {
+           HStack() {
+               Text("ID")
+                   .labelDark()
+                   .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                   .frame( width: 90, alignment: .topLeading )
+                   .accessibilityHidden(true)
+               
+               CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+               
+           }
+           Divider()
+           HStack() {
+               Text("Password")
+                   .labelDark()
+                   .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                   .frame( width: 90, alignment: .topLeading )
+                   .accessibilityHidden(true)
+               CustomSecureInput("Add Password", $cred,
+                                     "Add Password", "Text-Password-ID")
+           }
+           .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+           Divider()
+       }
+   }
+   
+}
+
+/**
+ * Accessibility Name and Password
+ * Draw the ID / Password labels / text fields in vstack rather than next to each other
+ * so massively large fonts don't mess up the view
+ */
+@available(iOS 15, *)
+public struct OktaBigIDPassView: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.dynamicTypeSize) var typeSize
+    
+    @Binding var name: String
+    @Binding var cred: String
+    
+    init( _ name: Binding<String>,
+          _ cred: Binding<String>) {
+        self._name = name
+        self._cred = cred
+    }
+    
+    /**
+     * Determine if we're using a superlarge font
+     * change layout to VStack so elements can take up full width
+     */
+    public var body: some View {
+        
+        if typeSize > .xxxLarge {
+                VStack {
+                    Text("ID")
+                        .labelDark()
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame( width: 90, alignment: .topLeading )
+                        .accessibilityHidden(true)
+                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+                    Divider()
+                    Text("Password")
+                        .labelDark()
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .frame( width: 90, alignment: .topLeading )
+                        .accessibilityHidden(true)
+                    CustomSecureInput("Add Password", $cred,
+                                          "Add Password", "Text-Password-ID")
+                    Divider()
+                }
+        } else {
+            OktaRegularIDPassView($name, $cred)
+        }
+    }
+    
+    
+}
