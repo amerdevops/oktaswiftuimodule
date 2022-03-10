@@ -40,7 +40,6 @@ public protocol OktaRepository {
  * the Okta OIDC Config, the current okta status, and OIDC State Manager
  */
 public class OktaRepositoryImpl : OktaRepository {
-    var oktaOidcConfig : OktaOidcConfig?
     var oktaOidc : OktaOidc?
     var stateManager: OktaOidcStateManager?
     var user: OktaOidcStateManager?
@@ -48,12 +47,22 @@ public class OktaRepositoryImpl : OktaRepository {
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
     let urlString = "https://ameritas-d.oktapreview.com"
     
-    public init() {
+    public convenience init() {
+        self.init(nil)
+    }
+    
+    public init(_ fromPlist: String?) {
         let loggerInst = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
         do {
             //---------------------------------------------------------------
-            // Pull Okta OIDC configuration from Okta.plist
-            oktaOidc = try OktaOidc()
+            // Pull Okta OIDC configuration from Okta.plist or specified list
+            if let fromPlist = fromPlist {
+                let oktaOidcConfig = try OktaOidcConfig(fromPlist: fromPlist)
+                oktaOidc = try OktaOidc(configuration: oktaOidcConfig)
+            } else {
+                oktaOidc = try OktaOidc()
+            }
+            
         } catch let error {
             DispatchQueue.main.async {
                 loggerInst.error("\(error.localizedDescription)")
