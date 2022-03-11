@@ -40,12 +40,13 @@ public protocol OktaRepository {
  * the Okta OIDC Config, the current okta status, and OIDC State Manager
  */
 public class OktaRepositoryImpl : OktaRepository {
+    var oktaOidcConfig : OktaOidcConfig?
     var oktaOidc : OktaOidc?
     var stateManager: OktaOidcStateManager?
     var user: OktaOidcStateManager?
     var oktaStatus: OktaAuthStatus?
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
-    let urlString = "https://ameritas-d.oktapreview.com"
+    var urlString: String?
     
     public convenience init() {
         self.init(nil)
@@ -57,12 +58,18 @@ public class OktaRepositoryImpl : OktaRepository {
             //---------------------------------------------------------------
             // Pull Okta OIDC configuration from Okta.plist or specified list
             if let fromPlist = fromPlist {
-                let oktaOidcConfig = try OktaOidcConfig(fromPlist: fromPlist)
+                oktaOidcConfig = try OktaOidcConfig(fromPlist: fromPlist)
                 oktaOidc = try OktaOidc(configuration: oktaOidcConfig)
             } else {
                 oktaOidc = try OktaOidc()
+                oktaOidcConfig = oktaOidc?.configuration
             }
-            
+            //---------------------------------------------------------------
+            // Pull main URL from Okta Configuration
+            if let issuer = oktaOidc?.configuration.issuer,
+               let myUrl = URL(string: issuer) {
+                urlString = "https://" + (myUrl.host ?? "")
+            }
         } catch let error {
             DispatchQueue.main.async {
                 loggerInst.error("\(error.localizedDescription)")
@@ -160,11 +167,14 @@ public class OktaRepositoryImpl : OktaRepository {
         }
         //-----------------------------------------------
         // Authenticate...
-        OktaAuthSdk.authenticate(with: URL(string: urlString)!,
-                                 username: username,
-                                 password: password,
-                                 onStatusChange: successBlock,
-                                 onError: errorBlock)
+        if let urlOkta = urlString {
+            OktaAuthSdk.authenticate(with: URL(string: urlOkta)!,
+                                     username: username,
+                                     password: password,
+                                     onStatusChange: successBlock,
+                                     onError: errorBlock)
+            
+        }
     }
 
     /**
