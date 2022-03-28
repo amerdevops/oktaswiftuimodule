@@ -96,8 +96,29 @@ open class OktaViewModel : ObservableObject {
 
         //-----------------------------------------------
         // Define Success closure
-        let onSuccess = { (factors: [OktaFactor]) -> Void in
-            self.logger.log("SIGN IN SUCCESS: [\(factors.count, privacy: .public) factors]")
+        let onSuccess = { () -> Void in
+            self.logger.log("SIGN IN SUCCESS: ")
+            //---------------------------------------------------------
+            // Change state if sign in was successful
+            self.factors.removeAll()
+            
+            self.isMFA = true
+            
+            //---------------------------------------------------------
+            // Change state if MFA verify was successful
+            self.isAuthenticated = true
+
+            //---------------------------------------------------------
+            // Trigger get user
+            self.getUser()
+            
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSignInSuccess()
+        }
+        
+        let onMFAChallenge = { (factors: [OktaFactor]) -> Void in
+            self.logger.log("MFA CHALLENGE: [\(factors.count, privacy: .public) factors]")
             //---------------------------------------------------------
             // Change state if sign in was successful
             self.factors.removeAll()
@@ -108,18 +129,20 @@ open class OktaViewModel : ObservableObject {
             // Trap Event
             self.eventSignInSuccess()
         }
+        
+        
 
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (signIn)....")
-            onSuccess(OktaUtilMocks.getOktaFactors())
+            onSuccess()
             return
         }
 
         //-----------------------------------------------
         // Call sign in
-        repo.signIn(username: name, password: cred, onSuccess: onSuccess, onError: self.onError)
+        repo.signIn(username: name, password: cred, onSuccess: onSuccess, onMFAChallenge: onMFAChallenge, onError: self.onError)
     }
     
     /**
