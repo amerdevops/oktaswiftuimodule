@@ -162,9 +162,9 @@ public class OktaRepositoryImpl : OktaRepository {
                 onMFAChallenge(mfaStatus.availableFactors)
                 self?.handleStatus(status: status)
             }
-            else if let mfaStatus = status as? OktaAuthStatusSuccess{
+            else if let successStatus = status as? OktaAuthStatusSuccess{
                 self?.handleStatus(status: status)
-                authenticateOIDC(onSuccess: onSuccess, onError: onError)
+                self?.authenticateOIDC(onSuccess: onSuccess, onError: onError)
             }
             else {
                 onError("ERROR OCCURRED: \(status.statusType)")
