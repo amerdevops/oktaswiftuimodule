@@ -159,11 +159,9 @@ public class OktaRepositoryImpl : OktaRepository {
         // Define Success / Failure closures
         let successBlock: (OktaAuthStatus) -> Void = { [weak self] status in
             if let mfaStatus = status as? OktaAuthStatusFactorRequired {
-                if(status.statusType == .success){
-                    onSuccess()
-                }else{
-                    onMFAChallenge(mfaStatus.availableFactors)
-                }
+                onMFAChallenge(mfaStatus.availableFactors)
+            } else {
+                onSuccess()
             }
             self?.handleStatus(status: status)
         }
