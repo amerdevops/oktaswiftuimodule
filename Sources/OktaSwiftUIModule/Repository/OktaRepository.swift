@@ -160,10 +160,17 @@ public class OktaRepositoryImpl : OktaRepository {
         let successBlock: (OktaAuthStatus) -> Void = { [weak self] status in
             if let mfaStatus = status as? OktaAuthStatusFactorRequired {
                 onMFAChallenge(mfaStatus.availableFactors)
-            } else {
-                onSuccess()
+                self?.handleStatus(status: status)
             }
-            self?.handleStatus(status: status)
+            else if let mfaStatus = status as? OktaAuthStatusSuccess{
+                self?.handleStatus(status: status)
+                authenticateOIDC(onSuccess: onSuccess, onError: onError)
+            }
+            else {
+                onError("ERROR OCCURRED: \(status.statusType)")
+                self?.handleStatus(status: status)
+            }
+            
         }
         let errorBlock: (OktaError) -> Void = { error in
             onError(error.localizedDescription)
