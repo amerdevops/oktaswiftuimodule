@@ -216,10 +216,11 @@ public class MockOktaRepositoryImpl : OktaRepository {
         return OktaError.internalError("State not set")
     }
     
-    public func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void){
+    public func signIn(username: String, password: String, onSuccess: @escaping () -> Void,
+                       onMFAChallenge: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void){
         logger.log("mock repo signIn()")
         if (signInPass) {
-            onSuccess(OktaUtilMocks.getOktaFactors())
+            onSuccess()
         } else {
             onError("Fail")
         }

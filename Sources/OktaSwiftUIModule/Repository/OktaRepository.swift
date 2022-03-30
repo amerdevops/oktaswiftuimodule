@@ -21,7 +21,7 @@ import os
  */
 public protocol OktaRepository {
     func checkValidState() -> Error?
-    func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void)
+    func signIn(username: String, password: String, onSuccess: @escaping () -> Void,  onMFAChallenge: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void)
     func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func changeFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func cancelFactor()
@@ -151,16 +151,26 @@ public class OktaRepositoryImpl : OktaRepository {
      * on the results.
      */
     public func signIn(username: String, password: String,
-                onSuccess: @escaping (([OktaFactor])) -> Void,
+                onSuccess: @escaping () -> Void,
+                onMFAChallenge: @escaping (([OktaFactor])) -> Void,
                 onError: @escaping ((String)) -> Void) {
 
         //-----------------------------------------------
         // Define Success / Failure closures
         let successBlock: (OktaAuthStatus) -> Void = { [weak self] status in
             if let mfaStatus = status as? OktaAuthStatusFactorRequired {
-                onSuccess(mfaStatus.availableFactors)
+                onMFAChallenge(mfaStatus.availableFactors)
+                self?.handleStatus(status: status)
             }
-            self?.handleStatus(status: status)
+            else if let successStatus = status as? OktaAuthStatusSuccess{
+                self?.handleStatus(status: status)
+                self?.authenticateOIDC(onSuccess: onSuccess, onError: onError)
+            }
+            else {
+                onError("ERROR OCCURRED: \(status.statusType)")
+                self?.handleStatus(status: status)
+            }
+            
         }
         let errorBlock: (OktaError) -> Void = { error in
             onError(error.localizedDescription)
