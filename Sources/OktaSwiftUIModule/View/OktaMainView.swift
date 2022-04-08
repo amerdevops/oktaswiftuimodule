@@ -47,7 +47,7 @@ public struct OktaMainView: View {
                 //-----------------------------------------------
                 // Draw Logo
                 Image("agent-app-logo").background(Color.white)
-                    .padding(.bottom: 70)
+                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 70, trailing: 0))
                     .accessibilityLabel("Ameritas Logo")
                     .accessibilityAddTraits(.isImage)
                 
