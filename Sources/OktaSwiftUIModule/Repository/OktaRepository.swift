@@ -173,7 +173,8 @@ public class OktaRepositoryImpl : OktaRepository {
             
         }
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            let msg = (error.errorCode.isEmpty) ? error.localizedDescription :  error.errorCode + ": " + error.localizedDescription
+            onError(msg)
         }
         //-----------------------------------------------
         // Authenticate...
