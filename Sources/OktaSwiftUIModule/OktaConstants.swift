@@ -91,6 +91,7 @@ struct K
         static let supplemental = FontViewModifier(color: .primaryLightGrey, font: .footnote, weight: .regular )
         
     }
+    
 
     // Static map which converts a policy status string to a color
     // which is used in the filter buttons and policy cards
@@ -145,6 +146,19 @@ enum CustomColorScheme: String
     case blue = "Blue"
     case green = "Green"
     case orange = "Orange"
+}
+
+
+enum CustomErrorMessage: String
+{
+    case E0000006 = "You currently don\'t have access to the Ameritas Agent app. Please contact xxx-xxx-xxxx to gain access."
+    case E0000004 = "Your submitted information is incorrect. Please try again with complete username and password."
+    case E0000068 = "Your authentication code doesn\'t match our records. Please try again."
+    case E9999900 = "Connection error - you don\'t appear to be connected to the internet. Please check your connection and try again."
+    case E0000118 = "Verification timeout error. Please wait 5 seconds before trying again."
+    case E0000109 = "Verification timeout error. Please wait 30 seconds before trying again."
+    case E0000133 = "Verification timeout error. Please wait 30 seconds before trying again."
+    case E0000069 = "Your account has been locked for your protection. Please contact xxx-xxx-xxxx."
 }
 
 // Enumeration outlining the type of filter that can be applied to a policy
