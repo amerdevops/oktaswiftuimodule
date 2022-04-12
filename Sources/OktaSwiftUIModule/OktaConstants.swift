@@ -158,7 +158,7 @@ enum CustomErrorMessage: String
     case E0000118 = "Verification timeout error. Please wait 5 seconds before trying again."
     case E0000109 = "Verification timeout error. Please wait 30 seconds before trying again."
     case E0000133 = "Verification timeout error. Please wait 30 seconds before trying again."
-    case E0000069 = "Your account has been locked for your protection. Please contact xxx-xxx-xxxx."
+    case E0000069 = "Your account has been locked for your protection. Please contact xxx-xxxxxxx."
 }
 
 // Enumeration outlining the type of filter that can be applied to a policy
