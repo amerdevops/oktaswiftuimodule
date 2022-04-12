@@ -156,8 +156,7 @@ enum CustomErrorMessage: String
     case E0000068 = "Your authentication code doesn\'t match our records. Please try again."
     case E9999900 = "Connection error - you don\'t appear to be connected to the internet. Please check your connection and try again."
     case E0000118 = "Verification timeout error. Please wait 5 seconds before trying again."
-    case E0000109 = "Verification timeout error. Please wait 30 seconds before trying again."
-    case E0000133 = "Verification timeout error. Please wait 30 seconds before trying again."
+    case E0000109, E0000133 = "Verification timeout error. Please wait 30 seconds before trying again."
     case E0000069 = "Your account has been locked for your protection. Please contact xxx-xxx-xxxx."
 }
 
