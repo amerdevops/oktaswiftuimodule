@@ -608,12 +608,9 @@ public class OktaRepositoryImpl : OktaRepository {
     func handleError(error: OktaError) -> String {
         switch error {
             case .serverRespondedWithError(let errorResponse):
-                //print("Error: \(errorResponse.errorSummary ?? "server error")")
-            return (errorResponse.errorCode ?? "unknown") + ": " + error.description
+                return (errorResponse.errorCode ?? "unknown") + ": " + error.description
             default:
                 return error.description
-                //print("Error: \(error.description)")
-            
         }
     }
 }

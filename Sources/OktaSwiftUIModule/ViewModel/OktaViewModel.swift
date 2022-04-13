@@ -82,7 +82,10 @@ open class OktaViewModel : ObservableObject {
      * This method handles setting the state if an error occurs
      */
     private func onError(msg: String) {
-        alert = msg
+        // Get error code
+        let token = msg.components(separatedBy: ":")
+        let first = token[0]
+        alert = CustomErrorMessage.init(rawValue: first)
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
         eventOnError(msg)
