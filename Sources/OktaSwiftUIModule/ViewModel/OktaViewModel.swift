@@ -84,7 +84,8 @@ open class OktaViewModel : ObservableObject {
     private func onError(msg: String) {
         // Get error code
         let token = msg.components(separatedBy: ":")
-        alert = (errorCode ?? "").isEmpty ? msg : CustomErrorMessage(rawValue: token[0])
+        let errorCode = token[0]
+        alert = (errorCode ?? "").isEmpty ? msg : CustomErrorMessage(rawValue: errorCode)
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
         eventOnError(msg)
