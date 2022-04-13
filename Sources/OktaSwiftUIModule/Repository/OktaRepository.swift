@@ -172,10 +172,9 @@ public class OktaRepositoryImpl : OktaRepository {
             }
             
         }
+        
         let errorBlock: (OktaError) -> Void = { error in
-            //let msg = (OktaError.serverRespondedWithError(error).errorCode.isEmpty) ? error.localizedDescription :  error.errorCode + ": " + error.localizedDescription
-            
-            onError(error.serverRespondedWithError.errorCode)
+            onError(handleError(error: error))
         }
         //-----------------------------------------------
         // Authenticate...
@@ -602,6 +601,18 @@ public class OktaRepositoryImpl : OktaRepository {
             case .unknown(_):
                 // TODO
                 logStatus(status)
+        }
+    }
+    
+    func handleError(error: OktaError) -> String {
+        switch error {
+            case .serverRespondedWithError(let errorResponse):
+                //print("Error: \(errorResponse.errorSummary ?? "server error")")
+            return errorResponse.errorCode + ": " + error.description
+            default:
+                return error.description
+                //print("Error: \(error.description)")
+            
         }
     }
 }
