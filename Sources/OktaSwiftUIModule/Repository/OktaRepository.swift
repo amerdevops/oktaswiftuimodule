@@ -175,7 +175,7 @@ public class OktaRepositoryImpl : OktaRepository {
         
         // handle error
         let errorBlock: (OktaError) -> Void = { error in
-            onError(handleError(error: error))
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Authenticate...
@@ -609,7 +609,7 @@ public class OktaRepositoryImpl : OktaRepository {
         switch error {
             case .serverRespondedWithError(let errorResponse):
                 //print("Error: \(errorResponse.errorSummary ?? "server error")")
-            return errorResponse.errorCode + ": " + error.description
+            return (errorResponse.errorCode ?? "unknown") + ": " + error.description
             default:
                 return error.description
                 //print("Error: \(error.description)")
