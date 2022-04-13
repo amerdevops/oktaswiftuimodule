@@ -173,6 +173,7 @@ public class OktaRepositoryImpl : OktaRepository {
             
         }
         
+        // handle error
         let errorBlock: (OktaError) -> Void = { error in
             onError(handleError(error: error))
         }
