@@ -134,7 +134,7 @@ struct K
         switch(error) {
             case "E0000006":
                 return "You currently don\'t have access to the Ameritas Agent app. Please contact xxx-xxx-xxxx to gain access."
-            case "E0000005" :
+            case "E0000004" :
                 return "Your submitted information is incorrect. Please try again with complete username and password."
             case "E0000068" :
                 return "Your authentication code doesn\'t match our records. Please try again."
