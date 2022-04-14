@@ -89,8 +89,9 @@ public struct OktaMFAView: View {
             //-----------------------------------------------
             // Draw message
             Text(getMsg())
+                .multilineTextAlignment(.center)
                 .headline()
-                .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
+                .padding(EdgeInsets(top: 10, leading: 20, bottom: 30, trailing: 20))
                 .accessibilityLabel(getMsg())
                 .accessibilityAddTraits(.isStaticText)
                 .accessibilityIdentifier("Okta-Label")
