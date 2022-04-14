@@ -209,7 +209,7 @@ public class OktaRepositoryImpl : OktaRepository {
             }
         }
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Trigger send factor
