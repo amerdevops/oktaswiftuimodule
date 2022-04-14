@@ -8,7 +8,7 @@ import Foundation
 import SwiftUI
 
 
-struct K2
+struct K
 {
     // Struct containing named colors assocated with the Ameritas brand
     struct BrandColor
