@@ -47,11 +47,11 @@ public struct OktaMFAView: View {
         }
         else {
             switch(selectedFactor?.type) {
-                case FactorType.email:
+                case .email:
                         return "We sent a verification code to your email address. Enter it below."
-                case FactorType.sms :
+                case .sms :
                         return "We texted a verification code to your phone. Enter it below."
-                case FactorType.call :
+                case .call :
                     return "We left a voice message with your verification code on your phone. Enter it below."
                 default:
                     return "Unknown"
