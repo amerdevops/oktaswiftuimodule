@@ -342,7 +342,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 self?.authenticateOIDC(onSuccess: onOIDCSuccess, onError: onError)
             }
             let errorBlock: (OktaError) -> Void = { error in
-                onError(error.localizedDescription)
+                onError(self.handleError(error: error))
             }
 
             //---------------------------------------------------------------------
@@ -607,6 +607,8 @@ public class OktaRepositoryImpl : OktaRepository {
     
     func handleError(error: OktaError) -> String {
         switch error {
+            case .connectionError(let errorResponse):
+                return "E9999900" + ": " + error.description
             case .serverRespondedWithError(let errorResponse):
                 return (errorResponse.errorCode ?? "unknown") + ": " + error.description
             default:

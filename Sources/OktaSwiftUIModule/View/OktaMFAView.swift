@@ -43,9 +43,20 @@ public struct OktaMFAView: View {
     
     public func getMsg() -> String {
         if (firstTime()) {
-            return "Select a method below to verify your identity"
+            return "Select a method below to verify your identity."
         }
-        return "Verify Your Identity."
+        else {
+            switch(selectedFactor?.type) {
+                case FactorType.email:
+                        return "We sent a verification code to your email address. Enter it below."
+                case FactorType.sms :
+                        return "We texted a verification code to your phone. Enter it below."
+                case FactorType.call :
+                    return "We left a voice message with your verification code on your phone. Enter it below."
+                default:
+                    return "Unknown"
+            }
+        }
     }
     /**
      * Initialize the class
