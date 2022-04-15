@@ -24,6 +24,7 @@ public struct OktaLoginView: View {
     @State var cred: String = ""
     @State var acceptTAndC = false
     @State var demoAccept = false
+
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
@@ -90,7 +91,12 @@ public struct OktaLoginView: View {
                     //-----------------------------------------------
                     // Otherwise, login like normal
                     else {
-                        self.onLoginClick(name, cred)
+                        
+                        if(!name.isEmpty && !cred.isEmpty) {
+                            self.onLoginClick(name, cred)
+                        }
+                        
+                        
                     }
                 }
                 .btnFilled(acceptTAndC == false)
