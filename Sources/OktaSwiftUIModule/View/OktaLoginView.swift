@@ -91,12 +91,7 @@ public struct OktaLoginView: View {
                     //-----------------------------------------------
                     // Otherwise, login like normal
                     else {
-                        
-                        if(!name.isEmpty && !cred.isEmpty) {
                             self.onLoginClick(name, cred)
-                        }
-                        
-                        
                     }
                 }
                 .btnFilled(acceptTAndC == false)

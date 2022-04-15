@@ -132,6 +132,8 @@ struct K
     
     static func getCustomError(_ error: String) -> String {
         switch(error) {
+            case "E0000001":
+                return "Your submitted information is incorrect. Please try again with complete username and password."
             case "E0000006":
                 return "You currently don\'t have access to the Ameritas Agent app. Please contact xxx-xxx-xxxx to gain access."
             case "E0000004" :
