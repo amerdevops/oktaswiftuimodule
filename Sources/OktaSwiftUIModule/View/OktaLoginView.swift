@@ -44,21 +44,6 @@ public struct OktaLoginView: View {
         VStack(alignment: .center, spacing: 50) {
             //-----------------------------------------------
             // Draw Welcome
-            Text(msg)
-                .titleContrast()
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: .center)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(msg)
-                .accessibilityIdentifier("Welcome-ID")
-            
-            Text("Sign in to receive your access code.")
-                .headline()
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: .center)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Sign in to receive your access code.")
-                .accessibilityIdentifier("Second-Msg-ID")
                 
             //-----------------------------------------------
             // Draw username / password

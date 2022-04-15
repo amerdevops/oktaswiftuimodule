@@ -43,9 +43,20 @@ public struct OktaMFAView: View {
     
     public func getMsg() -> String {
         if (firstTime()) {
-            return "Select a method below to verify your identity"
+            return "Select a method below to verify your identity."
         }
-        return "Verify Your Identity."
+        else {
+            switch(selectedFactor?.type) {
+                case .email:
+                        return "We sent a verification code to your email address. Enter it below."
+                case .sms :
+                        return "We texted a verification code to your phone. Enter it below."
+                case .call :
+                    return "We left a voice message with your verification code on your phone. Enter it below."
+                default:
+                    return "Unknown"
+            }
+        }
     }
     /**
      * Initialize the class
@@ -80,7 +91,7 @@ public struct OktaMFAView: View {
             Text(getMsg())
                 .multilineTextAlignment(.center)
                 .headline()
-                .padding(EdgeInsets(top: 10, leading: 80, bottom: 30, trailing: 80))
+                .padding(EdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20))
                 .accessibilityLabel(getMsg())
                 .accessibilityAddTraits(.isStaticText)
                 .accessibilityIdentifier("Okta-Label")

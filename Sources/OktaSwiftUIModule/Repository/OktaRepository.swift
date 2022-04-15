@@ -172,8 +172,10 @@ public class OktaRepositoryImpl : OktaRepository {
             }
             
         }
+        
+        // handle error
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Authenticate...
@@ -207,7 +209,7 @@ public class OktaRepositoryImpl : OktaRepository {
             }
         }
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Trigger send factor
@@ -267,7 +269,7 @@ public class OktaRepositoryImpl : OktaRepository {
                     }
                 }
                 let errorBlock: (OktaError) -> Void = { error in
-                    onError(error.localizedDescription)
+                    onError(self.handleError(error: error))
                 }
                 
                 //-----------------------------------------------
@@ -340,7 +342,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 self?.authenticateOIDC(onSuccess: onOIDCSuccess, onError: onError)
             }
             let errorBlock: (OktaError) -> Void = { error in
-                onError(error.localizedDescription)
+                onError(self.handleError(error: error))
             }
 
             //---------------------------------------------------------------------
@@ -600,6 +602,17 @@ public class OktaRepositoryImpl : OktaRepository {
             case .unknown(_):
                 // TODO
                 logStatus(status)
+        }
+    }
+    
+    func handleError(error: OktaError) -> String {
+        switch error {
+            case .connectionError(let errorResponse):
+                return "E9999900" + ": " + error.description
+            case .serverRespondedWithError(let errorResponse):
+                return (errorResponse.errorCode ?? "unknown") + ": " + error.description
+            default:
+                return error.description
         }
     }
 }
