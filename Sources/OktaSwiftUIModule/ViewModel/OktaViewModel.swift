@@ -44,8 +44,6 @@ open class OktaViewModel : ObservableObject {
     @Published
     public var isUserSet: Bool = false
     
-    @Published
-    public var isLoginEnabled: Bool = true
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
@@ -92,7 +90,6 @@ open class OktaViewModel : ObservableObject {
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
         eventOnError(msg)
-        isLoginEnabled = true
     }
     
     /**
@@ -123,8 +120,6 @@ open class OktaViewModel : ObservableObject {
             // Trap Event
             self.eventSignInSuccess()
             //---------------------------------------------------------
-            // Enable login button
-            self.isLoginEnabled = true
             
         }
         

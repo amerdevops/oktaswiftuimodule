@@ -98,7 +98,6 @@ public struct OktaMainView: View {
                     // Define the actions outside of view so it can be tested
                     // separately
                     let onLoginClick = { ( name: String, cred: String) -> Void in
-                        oktaViewModel.isLoginEnabled = false
                         oktaViewModel.signIn(name: name, cred: cred)
                     }
                     let onDemoModeClick =  { () -> Void in
@@ -109,7 +108,7 @@ public struct OktaMainView: View {
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, loginEnabled: oktaViewModel.isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
             }
