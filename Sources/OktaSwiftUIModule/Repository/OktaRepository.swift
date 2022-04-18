@@ -509,7 +509,8 @@ public class OktaRepositoryImpl : OktaRepository {
             self.logger.log("Asking OIDC client for access token...")
             oidcClient.authenticate(withSessionToken: status.sessionToken!, callback: { [weak self] stateManager, error in
                 if let err = error {
-                    onError(err.localizedDescription)
+                    let x = err.localizedDescription
+                    onError(self.handleError(error: error))
                 } else {
                     if let sm = stateManager {
                         //-------------------------------------------------------------
