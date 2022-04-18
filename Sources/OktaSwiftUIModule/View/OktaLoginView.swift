@@ -188,14 +188,14 @@ struct LoginView_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: false )
+                onDemoModeClick: onDemoModeClick, loginEnabled: false )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: false )
+                onDemoModeClick: onDemoModeClick, loginEnabled: false )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode")
@@ -216,7 +216,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                           onDemoModeClick: onDemoModeClick, isLoginEnabled: false )
+                           onDemoModeClick: onDemoModeClick, loginEnabled: false )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraSmall)
@@ -224,7 +224,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: false )
+                onDemoModeClick: onDemoModeClick, loginEnabled: false )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
@@ -232,7 +232,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: false )
+                onDemoModeClick: onDemoModeClick, loginEnabled: false )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
