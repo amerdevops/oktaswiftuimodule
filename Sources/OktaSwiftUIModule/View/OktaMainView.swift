@@ -42,7 +42,6 @@ public struct OktaMainView: View {
     public var body: some View {
         let isAuthenticated = oktaViewModel.isAuthenticated
         let isMFA = oktaViewModel.isMFA
-        let isLoginEnabled = oktaViewModel.isLoginEnabled
         ScrollView {
             VStack(spacing: 0) {
                 //-----------------------------------------------
@@ -110,7 +109,7 @@ public struct OktaMainView: View {
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, loginEnabled: isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick, loginEnabled: oktaViewModel.isLoginEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
             }
