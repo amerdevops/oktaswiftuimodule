@@ -110,7 +110,7 @@ public struct OktaMainView: View {
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick, loginEnabled: isLoginEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                 }
             }
