@@ -19,12 +19,13 @@ public struct OktaLoginView: View {
     var onDemoModeClick: () -> Void
     var demoMode: Bool
     var msg: String
-    var loginEnabled: Bool
+    
     
     @State var name: String = ""
     @State var cred: String = ""
     @State var acceptTAndC = false
     @State var demoAccept = false
+    @State var loginEnabled = false
 
     
     public init(demoMode: Bool,
@@ -94,6 +95,7 @@ public struct OktaLoginView: View {
                     // Otherwise, login like normal
                     else {
                             self.onLoginClick(name, cred)
+                            loginEnabled = false
                     }
                 }
                 .btnFilled(acceptTAndC == false)
