@@ -42,6 +42,7 @@ public struct OktaMainView: View {
     public var body: some View {
         let isAuthenticated = oktaViewModel.isAuthenticated
         let isMFA = oktaViewModel.isMFA
+        let isLoginEnabled = oktaViewModel.isLoginEnabled
         ScrollView {
             VStack(spacing: 0) {
                 //-----------------------------------------------
@@ -98,6 +99,7 @@ public struct OktaMainView: View {
                     // Define the actions outside of view so it can be tested
                     // separately
                     let onLoginClick = { ( name: String, cred: String) -> Void in
+                        oktaViewModel.isLoginEnabled = false
                         oktaViewModel.signIn(name: name, cred: cred)
                     }
                     let onDemoModeClick =  { () -> Void in

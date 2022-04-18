@@ -19,20 +19,23 @@ public struct OktaLoginView: View {
     var onDemoModeClick: () -> Void
     var demoMode: Bool
     var msg: String
+    var loginEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
     @State var acceptTAndC = false
     @State var demoAccept = false
+    @State
 
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void,
+                onDemoModeClick: @escaping () -> Void, loginEnabled: Bool,
                 msg: String = "Welcome!") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
+        self.loginEnabled = loginEnabled
         self.msg = msg
         UINavigationBar.appearance().backgroundColor = .none
     }
@@ -95,7 +98,7 @@ public struct OktaLoginView: View {
                     }
                 }
                 .btnFilled(acceptTAndC == false)
-                .disabled(acceptTAndC == false)
+                .disabled(acceptTAndC == false && loginEnabled == false)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
