@@ -19,7 +19,7 @@ public struct OktaLoginView: View {
     var onDemoModeClick: () -> Void
     var demoMode: Bool
     var msg: String
-    
+    var isLoginEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -29,11 +29,12 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void,
+                onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
                 msg: String = "Welcome!") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
+        self.isLoginEnabled = isLoginEnabled
         self.msg = msg
         UINavigationBar.appearance().backgroundColor = .none
     }
@@ -95,8 +96,8 @@ public struct OktaLoginView: View {
                             self.onLoginClick(name, cred)
                     }
                 }
-                .btnFilled(acceptTAndC == false)
-                .disabled(acceptTAndC == false)
+                .btnFilled(acceptTAndC == false && isLoginEnabled == false)
+                .disabled(acceptTAndC == false && isLoginEnabled == false)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
@@ -187,14 +188,14 @@ struct LoginView_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode")
@@ -215,7 +216,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                           onDemoModeClick: onDemoModeClick )
+                           onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraSmall)
@@ -223,7 +224,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
@@ -231,7 +232,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
