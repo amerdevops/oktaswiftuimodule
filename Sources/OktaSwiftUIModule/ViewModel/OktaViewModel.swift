@@ -44,6 +44,7 @@ open class OktaViewModel : ObservableObject {
     @Published
     public var isUserSet: Bool = false
     
+    
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
     public init( _ repo: OktaRepository, _ isUITest: Bool ) {
@@ -118,6 +119,8 @@ open class OktaViewModel : ObservableObject {
             //---------------------------------------------------------
             // Trap Event
             self.eventSignInSuccess()
+            //---------------------------------------------------------
+            
         }
         
         let onMFAChallenge = { (factors: [OktaFactor]) -> Void in
@@ -146,6 +149,7 @@ open class OktaViewModel : ObservableObject {
         //-----------------------------------------------
         // Call sign in
         repo.signIn(username: name, password: cred, onSuccess: onSuccess, onMFAChallenge: onMFAChallenge, onError: self.onError)
+        
     }
     
     /**

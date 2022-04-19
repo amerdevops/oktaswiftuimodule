@@ -132,7 +132,9 @@ struct K
     
     static func getCustomError(_ error: String) -> String {
         switch(error) {
-            case "E0000006":
+            case "E0000001":
+                return "Your submitted information is incorrect. Please try again with complete username and password."
+            case "E9999901":
                 return "You currently don\'t have access to the Ameritas Agent app. Please contact xxx-xxx-xxxx to gain access."
             case "E0000004" :
                 return "Your submitted information is incorrect. Please try again with complete username and password."
@@ -143,11 +145,11 @@ struct K
             case "E0000118" :
                 return "Verification timeout error. Please wait 5 seconds before trying again."
             case "E0000109" :
-                return "Verification timeout error. Please wait 30 seconds before trying again. "
+                return "Verification timeout error. Please wait 30 seconds before trying again."
             case "E0000133" :
-                return "Verification timeout error. Please wait 30 seconds before trying again. "
+                return "Verification timeout error. Please wait 30 seconds before trying again."
             case "E0000069" :
-                return "Verification timeout error. Please wait 30 seconds before trying again. "
+                return "Your account has been locked for your protection. Please contact xxx-xxx-xxxx."
             default:
                 return ""
         }

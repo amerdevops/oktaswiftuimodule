@@ -20,6 +20,7 @@ public struct OktaLoginView: View {
     var demoMode: Bool
     var msg: String
     
+    
     @State var name: String = ""
     @State var cred: String = ""
     @State var acceptTAndC = false
@@ -91,12 +92,7 @@ public struct OktaLoginView: View {
                     //-----------------------------------------------
                     // Otherwise, login like normal
                     else {
-                        
-                        if(!name.isEmpty && !cred.isEmpty) {
                             self.onLoginClick(name, cred)
-                        }
-                        
-                        
                     }
                 }
                 .btnFilled(acceptTAndC == false)
@@ -219,7 +215,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                           onDemoModeClick: onDemoModeClick )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraSmall)
