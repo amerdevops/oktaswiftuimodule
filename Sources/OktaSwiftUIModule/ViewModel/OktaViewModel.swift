@@ -24,6 +24,9 @@ open class OktaViewModel : ObservableObject {
     public var isDemoMode: Bool = false
     
     @Published
+    public var isLoginEnabled: Bool = true
+    
+    @Published
     public var isAuthenticated : Bool = false
     
     @Published
@@ -84,6 +87,7 @@ open class OktaViewModel : ObservableObject {
      */
     private func onError(msg: String) {
         // Get error code
+        self.isLoginEnabled = true
         let token = msg.components(separatedBy: ":")
         let errorCode = token[0]
         alert = errorCode.isEmpty ? msg : K.getCustomError(errorCode).isEmpty ? msg : K.getCustomError(errorCode)
@@ -97,7 +101,7 @@ open class OktaViewModel : ObservableObject {
      */
     public func signIn( name: String, cred: String ) {
         self.logger.log("SIGNING IN....")
-
+        self.isLoginEnabled = false
         //-----------------------------------------------
         // Define Success closure
         let onSuccess = { () -> Void in
@@ -120,7 +124,7 @@ open class OktaViewModel : ObservableObject {
             // Trap Event
             self.eventSignInSuccess()
             //---------------------------------------------------------
-            
+            self.isLoginEnabled = true
         }
         
         let onMFAChallenge = { (factors: [OktaFactor]) -> Void in
