@@ -86,9 +86,10 @@ open class OktaViewModel : ObservableObject {
      * This method handles setting the state if an error occurs
      */
     private func onError(msg: String) {
-        // Get error code
+        // Enable login button
         self.isLoginEnabled = true
         let token = msg.components(separatedBy: ":")
+        // Get error code
         let errorCode = token[0]
         alert = errorCode.isEmpty ? msg : K.getCustomError(errorCode).isEmpty ? msg : K.getCustomError(errorCode)
         showAlert = true
@@ -124,6 +125,7 @@ open class OktaViewModel : ObservableObject {
             // Trap Event
             self.eventSignInSuccess()
             //---------------------------------------------------------
+            // Enable login button
             self.isLoginEnabled = true
         }
         
@@ -134,10 +136,12 @@ open class OktaViewModel : ObservableObject {
             self.factors.removeAll()
             self.factors.append(contentsOf: factors)
             self.isMFA = true
-            
             //---------------------------------------------------------
             // Trap Event
             self.eventSignInSuccess()
+            //---------------------------------------------------------
+            // Enable login button
+            self.isLoginEnabled = true
         }
         
         
