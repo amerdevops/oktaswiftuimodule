@@ -241,6 +241,8 @@ open class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            
+            self.onError(msg: "E9999902: Resending the authentication code")
             //---------------------------------------------------------
             // Trap Event
             self.eventResendFactorSuccess()
