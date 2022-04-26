@@ -150,6 +150,10 @@ struct K
                 return "Verification timeout error. Please wait 30 seconds before trying again."
             case "E0000069" :
                 return "Your account has been locked for your protection. Please contact xxx-xxx-xxxx."
+            case "E0000011" :
+                return "This authentication code has expired. Please request a new authentication code to proceed."
+            case "E9999902" :
+                return "We have sent a new code to your mobile device. Please use that code to try again."
             default:
                 return ""
         }
