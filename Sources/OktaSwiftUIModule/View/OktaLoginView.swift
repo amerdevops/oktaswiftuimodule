@@ -56,28 +56,6 @@ public struct OktaLoginView: View {
                 } else {
                     OktaRegularIDPassView($name, $cred)
                 }
-//                HStack() {
-//                    Text("ID")
-//                        .labelDark()
-//                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-//                        .frame( width: 90, alignment: .topLeading )
-//                        .accessibilityHidden(true)
-//
-//                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
-//
-//                }
-//                Divider()
-//                HStack() {
-//                    Text("Password")
-//                        .labelDark()
-//                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-//                        .frame( width: 90, alignment: .topLeading )
-//                        .accessibilityHidden(true)
-//                    CustomSecureInput("Add Password", $cred,
-//                                          "Add Password", "Text-Password-ID")
-//                }
-//                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-//                Divider()
             }
             
             VStack {
@@ -102,33 +80,6 @@ public struct OktaLoginView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                //-----------------------------------------------
-                // Draw face ID / Forgot Password
-                HStack(spacing: 50) {
-                    Button (action: {}) {
-                    HStack {
-                        Image(systemName: "faceid")
-                        Text("FaceID")
-                    }
-                        .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                    }
-                    .foregroundColor(K.BrandColor.black)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Face I D")
-                    .accessibilityIdentifier("FaceID-ID")
-                    
-                    Button (action: {}) {
-                    Text("Forgot Password")
-                            .padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                    }
-                    .foregroundColor(K.BrandColor.black)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("Forgot Password")
-                        .accessibilityIdentifier("Forgot-Pass-ID")
-                }
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-                .frame(maxWidth: .infinity)
-            
                 //-----------------------------------------------
                 // Draw Accept Terms / Conditions
                 Button(action: { acceptTAndC = !acceptTAndC }){
