@@ -47,6 +47,11 @@ open class OktaViewModel : ObservableObject {
     @Published
     public var isUserSet: Bool = false
     
+    @Published
+    public var showingOptions: Bool = false
+    
+    @Published
+    public var selection: String = "None"
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     

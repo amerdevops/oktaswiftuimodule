@@ -43,8 +43,38 @@ public struct OktaMainView: View {
         let isAuthenticated = oktaViewModel.isAuthenticated
         let isMFA = oktaViewModel.isMFA
         let isLoginEnabled = oktaViewModel.isLoginEnabled
+        
         ScrollView {
             VStack(spacing: 0) {
+                
+                if #available(iOS 15.0, *) {
+                    Button("Confirm paint color") {
+                        oktaViewModel.showingOptions = true
+                    }
+                    .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
+                        Button("App Privacy") {
+                            oktaViewModel.selection = "AppPrivacy"
+                        }
+                        Button("Ameritas Online Privacy Notice") {
+                            oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
+                        }
+                        Button("Privacy") {
+                            oktaViewModel.selection = "Privacy"
+                        }
+                        Button("Disclosures") {
+                            oktaViewModel.selection = "Disclosures"
+                        }
+                        Button("Legal/Term of Use") {
+                            oktaViewModel.selection = "TermOfUse"
+                        }
+                        
+                    }
+                message: {
+                    Image(systemName: "pencil")
+                }
+                } else {
+                    // Fallback on earlier versions
+                }
                 //-----------------------------------------------
                 // Draw Logo
                 Image("agent-app-logo").background(Color.white)
