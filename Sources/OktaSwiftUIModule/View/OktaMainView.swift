@@ -44,44 +44,44 @@ public struct OktaMainView: View {
         let isMFA = oktaViewModel.isMFA
         let isLoginEnabled = oktaViewModel.isLoginEnabled
         
-        
-        if #available(iOS 15.0, *) {
-            Button {
-                oktaViewModel.showingOptions = true
-            }
-            label: {
-                VStack{
-                    HStack{
-                        Spacer()
-                        Image(systemName: "ellipsis.circle")
-                    }
-                    Spacer()
-                }
-                
-            }
-            .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
-                Button("App Privacy") {
-                    print("App Privacy button was pressed")
-                    oktaViewModel.selection = "AppPrivacy"
-                }
-                Button("Ameritas Online Privacy Notice") {
-                    oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
-                }
-                Button("Privacy") {
-                    oktaViewModel.selection = "Privacy"
-                }
-                Button("Disclosures") {
-                    oktaViewModel.selection = "Disclosures"
-                }
-                Button("Legal/Term of Use") {
-                    oktaViewModel.selection = "TermOfUse"
-                }
-                
-            }
-        }
-        
         ScrollView {
             VStack(spacing: 0) {
+                
+                if #available(iOS 15.0, *) {
+                    Button {
+                        oktaViewModel.showingOptions = true
+                    }
+                    label: {
+                        VStack{
+                            HStack{
+                                Spacer()
+                                Image(systemName: "ellipsis.circle")
+                            }
+                            Spacer()
+                        }
+                        
+                    }
+                    .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
+                        Button("App Privacy") {
+                            print("App Privacy button was pressed")
+                            oktaViewModel.selection = "AppPrivacy"
+                        }
+                        Button("Ameritas Online Privacy Notice") {
+                            oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
+                        }
+                        Button("Privacy") {
+                            oktaViewModel.selection = "Privacy"
+                        }
+                        Button("Disclosures") {
+                            oktaViewModel.selection = "Disclosures"
+                        }
+                        Button("Legal/Term of Use") {
+                            oktaViewModel.selection = "TermOfUse"
+                        }
+                        
+                    }
+                }
+                
                 
                 //-----------------------------------------------
                 // Draw Logo
