@@ -48,8 +48,11 @@ public struct OktaMainView: View {
             VStack(spacing: 0) {
                 
                 if #available(iOS 15.0, *) {
-                    Button("Confirm paint color") {
+                    Button {
                         oktaViewModel.showingOptions = true
+                    }
+                    label: {
+                        Image(systemName: "ellipsis.circle")
                     }
                     .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
                         Button("App Privacy") {
@@ -69,9 +72,6 @@ public struct OktaMainView: View {
                         }
                         
                     }
-                message: {
-                    Image(systemName: "pencil")
-                }
                 } else {
                     // Fallback on earlier versions
                 }
