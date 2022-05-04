@@ -23,6 +23,8 @@ public struct OktaMainView: View {
     @EnvironmentObject
     var oktaViewModel: OktaViewModel
     
+    @Environment(\.openURL) var openURL
+    
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMainView")
     
     var demoMode: Bool
@@ -65,7 +67,7 @@ public struct OktaMainView: View {
                     .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
                         Button("App Privacy") {
                             print("App Privacy button was pressed")
-                            URL("https://www.ameritas.com/about/privacy/")
+                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                         }
                         Button("Ameritas Online Privacy Notice") {
                             oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
