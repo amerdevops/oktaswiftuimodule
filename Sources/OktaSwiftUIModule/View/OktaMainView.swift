@@ -56,6 +56,7 @@ public struct OktaMainView: View {
                             HStack{
                                 Spacer()
                                 Image(systemName: "ellipsis.circle")
+                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
                             }
                             Spacer()
                         }
@@ -64,7 +65,7 @@ public struct OktaMainView: View {
                     .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
                         Button("App Privacy") {
                             print("App Privacy button was pressed")
-                            oktaViewModel.selection = "AppPrivacy"
+                            URL("https://www.ameritas.com/about/privacy/")
                         }
                         Button("Ameritas Online Privacy Notice") {
                             oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
