@@ -66,20 +66,19 @@ public struct OktaMainView: View {
                     }
                     .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
                         Button("App Privacy") {
-                            print("App Privacy button was pressed")
-                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
+                            openURL(URL(string: "https://www.ameritas.com/about/online-privacy/")!)
                         }
                         Button("Ameritas Online Privacy Notice") {
-                            oktaViewModel.selection = "AmeritasOnlinePrivacyNotice"
+                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                         }
                         Button("Privacy") {
-                            oktaViewModel.selection = "Privacy"
+                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                         }
                         Button("Disclosures") {
                             oktaViewModel.selection = "Disclosures"
                         }
                         Button("Legal/Term of Use") {
-                            oktaViewModel.selection = "TermOfUse"
+                            openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
                         }
                         
                     }
