@@ -141,13 +141,13 @@ public struct OktaMainView: View {
                                 Button("Privacy") {
                                     openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                                 }
-                                Button("Disclosures") {
-                                    NavigationLink(destination: DisclosuresView()
-                                            ) {
-                                                Text("Go to Second View")
-
-                                            }
+                                
+                                NavigationLink(destination: DisclosuresView()){
+                                    Button("Disclosures") {
+                                        print("Heelo")
+                                    }
                                 }
+                                
                                 Button("Legal/Term of Use") {
                                     openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
                                 }
