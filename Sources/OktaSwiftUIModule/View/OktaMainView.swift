@@ -123,7 +123,7 @@ public struct OktaMainView: View {
                 .edgesIgnoringSafeArea(.top)
                 .navigationBarItems(trailing:
                     HStack{
-                        if(!isAuthenticated){
+                        if(!isAuthenticated && !isMFA){
                             Button {
                                 oktaViewModel.showingOptions = true
                             }
