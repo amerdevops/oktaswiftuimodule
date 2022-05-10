@@ -142,7 +142,7 @@ public struct OktaMainView: View {
                                     openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                                 }
                                 Button("Disclosures") {
-                                    NavigationLink(destination: DisclosuresView().navigationTitle("Disclosures")
+                                    NavigationLink("Disclosures", destination: DisclosuresView())
                                 }
                                 Button("Legal/Term of Use") {
                                     openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
@@ -152,6 +152,7 @@ public struct OktaMainView: View {
                         }
                     }
                 )
+                .navigationTitle("Disclosures")
             }
         }
     }
