@@ -122,31 +122,34 @@ public struct OktaMainView: View {
                 }
                 .edgesIgnoringSafeArea(.top)
                 .navigationBarItems(trailing:
-                                        Button {
-                    oktaViewModel.showingOptions = true
-                }
-                                    label: {
-                    Image(systemName: "ellipsis.circle")
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                    
-                }
-                    .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
-                        Button("App Privacy") {
-                            openURL(URL(string: "https://www.ameritas.com/about/online-privacy/")!)
+                    HStack{
+                        if(!isAuthenticated){
+                            Button {
+                                oktaViewModel.showingOptions = true
+                            }
+                            label: {
+                                    Image(systemName: "ellipsis.circle")
+                                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
+                            }
+                            .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
+                                Button("App Privacy") {
+                                    openURL(URL(string: "https://www.ameritas.com/about/online-privacy/")!)
+                                }
+                                Button("Ameritas Online Privacy Notice") {
+                                    openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
+                                }
+                                Button("Privacy") {
+                                    openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
+                                }
+                                Button("Disclosures") {
+                                    oktaViewModel.selection = "Disclosures"
+                                }
+                                Button("Legal/Term of Use") {
+                                    openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
+                                }
+
+                            }
                         }
-                        Button("Ameritas Online Privacy Notice") {
-                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
-                        }
-                        Button("Privacy") {
-                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
-                        }
-                        Button("Disclosures") {
-                            oktaViewModel.selection = "Disclosures"
-                        }
-                        Button("Legal/Term of Use") {
-                            openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
-                        }
-                        
                     }
                 )
             }
