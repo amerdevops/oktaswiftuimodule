@@ -47,110 +47,110 @@ public struct OktaMainView: View {
         let isLoginEnabled = oktaViewModel.isLoginEnabled
         
         if #available(iOS 15.0, *) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    //-----------------------------------------------
-                    // Draw Logo
-                    Image("agent-app-logo").background(Color.white)
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 70, trailing: 0))
-                        .accessibilityLabel("Ameritas Logo")
-                        .accessibilityAddTraits(.isImage)
-                    
-                    //-----------------------------------------------------
-                    // Passed login and passed mfa
-                    if ( isMFA && isAuthenticated ) {
-                        VStack {
-                            Text("Retrieving user info...")
-                        }
-                    }
-                    //-----------------------------------------------------
-                    // Logged in, but not passed MFA
-                    else if ( isMFA ) {
-                        //-----------------------------------------------------
-                        // Define the actions outside of view so it can be tested
-                        // separately
-                        let onSendCodeClick = { ( factor: OktaFactor, isChange: Bool) -> Void in
-                            // NOTE: Not using isChange now... this will be
-                            // if Okta can fix sending a different MFA factor
-                            oktaViewModel.sendFactor(factor: factor)
-                            logger.log("Send Code: \(factor.type.rawValue)")
-                        }
-                        let onResendClick = { ( factor: OktaFactor ) -> Void in
-                            oktaViewModel.resendFactor(factor: factor)
-                            logger.log("Resend Code: \(factor.type.rawValue)")
-                        }
-                        let onCancelClick = { () -> Void in
-                            oktaViewModel.cancelFactor()
-                            logger.log("Cancel MFA")
-                        }
-                        let onVerifyClick = { (passCode: String) -> Void in
-                            oktaViewModel.verifyFactor(passCode: passCode)
-                            logger.log("Verify Click: [\(passCode)]")
-                        }
+            NavigationView {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        //-----------------------------------------------
+                        // Draw Logo
+                        Image("agent-app-logo").background(Color.white)
+                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 70, trailing: 0))
+                            .accessibilityLabel("Ameritas Logo")
+                            .accessibilityAddTraits(.isImage)
                         
                         //-----------------------------------------------------
-                        // Draw view
-                        OktaMFAView(factors: oktaViewModel.factors,
-                                    onSendCodeClick: onSendCodeClick,
-                                    onResendClick: onResendClick,
-                                    onVerifyClick: onVerifyClick,
-                                    onCancelClick: onCancelClick)
-                    }
-                    //-----------------------------------------------------
-                    // Have not logged in yet
-                    else {
-                        //-----------------------------------------------------
-                        // Define the actions outside of view so it can be tested
-                        // separately
-                        let onLoginClick = { ( name: String, cred: String) -> Void in
-                            oktaViewModel.signIn(name: name, cred: cred)
+                        // Passed login and passed mfa
+                        if ( isMFA && isAuthenticated ) {
+                            VStack {
+                                Text("Retrieving user info...")
+                            }
                         }
-                        let onDemoModeClick =  { () -> Void in
-                            oktaViewModel.demoMode()
-                        }
-                        
                         //-----------------------------------------------------
-                        // Draw view
-                        OktaLoginView(demoMode: demoMode,
-                                      onLoginClick: onLoginClick,
-                                      onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
-                        .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                        // Logged in, but not passed MFA
+                        else if ( isMFA ) {
+                            //-----------------------------------------------------
+                            // Define the actions outside of view so it can be tested
+                            // separately
+                            let onSendCodeClick = { ( factor: OktaFactor, isChange: Bool) -> Void in
+                                // NOTE: Not using isChange now... this will be
+                                // if Okta can fix sending a different MFA factor
+                                oktaViewModel.sendFactor(factor: factor)
+                                logger.log("Send Code: \(factor.type.rawValue)")
+                            }
+                            let onResendClick = { ( factor: OktaFactor ) -> Void in
+                                oktaViewModel.resendFactor(factor: factor)
+                                logger.log("Resend Code: \(factor.type.rawValue)")
+                            }
+                            let onCancelClick = { () -> Void in
+                                oktaViewModel.cancelFactor()
+                                logger.log("Cancel MFA")
+                            }
+                            let onVerifyClick = { (passCode: String) -> Void in
+                                oktaViewModel.verifyFactor(passCode: passCode)
+                                logger.log("Verify Click: [\(passCode)]")
+                            }
+                            
+                            //-----------------------------------------------------
+                            // Draw view
+                            OktaMFAView(factors: oktaViewModel.factors,
+                                        onSendCodeClick: onSendCodeClick,
+                                        onResendClick: onResendClick,
+                                        onVerifyClick: onVerifyClick,
+                                        onCancelClick: onCancelClick)
+                        }
+                        //-----------------------------------------------------
+                        // Have not logged in yet
+                        else {
+                            //-----------------------------------------------------
+                            // Define the actions outside of view so it can be tested
+                            // separately
+                            let onLoginClick = { ( name: String, cred: String) -> Void in
+                                oktaViewModel.signIn(name: name, cred: cred)
+                            }
+                            let onDemoModeClick =  { () -> Void in
+                                oktaViewModel.demoMode()
+                            }
+                            
+                            //-----------------------------------------------------
+                            // Draw view
+                            OktaLoginView(demoMode: demoMode,
+                                          onLoginClick: onLoginClick,
+                                          onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
+                            .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                        }
                     }
+                    .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))
                 }
-                .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))
-            }
-            .edgesIgnoringSafeArea(.top)
-            .navigationBarItems(trailing:
-                                    Button {
-                oktaViewModel.showingOptions = true
-            }
-                                label: {
-                Image(systemName: "ellipsis.circle")
-                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                
-            }
-                .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
-                    Button("App Privacy") {
-                        openURL(URL(string: "https://www.ameritas.com/about/online-privacy/")!)
-                    }
-                    Button("Ameritas Online Privacy Notice") {
-                        openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
-                    }
-                    Button("Privacy") {
-                        openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
-                    }
-                    Button("Disclosures") {
-                        oktaViewModel.selection = "Disclosures"
-                    }
-                    Button("Legal/Term of Use") {
-                        openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
-                    }
+                .edgesIgnoringSafeArea(.top)
+                .navigationBarItems(trailing:
+                                        Button {
+                    oktaViewModel.showingOptions = true
+                }
+                                    label: {
+                    Image(systemName: "ellipsis.circle")
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
                     
                 }
-            )
+                    .confirmationDialog("Select a color", isPresented: $oktaViewModel.showingOptions, titleVisibility: .visible) {
+                        Button("App Privacy") {
+                            openURL(URL(string: "https://www.ameritas.com/about/online-privacy/")!)
+                        }
+                        Button("Ameritas Online Privacy Notice") {
+                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
+                        }
+                        Button("Privacy") {
+                            openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
+                        }
+                        Button("Disclosures") {
+                            oktaViewModel.selection = "Disclosures"
+                        }
+                        Button("Legal/Term of Use") {
+                            openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
+                        }
+                        
+                    }
+                )
+            }
         }
-        
-        
     }
 }
 
