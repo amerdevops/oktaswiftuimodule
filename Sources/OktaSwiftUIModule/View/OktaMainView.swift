@@ -142,7 +142,7 @@ public struct OktaMainView: View {
                                     openURL(URL(string: "https://www.ameritas.com/about/privacy/")!)
                                 }
                                 Button("Disclosures") {
-                                    oktaViewModel.selection = "Disclosures"
+                                    NavigationLink(destination: DisclosuresView().navigationTitle("Disclosures")
                                 }
                                 Button("Legal/Term of Use") {
                                     openURL(URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
