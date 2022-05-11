@@ -23,7 +23,6 @@ public struct OktaMainView: View {
     @EnvironmentObject
     var oktaViewModel: OktaViewModel
     
-    @Environment(\.openURL) var openURL
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaMainView")
     
