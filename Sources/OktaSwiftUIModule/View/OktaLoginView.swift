@@ -87,7 +87,7 @@ public struct OktaLoginView: View {
                         Toggle("", isOn: $acceptTAndC)
                             .labelsHidden()
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                        HStack{
+                        Label{
                             Text("By signing in, you agree to the")
                             Link("Ameritas Online Privacy Notice", destination: URL(string: "https://www.ameritas.com/about/online-privacy/")!)
                             Text("and the")
