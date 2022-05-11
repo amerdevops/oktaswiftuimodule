@@ -87,7 +87,12 @@ public struct OktaLoginView: View {
                         Toggle("", isOn: $acceptTAndC)
                             .labelsHidden()
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                        Text("I accept Ameritas Terms and Conditions")
+                        HStack{
+                            Text("By signing in, you agree to the")
+                            Link("Ameritas Online Privacy Notice", destination: URL(string: "https://www.ameritas.com/about/online-privacy/")!)
+                            Text("and the")
+                            Link("Legal/Terms of Use.", destination: URL(string: "https://www.ameritas.com/about/legal-terms-of-use/")!)
+                        }
                             .footnote()
                             .fixedSize(horizontal: false, vertical: true)
                             .multilineTextAlignment(.leading)
