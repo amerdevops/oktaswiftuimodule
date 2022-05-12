@@ -88,7 +88,7 @@ public struct OktaLoginView: View {
                         .font(K.BrandFont.regular16)
                         .foregroundColor(K.BrandColor.lightDarkGray)
                 }
-                .padding(EdgeInsets(top: 42, leading: 5, bottom: 20, trailing: 5))
+                .padding(EdgeInsets(top: 42, leading: 0, bottom: 0, trailing: 0))
                 .frame(maxWidth: .infinity, minHeight: 44)
                 
                 //-----------------------------------------------
