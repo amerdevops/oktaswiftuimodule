@@ -82,23 +82,13 @@ public struct OktaLoginView: View {
                 
                 //-----------------------------------------------
                 // Draw Accept Terms / Conditions
-                Button(action: { acceptTAndC = !acceptTAndC }){
-                    HStack{
-                        Toggle("", isOn: $acceptTAndC)
-                            .labelsHidden()
-                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                        Text("I accept Ameritas Terms and Conditions")
-                            .footnote()
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 44)
+                
+                HStack{
+                    Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use)")
+                    
                 }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Accept Terms and Conditions")
-                .accessibilityValue(acceptTAndC ? "On" : "Off")
-                .accessibilityAddTraits(.isButton)
-                .accessibilityIdentifier("Button-Accept-TC-ID")
+                .frame(maxWidth: .infinity, minHeight: 44)
+                
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
