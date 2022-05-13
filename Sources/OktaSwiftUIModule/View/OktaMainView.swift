@@ -111,6 +111,17 @@ public struct OktaMainView: View {
                                   onLoginClick: onLoginClick,
                                   onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
+                    
+                    //-----------------------------------------------
+                    // Draw Accept Terms / Conditions
+                    
+                    
+                    Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
+                        .font(K.BrandFont.regular16)
+                        .multilineTextAlignment(TextAlignment.center)
+                        .foregroundColor(K.BrandColor.lightDarkGray)
+                        .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))

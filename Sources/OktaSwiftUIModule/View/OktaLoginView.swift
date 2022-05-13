@@ -78,15 +78,7 @@ public struct OktaLoginView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                //-----------------------------------------------
-                // Draw Accept Terms / Conditions
                 
-                
-                Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
-                    .font(K.BrandFont.regular16)
-                    .foregroundColor(K.BrandColor.lightDarkGray)
-                    .padding(EdgeInsets(top: 42, leading: 0, bottom: 0, trailing: 0))
-                    .fixedSize(horizontal: false, vertical: true)
                 
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
