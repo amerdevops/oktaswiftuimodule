@@ -89,7 +89,7 @@ public struct OktaLoginView: View {
                         .foregroundColor(K.BrandColor.lightDarkGray)
                 }
                 .padding(EdgeInsets(top: 42, leading: 0, bottom: 0, trailing: 0))
-                .frame(maxWidth: .infinity, minHeight: .infinity)
+                .frame(maxWidth: .infinity, minHeight: 80)
                 
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
