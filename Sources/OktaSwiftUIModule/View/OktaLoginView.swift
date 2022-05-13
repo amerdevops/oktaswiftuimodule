@@ -23,7 +23,6 @@ public struct OktaLoginView: View {
     
     @State var name: String = ""
     @State var cred: String = ""
-    @State var acceptTAndC = false
     @State var demoAccept = false
 
     
@@ -74,8 +73,6 @@ public struct OktaLoginView: View {
                             self.onLoginClick(name, cred)
                     }
                 }
-                .btnFilled(acceptTAndC == false || isLoginEnabled == false)
-                .disabled(acceptTAndC == false || isLoginEnabled == false)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
