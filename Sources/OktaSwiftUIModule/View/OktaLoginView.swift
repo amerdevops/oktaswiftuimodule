@@ -73,6 +73,7 @@ public struct OktaLoginView: View {
                             self.onLoginClick(name, cred)
                     }
                 }
+                .btnFilled(true)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
