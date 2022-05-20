@@ -16,7 +16,8 @@ import os
  * Primary Okta View
  * This view holds the primary Okta screens and handles navigating between login and MFA views.
  */
-public struct OktaMainView: View {
+public struct OktaMainView<BottomContent:View>: View {
+    let bottomContent: BottomContent
     
     @ScaledMetric var heightPad: CGFloat = UIScreen.main.bounds.height * 0.1
     
@@ -31,8 +32,10 @@ public struct OktaMainView: View {
     /**
      * Initialize the class
      */
-    public init(demoMode: Bool = false) {
+    public init(demoMode: Bool = false,
+                @ViewBuilder bottomContent: () -> BottomContent ) {
         self.demoMode = demoMode
+        self.bottomContent = bottomContent()
     }
     
     /**
@@ -114,14 +117,16 @@ public struct OktaMainView: View {
                     
                     //-----------------------------------------------
                     // Draw Accept Terms / Conditions
-                    
-                    
                     Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
                         .font(K.BrandFont.regular16)
                         .multilineTextAlignment(TextAlignment.center)
                         .foregroundColor(K.BrandColor.lightDarkGray)
                         .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
                         .fixedSize(horizontal: false, vertical: true)
+                    
+                    //-----------------------------------------------
+                    // Draw Bottom Content (if passed)
+                    bottomContent
                 }
             }
             .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))
@@ -154,19 +159,24 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel()
         Group {
-            OktaMainView()
+            OktaMainView(bottomContent: {
+                Text("© 2022 Ameritas Mutual Holding Company")
+                    .captionGrey()
+                    .padding(EdgeInsets(top: 128, leading: 16, bottom: 0, trailing: 16))
+                Text("AgentMobileApplication/1.2_46 iPhone iOS/15.4")
+                .captionGrey() })
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("Login Light Mode (iPhone 12)")
             
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("Login Dark Mode (iPhone 12)")
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
                 .background(Color(.systemBackground))
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
@@ -184,12 +194,12 @@ struct OktaMainView_iPod_Login_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel()
         Group {
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("Login Light Mode (iPod touch)")
             
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
                 .previewDevice(PreviewDevice(rawValue: "iPod touch"))
                 .background(Color(.systemBackground))
@@ -205,18 +215,18 @@ struct OktaMainView_MFA_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel(isMFA: true)
         Group {
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("MFA Light Mode")
             
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("MFA Dark Mode")
             
-            OktaMainView()
+            OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
                 .background(Color(.systemBackground))
                 .environment(\.sizeCategory, .extraExtraExtraLarge)

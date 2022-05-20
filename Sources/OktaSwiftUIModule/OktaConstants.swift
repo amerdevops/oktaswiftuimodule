@@ -245,4 +245,5 @@ extension View {
     func footnote() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .footnote, weight: .regular )) }
     func footnoteHdr() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .footnote, weight: .medium )) }
     func headline() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .headline, weight: .medium )) }
+    func captionGrey() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .caption, weight: .medium )) }
 }
