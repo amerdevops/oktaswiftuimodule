@@ -39,7 +39,7 @@ struct OktaUIKitTextField: UIViewRepresentable {
         // textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         textField.placeholder = NSLocalizedString(titleKey, comment: "")
-        // (2) Set the placeholder color to the higher contrast grey #767676
+        // (2) Set the placeholder color to the higher contrast gray #767676
         textField.attributedPlaceholder = NSAttributedString(
             string: NSLocalizedString(titleKey, comment: ""),
             attributes: [.foregroundColor: UIColor(red: 118/255, green: 118/255, blue: 118/255, alpha: 1)]

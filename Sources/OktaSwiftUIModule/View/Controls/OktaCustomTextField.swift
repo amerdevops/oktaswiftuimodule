@@ -75,10 +75,10 @@ struct CustomSecureInput: View {
                 isSecured.toggle()
             }) {
                 Image(systemName: self.isSecured ? "eye.slash" : "eye")
-                    .accentColor(K.getColor(.primaryLightGrey, isDark))
+                    .accentColor(K.getColor(.primaryLightGray, isDark))
                     .padding(10)
             }
-            .bodyGreyReg()
+            .bodyGrayReg()
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(self.isSecured ? "Show Password" : "Hide Password")
             .accessibilityAddTraits(.isButton)

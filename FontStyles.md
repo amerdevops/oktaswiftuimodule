@@ -39,21 +39,21 @@ Text(getMsg())
 | --- | --- | --- | --- |
 | largeTitle |  |  |  |
 | title | medium | (#000000) - .contrast | `.titleContrast()` |
-| title | medium | (#595959) - .lightDarkGray | `.titleGrey()` |
+| title | medium | (#595959) - .lightDarkGray | `.titleGray()` |
 | title2 |  |  |  |
 | title3 |  |  |  |
 | headline | medium | (#333333) -.secondaryBlack | `.headline()` |
 | subheadline |  |  |  |
 | body | medium | (#000000) - .contrast | `.bodyContrast()` |
 | body | medium | (#FFFFFF) - .reverse | `.bodyReverse()` |
-| body | medium | (#595959) -.lightDarkGray | `.bodyGrey()` |
-| body | regular | (#595959) -.lightDarkGray | `.bodyGreyReg()` |
+| body | medium | (#595959) -.lightDarkGray | `.bodyGray()` |
+| body | regular | (#595959) -.lightDarkGray | `.bodyGrayReg()` |
 | body | regular | (#000000) - .contrast | `.labelContrast()` |
 | body | regular | (#333333) -.secondaryBlack | `.labelDark()` |
 | callout |  |  |  |
 | footnote | regular | (#595959) -.lightDarkGray | `.footnote()` |
 | footnote | medium | (#333333) -.secondaryBlack | `.footnoteHdr()` |
-| caption | regular | (#595959) -.lightDarkGray | `.captionGrey()` |
+| caption | regular | (#595959) -.lightDarkGray | `.captionGray()` |
 | caption2 |  |  |  |
 
 ### **<span style="color:orange">K.BrandColors and K.getColor()</span>**
@@ -64,17 +64,17 @@ The `K.getColor` takes in the `CustomColorScheme` enum and whether the OS is in 
 | --- | --- | --- | --- |
 | #000000 | .black | `.contrast` | .white |
 | #FFFFFF | .white | `.reverse` | .black |
-| #595959 | .lightDarkGray | `.lightDarkGray` | .primaryLightGrey |
+| #595959 | .lightDarkGray | `.lightDarkGray` | .primaryLightGray |
 | #333333 | .secondaryBlack | `.secondaryBlack` | .white |
-| #767676 | .primaryLightGrey | `.primaryLightGrey` | .white |
+| #767676 | .primaryLightGray | `.primaryLightGray` | .white |
 | #D3222A | .redError | `.redError` | .lightRedError |
-| #9C9C9C | .grey | `.grey` | .darkGrey |
+| #9C9C9C | .gray | `.gray` | .darkGray |
 | #0758AC | .blue | `.blue` | .lightBlue |
 | #32571A | .green | `.green` | .darkGreen |
 | #E36A00 | .orange | `.orange` | .lightOrange |
-| #E8E8E9 | .lightGrey |  |  |
-| #838387 | .darkGrey |  |  |
-| #F9F9F9 | .veryLightGrey |  |  |
+| #E8E8E9 | .lightGray |  |  |
+| #838387 | .darkGray |  |  |
+| #F9F9F9 | .veryLightGray |  |  |
 | #BE6064 | .lightRedError |  |  |
 | #32571A | .darkGreen |  |  |
 | #F3AF22 | .lightOrange |  |  |

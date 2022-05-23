@@ -161,10 +161,10 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
         Group {
             OktaMainView(bottomContent: {
                 Text("© 2022 Ameritas Mutual Holding Company")
-                    .captionGrey()
+                    .captionGray()
                     .padding(EdgeInsets(top: 128, leading: 16, bottom: 0, trailing: 16))
                 Text("AgentMobileApplication/1.2_46 iPhone iOS/15.4")
-                .captionGrey() })
+                .captionGray() })
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                 .environmentObject(oktaViewModel)
                 .previewDisplayName("Login Light Mode (iPhone 12)")
