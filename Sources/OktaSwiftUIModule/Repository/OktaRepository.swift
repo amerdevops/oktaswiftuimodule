@@ -163,7 +163,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 self?.handleStatus(status: status)
             }
             else if let successStatus = status as? OktaAuthStatusSuccess{
-                self?.handleStatus(status: status)
+                self?.handleStatus(status: successStatus)
                 self?.authenticateOIDC(onSuccess: onSuccess, onError: onError)
             }
             else {

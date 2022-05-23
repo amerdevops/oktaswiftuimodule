@@ -18,7 +18,7 @@ struct CustomFilledButton: ButtonStyle {
     var isDark : Bool { return colorScheme == .dark }
     var buttonColor : Color {
         return (disabled ?
-                    K.getColor(.primaryLightGrey, isDark) :
+                    K.getColor(.primaryLightGray, isDark) :
                     K.getColor(.blue, isDark))
     }
 
@@ -45,7 +45,7 @@ struct CustomOutlineButton: ButtonStyle {
     var isDark : Bool { return colorScheme == .dark }
     var buttonColor : Color {
         return (disabled ?
-                    K.getColor(.primaryLightGrey, isDark) :
+                    K.getColor(.primaryLightGray, isDark) :
                     K.getColor(.blue, isDark))
     }
 
@@ -74,7 +74,7 @@ struct CustomPlainButton: ButtonStyle {
     var isDark : Bool { return colorScheme == .dark }
     var buttonColor : Color {
         return (disabled ?
-                    K.getColor(.primaryLightGrey, isDark) :
+                    K.getColor(.primaryLightGray, isDark) :
                     K.getColor(.blue, isDark))
     }
 

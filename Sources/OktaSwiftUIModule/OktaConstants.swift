@@ -22,14 +22,14 @@ struct K
         static let lightDarkGray = Color(red: 89/255, green: 89/255, blue: 89/255) //#595959
         static let secondaryBlack = Color(red: 51/255, green: 51/255, blue: 51/255) //#333333
         static let lightBlue = Color(#colorLiteral(red: 0.1516653001, green: 0.6443269849, blue: 1, alpha: 1))
-        static let grey = Color(#colorLiteral(red: 0.6117647059, green: 0.6117647059, blue: 0.6117647059, alpha: 1)) // #9C9C9C
-        static let lightGrey = Color(red: 232/255, green: 232/255, blue: 233/255) //#E8E8E9
-        static let lightGrey2 = Color(red: 238/255, green: 238/255, blue: 238/255) //#EEEEEE
-        static let darkGrey = Color(red: 131/255, green: 131/255, blue: 135/255) //#838387
-        static let primaryLightGrey = Color(red: 118/255, green: 118/255, blue: 118/255) //#767676
+        static let gray = Color(#colorLiteral(red: 0.6117647059, green: 0.6117647059, blue: 0.6117647059, alpha: 1)) // #9C9C9C
+        static let lightGray = Color(red: 232/255, green: 232/255, blue: 233/255) //#E8E8E9
+        static let lightGray2 = Color(red: 238/255, green: 238/255, blue: 238/255) //#EEEEEE
+        static let darkGray = Color(red: 131/255, green: 131/255, blue: 135/255) //#838387
+        static let primaryLightGray = Color(red: 118/255, green: 118/255, blue: 118/255) //#767676
         static let purple = Color(red: 129/255, green: 99/255, blue: 211/255) //#8163D3
         static let white = Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)) // #FFFFFF
-        static let veryLightGrey = Color(red: 249/255, green: 249/255, blue: 249/255) //#F9F9F9
+        static let veryLightGray = Color(red: 249/255, green: 249/255, blue: 249/255) //#F9F9F9
         static let redError = Color(#colorLiteral(red: 0.8274509804, green: 0.1333333333, blue: 0.1647058824, alpha: 1))
         static let lightRedError = Color(#colorLiteral(red: 0.7450980392, green: 0.3764705882, blue: 0.3921568627, alpha: 1))
         static let black = Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
@@ -72,11 +72,11 @@ struct K
     struct BrandFontMod
     {
         static let titleContrast = FontViewModifier(color: .contrast, font: .title, weight: .regular ) // Large: 28
-        static let titleGrey = FontViewModifier(color: .lightDarkGrey, font: .title, weight: .regular ) // Large: 28
+        static let titleGray = FontViewModifier(color: .lightDarkGray, font: .title, weight: .regular ) // Large: 28
         static let detailContrast = FontViewModifier(color: .contrast, font: .body, weight: .regular ) // Large: 17
-        static let detailGrey = FontViewModifier(color: .lightDarkGrey, font: .body, weight: .regular ) // Large: 17
+        static let detailGray = FontViewModifier(color: .lightDarkGray, font: .body, weight: .regular ) // Large: 17
         static let labelContrast = FontViewModifier(color: .contrast, font: .subheadline, weight: .bold ) // Large: 15
-        static let labelGrey = FontViewModifier(color: .grey, font: .subheadline, weight: .bold ) // Large: 15
+        static let labelGray = FontViewModifier(color: .gray, font: .subheadline, weight: .bold ) // Large: 15
         static let statusGreen = FontViewModifier(color: .green, font: .callout, weight: .bold ) // Large: 16
         static let statusOrange = FontViewModifier(color: .orange, font: .callout, weight: .bold ) // Large: 16
         static let statusBlue = FontViewModifier(color: .blue, font: .callout, weight: .bold ) // Large: 16
@@ -84,11 +84,11 @@ struct K
         static let value1Contrast = FontViewModifier(color: .blue, font: .callout, weight: .regular ) // Large: 16
         
         static let contrast = FontViewModifier(color: .contrast, font: .body, weight: .regular )
-        static let normal = FontViewModifier(color: .lightDarkGrey, font: .body, weight: .regular )
-        static let label = FontViewModifier(color: .lightDarkGrey, font: .body, weight: .regular )
-        static let placeholder = FontViewModifier(color: .primaryLightGrey, font: .body, weight: .regular )
+        static let normal = FontViewModifier(color: .lightDarkGray, font: .body, weight: .regular )
+        static let label = FontViewModifier(color: .lightDarkGray, font: .body, weight: .regular )
+        static let placeholder = FontViewModifier(color: .primaryLightGray, font: .body, weight: .regular )
         static let error = FontViewModifier(color: .redError, font: .body, weight: .regular )
-        static let supplemental = FontViewModifier(color: .primaryLightGrey, font: .footnote, weight: .regular )
+        static let supplemental = FontViewModifier(color: .primaryLightGray, font: .footnote, weight: .regular )
         
     }
     
@@ -109,7 +109,7 @@ struct K
         .all: Text("All")
     ]
     
-    static let defaultCaseSummaryStatusColor: Color = BrandColor.grey
+    static let defaultCaseSummaryStatusColor: Color = BrandColor.gray
     /**
      * getColor
      * Get the correct color by color scheme (category) whether it is in dark mode or not
@@ -119,10 +119,10 @@ struct K
         case .contrast: return isDark ? K.BrandColor.white : K.BrandColor.black
         case .reverse: return isDark ? K.BrandColor.black : K.BrandColor.white
         case .secondaryBlack: return isDark ? K.BrandColor.white : K.BrandColor.secondaryBlack
-        case .primaryLightGrey: return isDark ? K.BrandColor.white : K.BrandColor.primaryLightGrey
-        case .lightDarkGrey: return isDark ? K.BrandColor.primaryLightGrey : K.BrandColor.lightDarkGray
+        case .primaryLightGray: return isDark ? K.BrandColor.white : K.BrandColor.primaryLightGray
+        case .lightDarkGray: return isDark ? K.BrandColor.primaryLightGray : K.BrandColor.lightDarkGray
         case .redError: return isDark ? K.BrandColor.lightRedError : K.BrandColor.redError
-        case .grey: return isDark ? K.BrandColor.grey : K.BrandColor.darkGrey
+        case .gray: return isDark ? K.BrandColor.gray : K.BrandColor.darkGray
         case .blue: return isDark ? K.BrandColor.lightBlue : K.BrandColor.blue
         case .green: return isDark ? K.BrandColor.lightGreen : K.BrandColor.darkGreen
         case .orange: return isDark ? K.BrandColor.lightOrange : K.BrandColor.orange
@@ -169,10 +169,10 @@ enum CustomColorScheme: String
     case contrast = "Contrast"
     case reverse = "Reverse"
     case secondaryBlack = "SecondaryBlack"
-    case primaryLightGrey = "PrimaryLightGrey"
-    case lightDarkGrey = "LightDarkGrey"
+    case primaryLightGray = "PrimaryLightGray"
+    case lightDarkGray = "LightDarkGray"
     case redError = "RedError"
-    case grey = "Grey"
+    case gray = "Gray"
     case blue = "Blue"
     case green = "Green"
     case orange = "Orange"
@@ -235,14 +235,15 @@ extension View {
 
 extension View {
     func titleContrast() -> some View  { self.modifier(FontViewModifier(color: .contrast, font: .title, weight: .medium )) }
-    func titleGrey() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .title, weight: .medium )) }
+    func titleGray() -> some View { self.modifier(FontViewModifier(color: .lightDarkGray, font: .title, weight: .medium )) }
     func bodyContrast() -> some View { self.modifier(FontViewModifier(color: .contrast, font: .body, weight: .medium )) }
     func bodyReverse() -> some View { self.modifier(FontViewModifier(color: .reverse, font: .body, weight: .medium )) }
-    func bodyGrey() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .body, weight: .medium )) }
-    func bodyGreyReg() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .body, weight: .regular )) }
+    func bodyGray() -> some View { self.modifier(FontViewModifier(color: .lightDarkGray, font: .body, weight: .medium )) }
+    func bodyGrayReg() -> some View { self.modifier(FontViewModifier(color: .lightDarkGray, font: .body, weight: .regular )) }
     func labelContrast() -> some View { self.modifier(FontViewModifier(color: .contrast, font: .body, weight: .regular )) }
     func labelDark() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .body, weight: .regular )) }
-    func footnote() -> some View { self.modifier(FontViewModifier(color: .lightDarkGrey, font: .footnote, weight: .regular )) }
+    func footnote() -> some View { self.modifier(FontViewModifier(color: .lightDarkGray, font: .footnote, weight: .regular )) }
     func footnoteHdr() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .footnote, weight: .medium )) }
     func headline() -> some View { self.modifier(FontViewModifier(color: .secondaryBlack, font: .headline, weight: .medium )) }
+    func captionGray() -> some View { self.modifier(FontViewModifier(color: .lightDarkGray, font: .caption, weight: .medium )) }
 }

@@ -230,7 +230,7 @@ struct OktaDropdownMFA: View {
                 VStack(spacing: 0){
                     HStack{
                         Text("Select")
-                            .bodyGreyReg()
+                            .bodyGrayReg()
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0))
                         Spacer()
                         Image(systemName: "chevron.down")
