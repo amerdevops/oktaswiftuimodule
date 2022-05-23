@@ -24,6 +24,9 @@ open class OktaViewModel : ObservableObject {
     public var isDemoMode: Bool = false
     
     @Published
+    public var isLoginEnabled: Bool = true
+    
+    @Published
     public var isAuthenticated : Bool = false
     
     @Published
@@ -43,6 +46,10 @@ open class OktaViewModel : ObservableObject {
     
     @Published
     public var isUserSet: Bool = false
+    
+    @Published
+    public var showingOptions: Bool = false
+    
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
@@ -82,7 +89,12 @@ open class OktaViewModel : ObservableObject {
      * This method handles setting the state if an error occurs
      */
     private func onError(msg: String) {
-        alert = msg
+        // Enable login button
+        self.isLoginEnabled = true
+        let token = msg.components(separatedBy: ":")
+        // Get error code
+        let errorCode = token[0]
+        alert = errorCode.isEmpty ? msg : K.getCustomError(errorCode).isEmpty ? msg : K.getCustomError(errorCode)
         showAlert = true
         self.logger.log("\(msg, privacy: .public)")
         eventOnError(msg)
@@ -93,33 +105,62 @@ open class OktaViewModel : ObservableObject {
      */
     public func signIn( name: String, cred: String ) {
         self.logger.log("SIGNING IN....")
-
+        self.isLoginEnabled = false
         //-----------------------------------------------
         // Define Success closure
-        let onSuccess = { (factors: [OktaFactor]) -> Void in
-            self.logger.log("SIGN IN SUCCESS: [\(factors.count, privacy: .public) factors]")
+        let onSuccess = { () -> Void in
+            self.logger.log("SIGN IN SUCCESS: ")
+            //---------------------------------------------------------
+            // Change state if sign in was successful
+            self.factors.removeAll()
+            
+            self.isMFA = true
+            
+            //---------------------------------------------------------
+            // Change state if MFA verify was successful
+            self.isAuthenticated = true
+
+            //---------------------------------------------------------
+            // Trigger get user
+            self.getUser()
+            
+            //---------------------------------------------------------
+            // Trap Event
+            self.eventSignInSuccess()
+            //---------------------------------------------------------
+            // Enable login button
+            self.isLoginEnabled = true
+        }
+        
+        let onMFAChallenge = { (factors: [OktaFactor]) -> Void in
+            self.logger.log("MFA CHALLENGE: [\(factors.count, privacy: .public) factors]")
             //---------------------------------------------------------
             // Change state if sign in was successful
             self.factors.removeAll()
             self.factors.append(contentsOf: factors)
             self.isMFA = true
-            
             //---------------------------------------------------------
             // Trap Event
             self.eventSignInSuccess()
+            //---------------------------------------------------------
+            // Enable login button
+            self.isLoginEnabled = true
         }
+        
+        
 
         //-----------------------------------------------
         // Mock Data if UI Test
         if (isUITest) {
             self.logger.log("UI TEST (signIn)....")
-            onSuccess(OktaUtilMocks.getOktaFactors())
+            onSuccess()
             return
         }
 
         //-----------------------------------------------
         // Call sign in
-        repo.signIn(username: name, password: cred, onSuccess: onSuccess, onError: self.onError)
+        repo.signIn(username: name, password: cred, onSuccess: onSuccess, onMFAChallenge: onMFAChallenge, onError: self.onError)
+        
     }
     
     /**
@@ -203,6 +244,8 @@ open class OktaViewModel : ObservableObject {
         // Define Success closure
         let onSuccess = { (status: OktaAuthStatusFactorChallenge) -> Void in
             self.logger.log("RESEND FACTOR SUCCESS: [\(status.user?.id ?? "unknown", privacy: .public)][\(status.stateToken, privacy: .public)]")
+            
+            self.onError(msg: "E9999902: Resending the authentication code")
             //---------------------------------------------------------
             // Trap Event
             self.eventResendFactorSuccess()

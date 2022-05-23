@@ -21,7 +21,7 @@ import os
  */
 public protocol OktaRepository {
     func checkValidState() -> Error?
-    func signIn(username: String, password: String, onSuccess: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void)
+    func signIn(username: String, password: String, onSuccess: @escaping () -> Void,  onMFAChallenge: @escaping (([OktaFactor])) -> Void, onError: @escaping ((String)) -> Void)
     func sendFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func changeFactor(factor: OktaFactor, onSuccess: @escaping ((OktaAuthStatusFactorChallenge)) -> Void, onError: @escaping ((String)) -> Void)
     func cancelFactor()
@@ -46,14 +46,30 @@ public class OktaRepositoryImpl : OktaRepository {
     var user: OktaOidcStateManager?
     var oktaStatus: OktaAuthStatus?
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
-    let urlString = "https://ameritas-d.oktapreview.com"
+    var urlString: String?
     
-    public init() {
+    public convenience init() {
+        self.init(nil)
+    }
+    
+    public init(_ fromPlist: String?) {
         let loggerInst = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaRepositoryImpl")
         do {
             //---------------------------------------------------------------
-            // Pull Okta OIDC configuration from Okta.plist
-            oktaOidc = try OktaOidc()
+            // Pull Okta OIDC configuration from Okta.plist or specified list
+            if let fromPlist = fromPlist {
+                oktaOidcConfig = try OktaOidcConfig(fromPlist: fromPlist)
+                oktaOidc = try OktaOidc(configuration: oktaOidcConfig)
+            } else {
+                oktaOidc = try OktaOidc()
+                oktaOidcConfig = oktaOidc?.configuration
+            }
+            //---------------------------------------------------------------
+            // Pull main URL from Okta Configuration
+            if let issuer = oktaOidc?.configuration.issuer,
+               let myUrl = URL(string: issuer) {
+                urlString = "https://" + (myUrl.host ?? "")
+            }
         } catch let error {
             DispatchQueue.main.async {
                 loggerInst.error("\(error.localizedDescription)")
@@ -135,27 +151,42 @@ public class OktaRepositoryImpl : OktaRepository {
      * on the results.
      */
     public func signIn(username: String, password: String,
-                onSuccess: @escaping (([OktaFactor])) -> Void,
+                onSuccess: @escaping () -> Void,
+                onMFAChallenge: @escaping (([OktaFactor])) -> Void,
                 onError: @escaping ((String)) -> Void) {
 
         //-----------------------------------------------
         // Define Success / Failure closures
         let successBlock: (OktaAuthStatus) -> Void = { [weak self] status in
             if let mfaStatus = status as? OktaAuthStatusFactorRequired {
-                onSuccess(mfaStatus.availableFactors)
+                onMFAChallenge(mfaStatus.availableFactors)
+                self?.handleStatus(status: status)
             }
-            self?.handleStatus(status: status)
+            else if let successStatus = status as? OktaAuthStatusSuccess{
+                self?.handleStatus(status: successStatus)
+                self?.authenticateOIDC(onSuccess: onSuccess, onError: onError)
+            }
+            else {
+                onError("ERROR OCCURRED: \(status.statusType)")
+                self?.handleStatus(status: status)
+            }
+            
         }
+        
+        // handle error
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Authenticate...
-        OktaAuthSdk.authenticate(with: URL(string: urlString)!,
-                                 username: username,
-                                 password: password,
-                                 onStatusChange: successBlock,
-                                 onError: errorBlock)
+        if let urlOkta = urlString {
+            OktaAuthSdk.authenticate(with: URL(string: urlOkta)!,
+                                     username: username,
+                                     password: password,
+                                     onStatusChange: successBlock,
+                                     onError: errorBlock)
+            
+        }
     }
 
     /**
@@ -178,7 +209,7 @@ public class OktaRepositoryImpl : OktaRepository {
             }
         }
         let errorBlock: (OktaError) -> Void = { error in
-            onError(error.localizedDescription)
+            onError(self.handleError(error: error))
         }
         //-----------------------------------------------
         // Trigger send factor
@@ -238,7 +269,7 @@ public class OktaRepositoryImpl : OktaRepository {
                     }
                 }
                 let errorBlock: (OktaError) -> Void = { error in
-                    onError(error.localizedDescription)
+                    onError(self.handleError(error: error))
                 }
                 
                 //-----------------------------------------------
@@ -311,7 +342,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 self?.authenticateOIDC(onSuccess: onOIDCSuccess, onError: onError)
             }
             let errorBlock: (OktaError) -> Void = { error in
-                onError(error.localizedDescription)
+                onError(self.handleError(error: error))
             }
 
             //---------------------------------------------------------------------
@@ -478,7 +509,7 @@ public class OktaRepositoryImpl : OktaRepository {
             self.logger.log("Asking OIDC client for access token...")
             oidcClient.authenticate(withSessionToken: status.sessionToken!, callback: { [weak self] stateManager, error in
                 if let err = error {
-                    onError(err.localizedDescription)
+                    onError("E9999901" + ": " + err.localizedDescription)
                 } else {
                     if let sm = stateManager {
                         //-------------------------------------------------------------
@@ -571,6 +602,17 @@ public class OktaRepositoryImpl : OktaRepository {
             case .unknown(_):
                 // TODO
                 logStatus(status)
+        }
+    }
+    
+    func handleError(error: OktaError) -> String {
+        switch error {
+            case .connectionError(let errorResponse):
+                return "E9999900" + ": " + error.description
+            case .serverRespondedWithError(let errorResponse):
+                return (errorResponse.errorCode ?? "unknown") + ": " + error.description
+            default:
+                return error.description
         }
     }
 }

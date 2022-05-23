@@ -27,7 +27,7 @@ struct OktaMFAOptionsView: View {
                 HStack{
                     Image(systemName: "text.bubble.fill")
                         .imageScale(.large)
-                        .foregroundColor(K.getColor(.lightDarkGrey, isDark))
+                        .foregroundColor(K.getColor(.lightDarkGray, isDark))
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 32))
                         .accessibilityHidden(true)
                     VStack{
@@ -53,7 +53,7 @@ struct OktaMFAOptionsView: View {
                 HStack{
                     Image(systemName: "envelope.fill")
                         .imageScale(.large)
-                        .foregroundColor(K.getColor(.lightDarkGrey, isDark))
+                        .foregroundColor(K.getColor(.lightDarkGray, isDark))
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 32))
                         .accessibilityHidden(true)
                     VStack{
@@ -78,7 +78,7 @@ struct OktaMFAOptionsView: View {
                 HStack{
                     Image(systemName: "phone.fill")
                         .imageScale(.large)
-                        .foregroundColor(K.getColor(.lightDarkGrey, isDark))
+                        .foregroundColor(K.getColor(.lightDarkGray, isDark))
                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 36))
                     VStack{
                         HStack{

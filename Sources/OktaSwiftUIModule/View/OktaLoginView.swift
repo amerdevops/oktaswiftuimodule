@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Nathan DeGroff on 12/10/21.
 //
@@ -19,19 +19,21 @@ public struct OktaLoginView: View {
     var onDemoModeClick: () -> Void
     var demoMode: Bool
     var msg: String
+    var isLoginEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
-    @State var acceptTAndC = false
     @State var demoAccept = false
+
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void,
-                msg: String = "Welcome") {
+                onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
+                msg: String = "Welcome!") {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
+        self.isLoginEnabled = isLoginEnabled
         self.msg = msg
         UINavigationBar.appearance().backgroundColor = .none
     }
@@ -44,47 +46,15 @@ public struct OktaLoginView: View {
         VStack(alignment: .center, spacing: 50) {
             //-----------------------------------------------
             // Draw Welcome
-            Text(msg)
-                .titleContrast()
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: .center)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(msg)
-                .accessibilityIdentifier("Welcome-ID")
-            
-            Text("Sign in to receive your access code.")
-                .headlineDark()
-                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                .frame(alignment: .center)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Sign in to receive your access code.")
-                .accessibilityIdentifier("Second-Msg-ID")
                 
             //-----------------------------------------------
             // Draw username / password
             VStack {
-                HStack() {
-                    Text("ID")
-                        .labelDark()
-                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
-                        .accessibilityHidden(true)
-                    
-                    SuperTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
-                    
+                if #available(iOS 15.0, *) {
+                    OktaBigIDPassView($name, $cred)
+                } else {
+                    OktaRegularIDPassView($name, $cred)
                 }
-                Divider()
-                HStack() {
-                    Text("Password")
-                        .labelDark()
-                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
-                        .frame( width: 90, alignment: .topLeading )
-                        .accessibilityHidden(true)
-                    SecureInputView("Add Password", $cred,
-                                          "Add Password", "Text-Password")
-                }
-                .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
-                Divider()
             }
             
             VStack {
@@ -100,53 +70,17 @@ public struct OktaLoginView: View {
                     //-----------------------------------------------
                     // Otherwise, login like normal
                     else {
-                        self.onLoginClick(name, cred)
+                            self.onLoginClick(name, cred)
                     }
                 }
-                .buttonStyle(CustomButton(disabled: acceptTAndC == false))
-                .disabled(acceptTAndC == false)
+                .btnFilled(isLoginEnabled == false)
+                .disabled(isLoginEnabled == false)
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                //-----------------------------------------------
-                // Draw face ID / Forgot Password
-                HStack(spacing: 50) {
-                    HStack {
-                        Image(systemName: "faceid")
-                        Text("FaceID")
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Face I D")
-                    .accessibilityIdentifier("FaceID-ID")
-                    
-                    Text("Forgot Password")
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("Forgot Password")
-                        .accessibilityIdentifier("Forgot-Pass-ID")
-                }
-                .padding(EdgeInsets(top: 20, leading: 0, bottom: 20, trailing: 0))
-                .frame(maxWidth: .infinity)
-            
-                //-----------------------------------------------
-                // Draw Accept Terms / Conditions
-                Button(action: { acceptTAndC = !acceptTAndC }){
-                    HStack{
-                        Toggle("", isOn: $acceptTAndC)
-                            .labelsHidden()
-                            .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10))
-                        Text("I accept Ameritas Terms and Conditions")
-                            .footnote()
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Accept Terms and Conditions")
-                .accessibilityValue(acceptTAndC ? "On" : "Off")
-                .accessibilityAddTraits(.isButton)
-                .accessibilityIdentifier("Button-Accept-TC-ID")
+                
+                
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
@@ -169,6 +103,8 @@ public struct OktaLoginView: View {
 
 }
 
+
+
 //---------------------------------------------------------
 // Previews
 //---------------------------------------------------------
@@ -185,14 +121,14 @@ struct LoginView_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .previewDisplayName("Light Mode")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
                 .previewDisplayName("Dark Mode")
@@ -213,7 +149,7 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
         Group {
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                           onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraSmall)
@@ -221,13 +157,115 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
                 onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick )
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
-                .previewDisplayName("Dynamic: Extra Large")
+                .previewDisplayName("Dynamic: XXXLarge")
+                .previewLayout(PreviewLayout.sizeThatFits)
+            OktaLoginView( demoMode: false,
+                onLoginClick: onLoginClick,
+                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
+                .background(Color(.systemBackground))
+                .environment(\.colorScheme, .light)
+                .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
+                .previewDisplayName("Dynamic: SUPER MEGA Extra Extra large")
                 .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
 }
 #endif
+
+/**
+ * Draw the Name / password
+ * Have to separate this out because of Accessibility.  Can't determine dynamic font size unless iOS 15
+ * So... we create this abomination and use it when font text is smaller than xxx Large
+ */
+struct OktaRegularIDPassView: View {
+    
+    @Binding var name: String
+    @Binding var cred: String
+    
+    init( _ name: Binding<String>,
+          _ cred: Binding<String>) {
+        self._name = name
+        self._cred = cred
+    }
+
+   var body: some View {
+       VStack {
+           HStack() {
+               Text("ID")
+                   .labelDark()
+                   .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                   .frame( width: 90, alignment: .topLeading )
+                   .accessibilityHidden(true)
+               
+               CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "UserName-Text-ID")
+               
+           }
+           Divider()
+           HStack() {
+               Text("Password")
+                   .labelDark()
+                   .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                   .frame( width: 90, alignment: .topLeading )
+                   .accessibilityHidden(true)
+               CustomSecureInput("Add Password", $cred,
+                                     "Add Password", "Text-Password-ID")
+           }
+           .padding(EdgeInsets(top: 10, leading: 0, bottom: 0, trailing: 0))
+           Divider()
+       }
+   }
+   
+}
+
+/**
+ * Accessibility Name and Password
+ * Draw the ID / Password labels / text fields in vstack rather than next to each other
+ * so massively large fonts don't mess up the view
+ */
+@available(iOS 15, *)
+public struct OktaBigIDPassView: View {
+    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.dynamicTypeSize) var typeSize
+    
+    @Binding var name: String
+    @Binding var cred: String
+    
+    init( _ name: Binding<String>,
+          _ cred: Binding<String>) {
+        self._name = name
+        self._cred = cred
+    }
+    
+    /**
+     * Determine if we're using a superlarge font
+     * change layout to VStack so elements can take up full width
+     */
+    public var body: some View {
+        
+        if typeSize > .xxxLarge {
+                VStack {
+                    Text("ID")
+                        .labelDark()
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .accessibilityHidden(true)
+                    CustomTextField(title: "Add UserName", text: $name, aLabel: "Add UserName", aID: "Text-ID")
+                    Divider()
+                    Text("Password")
+                        .labelDark()
+                        .padding(EdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0))
+                        .accessibilityHidden(true)
+                    CustomSecureInput("Add Password", $cred,
+                                          "Add Password", "Text-Password-ID")
+                    Divider()
+                }
+        } else {
+            OktaRegularIDPassView($name, $cred)
+        }
+    }
+    
+    
+}
