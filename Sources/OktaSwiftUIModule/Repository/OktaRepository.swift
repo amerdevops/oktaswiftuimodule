@@ -479,6 +479,7 @@ public class OktaRepositoryImpl : OktaRepository {
                 } else {
                     if let atts = attributes {
                         let userInfo = OktaUserInfo(
+                            preferred_username: atts["preferred_username"] as? String ?? "",
                             uclUserid: atts["uclUserid"] as? String ?? "",
                             email: atts["email"] as? String ?? "",
                             given_name: atts["name"] as? String ?? "",
