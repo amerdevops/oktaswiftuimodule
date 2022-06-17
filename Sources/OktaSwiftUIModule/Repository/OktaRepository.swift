@@ -134,8 +134,13 @@ public class OktaRepositoryImpl : OktaRepository {
      */
     public func checkValidState() -> Error? {
         if let mgr = self.stateManager {
-            self.logger.log("STATE MAN LOADED: \(mgr.accessToken ?? "unknown", privacy: .public)")
-            return mgr.validateToken(idToken: mgr.idToken)
+            self.logger.log("STATE MAN LOADED: Access:[\(mgr.accessToken ?? "unknown", privacy: .public)] ID: [\(mgr.idToken ?? "unknown", privacy: .public)]")
+            // if ID token exists (not nil), validate the token
+            if let idToken = mgr.idToken {
+                return mgr.validateToken(idToken: idToken)
+            }
+            // otherwise return nil... it needs to be refreshed
+            return nil
         }
         return OktaOidcError.JWTValidationError("State manager not loaded")
     }
