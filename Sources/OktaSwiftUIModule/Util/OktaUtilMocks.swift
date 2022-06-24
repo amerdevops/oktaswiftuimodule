@@ -181,7 +181,8 @@ public class OktaUtilMocks {
     
     public static func getUserInfo() -> OktaUserInfo {
         return OktaUserInfo(
-            uclUserid: "testAccount",
+            preferred_username: "testAccount",
+            uclUserid: "AUABC",
             email: "joe@somewhere.com",
             given_name: "Joe Smith",
             corpName: "testAccount",
@@ -197,8 +198,6 @@ public class OktaUtilMocks {
  * Mock Okta Implementation for testing / preview purposes
  */
 public class MockOktaRepositoryImpl : OktaRepository {
-
-    
 
     var signInPass = true
     var sendFactorPass = true
