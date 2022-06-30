@@ -107,12 +107,16 @@ public struct OktaMainView<BottomContent:View>: View {
                     let onDemoModeClick =  { () -> Void in
                         oktaViewModel.demoMode()
                     }
-                    
+                    let onUseBiometricInfoClick = { () -> Void in
+                        oktaViewModel.isBiometricEnabled.toggle()
+                    }
                     //-----------------------------------------------------
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick,
+                                  isLoginEnabled: isLoginEnabled,
+                                  onUseBiometricClick: onUseBiometricInfoClick)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //-----------------------------------------------

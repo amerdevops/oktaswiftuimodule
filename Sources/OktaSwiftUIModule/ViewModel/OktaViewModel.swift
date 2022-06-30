@@ -50,6 +50,12 @@ open class OktaViewModel : ObservableObject {
     @Published
     public var showingOptions: Bool = false
     
+    @Published
+    public var isLocallyAuthenticated: Bool = false
+    
+    @Published
+    public var isBiometricEnabled: Bool = false
+    
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
@@ -407,4 +413,16 @@ open class OktaViewModel : ObservableObject {
     open func eventOnError(_ msg: String) {
         // Override event in usage application
     }
+}
+
+extension MockOktaViewModel: BiometricAuthListener {
+    func onBiometricAuthenticationSuccess() {
+        self.isLocallyAuthenticated = true
+    }
+    
+    func onBiometricAuthenticationError(errorMessage: String?) {
+        self.isLocallyAuthenticated = false
+    }
+    
+    
 }

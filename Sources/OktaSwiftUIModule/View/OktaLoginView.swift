@@ -17,6 +17,7 @@ import SwiftUI
 public struct OktaLoginView: View {
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
+    var onUseBiometricClick: (() -> Void)?
     var demoMode: Bool
     var msg: String
     var isLoginEnabled: Bool
@@ -29,12 +30,13 @@ public struct OktaLoginView: View {
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
                 onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
-                msg: String = "Welcome!") {
+                msg: String = "Welcome!", onUseBiometricClick: (() -> Void)? = nil) {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
         self.isLoginEnabled = isLoginEnabled
         self.msg = msg
+        self.onUseBiometricClick = onUseBiometricClick
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -79,8 +81,9 @@ public struct OktaLoginView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                
-                
+                //-----------------------------------------------
+                // Draw Biometric Text Button
+                BiometricLogin(enabled: onUseBiometricClick != nil)
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
@@ -104,6 +107,21 @@ public struct OktaLoginView: View {
 }
 
 
+struct BiometricLogin: View {
+    var enabled = false
+    var onTouch : (() -> Void)?
+    var body: some View {
+        if(enabled) {
+            Button("Use your biometric info") {
+                onTouch?()
+            }
+            .padding(.top, 10)
+            .font(Font.caption)
+        }
+    }
+}
+
+
 
 //---------------------------------------------------------
 // Previews
@@ -118,21 +136,28 @@ struct LoginView_Previews: PreviewProvider {
         }
         let onDemoModeClick = { () -> Void in
         }
+        let onUseBiometricClick = { () -> Void in }
+        
         Group {
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .light)
-                .previewDisplayName("Light Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onUseBiometricClick: onUseBiometricClick
+            )
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onUseBiometricClick: onUseBiometricClick)
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
 }
