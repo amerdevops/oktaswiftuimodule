@@ -83,7 +83,8 @@ public struct OktaLoginView: View {
                 
                 //-----------------------------------------------
                 // Draw Biometric Text Button
-                BiometricLogin(enabled: onUseBiometricClick != nil)
+                BiometricLogin(enabled: onUseBiometricClick != nil, onTouch: onUseBiometricClick)
+                
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
