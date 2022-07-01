@@ -51,9 +51,6 @@ open class OktaViewModel : ObservableObject {
     public var showingOptions: Bool = false
     
     @Published
-    public var isLocallyAuthenticated: Bool = false
-    
-    @Published
     public var isBiometricEnabled: Bool = false
     
     
@@ -395,6 +392,19 @@ open class OktaViewModel : ObservableObject {
         eventSetOktaUserInfo(userInfo)
     }
     
+    /**
+     Determines if the user credentials are present in the encrypted Okta store and are still valid
+     
+     Returns true if the credentials are valid, false otherwise
+     */
+    public func checkValidSavedCredentials() -> Bool {
+        if (repo.checkValidState() == nil) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     open func eventSetOktaUserInfo(_ userInfo: OktaUserInfo) {
         // Override event in usage application
     }
@@ -412,29 +422,6 @@ open class OktaViewModel : ObservableObject {
     }
     open func eventOnError(_ msg: String) {
         // Override event in usage application
-    }
-    
-    /**
-     Determines if the user credentials are present in the encrypted Okta store and are still valid
-     
-     Returns true if the credentials are valid, false otherwise
-     */
-    func checkValidSavedCredentials() -> Bool {
-        if (repo.checkValidState() == nil) {
-            return true
-        } else {
-            return false
-        }
-    }
-}
-
-extension MockOktaViewModel: BiometricAuthListener {
-    func onBiometricAuthenticationSuccess() {
-        self.isLocallyAuthenticated = true
-    }
-    
-    func onBiometricAuthenticationError(errorMessage: String?) {
-        self.isLocallyAuthenticated = false
     }
     
     

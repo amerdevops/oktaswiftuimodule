@@ -87,7 +87,8 @@ public struct OktaLoginView: View {
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
                 //-----------------------------------------------
-                // Draw Biometric Text Button
+                // Draw Biometric credentials button to allow user to
+                // start the biometric process
                 BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
                 
                 //-----------------------------------------------
@@ -112,7 +113,9 @@ public struct OktaLoginView: View {
 
 }
 
-
+/**
+ Fragment that shows a prompt that the user can interact with to initiate the biometric login process
+ */
 struct BiometricLogin: View {
     var enabled = false
     var onTap : (() -> Void)?

@@ -30,6 +30,7 @@ public struct OktaMainView<BottomContent:View>: View {
     // This lets us dismiss the screen when the back nav button is clicked
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
+    // The closure that is invoked when the user taps on the biometric credentials control
     var onTapUseBiometricCredentials: (() -> Void)?
     /**
      * Initialize the class
