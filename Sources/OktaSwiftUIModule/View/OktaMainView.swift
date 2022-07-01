@@ -30,16 +30,16 @@ public struct OktaMainView<BottomContent:View>: View {
     // This lets us dismiss the screen when the back nav button is clicked
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
-    var onUseBiometricCredentialsClick: (() -> Void)?
+    var onTapUseBiometricCredentials: (() -> Void)?
     /**
      * Initialize the class
      */
     public init(demoMode: Bool = false,
-                onUseBiometricCredentials: (() -> Void)? = nil,
+                onTapUseBiometricCredentials: (() -> Void)? = nil,
                 @ViewBuilder bottomContent: () -> BottomContent ) {
         self.demoMode = demoMode
         self.bottomContent = bottomContent()
-        self.onUseBiometricCredentialsClick = onUseBiometricCredentials
+        self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
     }
     
     /**
@@ -111,17 +111,15 @@ public struct OktaMainView<BottomContent:View>: View {
                     let onDemoModeClick =  { () -> Void in
                         oktaViewModel.demoMode()
                     }
-                    let onUseBiometricInfoClick = { () -> Void in
-                        oktaViewModel.isBiometricEnabled.toggle()
-                    }
+                   
                     //-----------------------------------------------------
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
                                   onDemoModeClick: onDemoModeClick,
                                   isLoginEnabled: isLoginEnabled,
-                                  onUseBiometricClick: onUseBiometricCredentialsClick,
-                                  bioMetricEnabled: oktaViewModel.checkValidSavedCredentials())
+                                  onTapUseBiometricCredentials: onTapUseBiometricCredentials,
+                                  bioMetricEnabled: oktaViewModel.checkValidSavedCredentials() && oktaViewModel.isBiometricEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //-----------------------------------------------
