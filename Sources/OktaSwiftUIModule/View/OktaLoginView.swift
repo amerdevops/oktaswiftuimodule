@@ -21,6 +21,7 @@ public struct OktaLoginView: View {
     var demoMode: Bool
     var msg: String
     var isLoginEnabled: Bool
+    var bioMetricEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -29,14 +30,18 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
-                msg: String = "Welcome!", onUseBiometricClick: (() -> Void)? = nil) {
+                onDemoModeClick: @escaping () -> Void,
+                isLoginEnabled: Bool,
+                msg: String = "Welcome!",
+                onUseBiometricClick: (() -> Void)? = nil,
+                bioMetricEnabled: Bool = false) {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
         self.isLoginEnabled = isLoginEnabled
         self.msg = msg
         self.onUseBiometricClick = onUseBiometricClick
+        self.bioMetricEnabled = bioMetricEnabled
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -83,7 +88,7 @@ public struct OktaLoginView: View {
                 
                 //-----------------------------------------------
                 // Draw Biometric Text Button
-                BiometricLogin(enabled: onUseBiometricClick != nil, onTouch: onUseBiometricClick)
+                BiometricLogin(enabled: bioMetricEnabled, onTouch: onUseBiometricClick)
                 
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)

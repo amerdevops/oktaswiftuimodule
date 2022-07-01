@@ -413,6 +413,19 @@ open class OktaViewModel : ObservableObject {
     open func eventOnError(_ msg: String) {
         // Override event in usage application
     }
+    
+    /**
+     Determines if the user credentials are present in the encrypted Okta store and are still valid
+     
+     Returns true if the credentials are valid, false otherwise
+     */
+    func checkValidSavedCredentials() -> Bool {
+        if (repo.checkValidState() == nil) {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 extension MockOktaViewModel: BiometricAuthListener {
