@@ -29,13 +29,18 @@ public struct OktaMainView<BottomContent:View>: View {
     var demoMode: Bool
     // This lets us dismiss the screen when the back nav button is clicked
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    // The closure that is invoked when the user taps on the biometric credentials control
+    var onTapUseBiometricCredentials: (() -> Void)?
     /**
      * Initialize the class
      */
     public init(demoMode: Bool = false,
+                onTapUseBiometricCredentials: (() -> Void)? = nil,
                 @ViewBuilder bottomContent: () -> BottomContent ) {
         self.demoMode = demoMode
         self.bottomContent = bottomContent()
+        self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
     }
     
     /**
@@ -107,12 +112,15 @@ public struct OktaMainView<BottomContent:View>: View {
                     let onDemoModeClick =  { () -> Void in
                         oktaViewModel.demoMode()
                     }
-                    
+                   
                     //-----------------------------------------------------
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick,
+                                  isLoginEnabled: isLoginEnabled,
+                                  onTapUseBiometricCredentials: onTapUseBiometricCredentials,
+                                  bioMetricEnabled: oktaViewModel.checkValidSavedCredentials() && oktaViewModel.isBiometricEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //-----------------------------------------------

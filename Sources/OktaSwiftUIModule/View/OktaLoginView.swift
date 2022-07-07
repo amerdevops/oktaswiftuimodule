@@ -17,9 +17,11 @@ import SwiftUI
 public struct OktaLoginView: View {
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
+    var onTapUseBiometricCredentials: (() -> Void)?
     var demoMode: Bool
     var msg: String
     var isLoginEnabled: Bool
+    var bioMetricEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -28,13 +30,18 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
-                msg: String = "Welcome!") {
+                onDemoModeClick: @escaping () -> Void,
+                isLoginEnabled: Bool,
+                msg: String = "Welcome!",
+                onTapUseBiometricCredentials: (() -> Void)? = nil,
+                bioMetricEnabled: Bool = false) {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
         self.isLoginEnabled = isLoginEnabled
         self.msg = msg
+        self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
+        self.bioMetricEnabled = bioMetricEnabled
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -79,7 +86,10 @@ public struct OktaLoginView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                
+                //-----------------------------------------------
+                // Draw Biometric credentials button to allow user to
+                // start the biometric process
+                BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
                 
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
@@ -103,6 +113,23 @@ public struct OktaLoginView: View {
 
 }
 
+/**
+ Fragment that shows a prompt that the user can interact with to initiate the biometric login process
+ */
+struct BiometricLogin: View {
+    var enabled = false
+    var onTap : (() -> Void)?
+    var body: some View {
+        if(enabled) {
+            Button("Use your biometric info") {
+                onTap?()
+            }
+            .padding(.top, 10)
+            .font(Font.caption)
+        }
+    }
+}
+
 
 
 //---------------------------------------------------------
@@ -118,21 +145,28 @@ struct LoginView_Previews: PreviewProvider {
         }
         let onDemoModeClick = { () -> Void in
         }
+        let onTapUseBiometricCredentials = { () -> Void in }
+        
         Group {
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .light)
-                .previewDisplayName("Light Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials
+            )
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials)
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
 }
