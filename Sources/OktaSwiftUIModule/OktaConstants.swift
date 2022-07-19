@@ -19,6 +19,7 @@ struct K
         static let lightOrange = Color(#colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)) // #F3AF22
         static let orange = Color(#colorLiteral(red: 0.8901960784, green: 0.4156862745, blue: 0, alpha: 1)) // #E36A00
         static let blue = Color(#colorLiteral(red: 0.02745098039, green: 0.3450980392, blue: 0.6745098039, alpha: 1)) // #0758AC
+        static let blue2 = Color(red: 7/255, green: 88/255, blue: 172/255) //#0758AC
         static let lightDarkGray = Color(red: 89/255, green: 89/255, blue: 89/255) //#595959
         static let secondaryBlack = Color(red: 51/255, green: 51/255, blue: 51/255) //#333333
         static let lightBlue = Color(#colorLiteral(red: 0.1516653001, green: 0.6443269849, blue: 1, alpha: 1))
