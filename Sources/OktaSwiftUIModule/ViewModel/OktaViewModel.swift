@@ -377,6 +377,7 @@ open class OktaViewModel : ObservableObject {
         self.setOktaUserInfo(userInfo: OktaUtilMocks.getUserInfo())
         self.isMFA = true
         self.isAuthenticated = true
+        self.eventSignInSuccess()
     }
     
     /**
