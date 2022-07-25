@@ -59,10 +59,17 @@ public struct OktaLoginView: View {
             VStack {
                 if #available(iOS 15.0, *) {
                     OktaBigIDPassView($name, $cred)
+                    
                 } else {
                     OktaRegularIDPassView($name, $cred)
                 }
+                
+                //-----------------------------------------------
+                // Draw Biometric credentials button to allow user to
+                // start the biometric process
+                BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
             }
+            
             
             VStack {
                 //-----------------------------------------------
@@ -85,11 +92,6 @@ public struct OktaLoginView: View {
                 .accessibilityLabel("Sign In")
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
-                
-                //-----------------------------------------------
-                // Draw Biometric credentials button to allow user to
-                // start the biometric process
-                BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
                 
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
@@ -121,16 +123,37 @@ struct BiometricLogin: View {
     var onTap : (() -> Void)?
     var body: some View {
         if(enabled) {
-            Button("Use your biometric info") {
-                onTap?()
+
+                HStack(spacing: 0) {
+                    
+                    Image(systemName: "faceid")
+                        .font(K.BrandFont.medium20)
+                    
+                    Text("/")
+                        .font(K.BrandFont.medium20)
+                    
+                    Image(systemName: "touchid")
+                        .font(K.BrandFont.medium20)
+                    
+                    Button(action: onTap ?? {} ){
+                        Text("Use Biometric")
+                            .font(K.BrandFont.medium17)
+                            .tracking(0.30)
+                            .foregroundColor(K.BrandColor.blue2)
+                            .padding(.leading, 7)
+                            
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.top, 5)
+                .padding(.leading, 5)
+            
+                Spacer()
             }
-            .padding(.top, 10)
-            .font(Font.caption)
-        }
+        
     }
 }
-
-
 
 //---------------------------------------------------------
 // Previews
