@@ -17,9 +17,11 @@ import SwiftUI
 public struct OktaLoginView: View {
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
+    var onTapUseBiometricCredentials: (() -> Void)?
     var demoMode: Bool
     var msg: String
     var isLoginEnabled: Bool
+    var bioMetricEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -28,13 +30,18 @@ public struct OktaLoginView: View {
     
     public init(demoMode: Bool,
                 onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void, isLoginEnabled: Bool,
-                msg: String = "Welcome!") {
+                onDemoModeClick: @escaping () -> Void,
+                isLoginEnabled: Bool,
+                msg: String = "Welcome!",
+                onTapUseBiometricCredentials: (() -> Void)? = nil,
+                bioMetricEnabled: Bool = false) {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
         self.isLoginEnabled = isLoginEnabled
         self.msg = msg
+        self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
+        self.bioMetricEnabled = bioMetricEnabled
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -52,10 +59,17 @@ public struct OktaLoginView: View {
             VStack {
                 if #available(iOS 15.0, *) {
                     OktaBigIDPassView($name, $cred)
+                    
                 } else {
                     OktaRegularIDPassView($name, $cred)
                 }
+                
+                //-----------------------------------------------
+                // Draw Biometric credentials button to allow user to
+                // start the biometric process
+                BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
             }
+            
             
             VStack {
                 //-----------------------------------------------
@@ -79,8 +93,6 @@ public struct OktaLoginView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("Button-SignIn-ID")
                 
-                
-                
                 //-----------------------------------------------
                 // Draw DemoMode Switch (if Applicable)
                 if demoMode {
@@ -103,7 +115,45 @@ public struct OktaLoginView: View {
 
 }
 
+/**
+ Fragment that shows a prompt that the user can interact with to initiate the biometric login process
+ */
+struct BiometricLogin: View {
+    var enabled = false
+    var onTap : (() -> Void)?
+    var body: some View {
+        if(enabled) {
 
+                HStack(spacing: 0) {
+                    
+                    Image(systemName: "faceid")
+                        .font(K.BrandFont.medium20)
+                    
+                    Text("/")
+                        .font(K.BrandFont.medium20)
+                    
+                    Image(systemName: "touchid")
+                        .font(K.BrandFont.medium20)
+                    
+                    Button(action: onTap ?? {} ){
+                        Text("Use Biometric")
+                            .font(K.BrandFont.medium17)
+                            .tracking(0.30)
+                            .foregroundColor(K.BrandColor.blue2)
+                            .padding(.leading, 7)
+                            
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.top, 5)
+                .padding(.leading, 5)
+            
+                Spacer()
+            }
+        
+    }
+}
 
 //---------------------------------------------------------
 // Previews
@@ -118,21 +168,28 @@ struct LoginView_Previews: PreviewProvider {
         }
         let onDemoModeClick = { () -> Void in
         }
+        let onTapUseBiometricCredentials = { () -> Void in }
+        
         Group {
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .light)
-                .previewDisplayName("Light Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials
+            )
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Light Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
-                .background(Color(.systemBackground))
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark Mode")
-                .previewLayout(PreviewLayout.sizeThatFits)
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           isLoginEnabled: true,
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials)
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
 }

@@ -29,13 +29,18 @@ public struct OktaMainView<BottomContent:View>: View {
     var demoMode: Bool
     // This lets us dismiss the screen when the back nav button is clicked
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    
+    // The closure that is invoked when the user taps on the biometric credentials control
+    var onTapUseBiometricCredentials: (() -> Void)?
     /**
      * Initialize the class
      */
     public init(demoMode: Bool = false,
+                onTapUseBiometricCredentials: (() -> Void)? = nil,
                 @ViewBuilder bottomContent: () -> BottomContent ) {
         self.demoMode = demoMode
         self.bottomContent = bottomContent()
+        self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
     }
     
     /**
@@ -107,29 +112,37 @@ public struct OktaMainView<BottomContent:View>: View {
                     let onDemoModeClick =  { () -> Void in
                         oktaViewModel.demoMode()
                     }
-                    
+                   
                     //-----------------------------------------------------
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
                                   onLoginClick: onLoginClick,
-                                  onDemoModeClick: onDemoModeClick, isLoginEnabled: isLoginEnabled)
+                                  onDemoModeClick: onDemoModeClick,
+                                  isLoginEnabled: isLoginEnabled,
+                                  onTapUseBiometricCredentials: onTapUseBiometricCredentials,
+                                  bioMetricEnabled: oktaViewModel.checkValidSavedCredentials() && oktaViewModel.isBiometricEnabled)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //-----------------------------------------------
                     // Draw Accept Terms / Conditions
-                    Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
-                        .font(K.BrandFont.regular16)
-                        .multilineTextAlignment(TextAlignment.center)
-                        .foregroundColor(K.BrandColor.lightDarkGray)
-                        .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
-                        .fixedSize(horizontal: false, vertical: true)
+                    
+                    if #available(iOS 15.0, *) {
+                        Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
+                            .font(K.BrandFont.regular16)
+                            .multilineTextAlignment(TextAlignment.center)
+                            .tint(K.BrandColor.blue2)
+                            .foregroundColor(K.BrandColor.lightDarkGray)
+                            .padding(EdgeInsets(top: 32, leading: 16, bottom: 0, trailing: 16))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    
                     
                     //-----------------------------------------------
                     // Draw Bottom Content (if passed)
                     bottomContent
                 }
             }
-            .padding(EdgeInsets(top: heightPad, leading: 0, bottom: 0, trailing: 0))
+            .padding(EdgeInsets(top: 152, leading: 0, bottom: 0, trailing: 0))
         }
         .edgesIgnoringSafeArea(.top)
     }

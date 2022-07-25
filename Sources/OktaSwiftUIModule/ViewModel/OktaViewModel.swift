@@ -50,6 +50,9 @@ open class OktaViewModel : ObservableObject {
     @Published
     public var showingOptions: Bool = false
     
+    @Published
+    public var isBiometricEnabled: Bool = false
+    
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
@@ -374,6 +377,7 @@ open class OktaViewModel : ObservableObject {
         self.setOktaUserInfo(userInfo: OktaUtilMocks.getUserInfo())
         self.isMFA = true
         self.isAuthenticated = true
+        self.eventSignInSuccess()
     }
     
     /**
@@ -387,6 +391,19 @@ open class OktaViewModel : ObservableObject {
         self.userInfo = userInfo
         self.isUserSet = true
         eventSetOktaUserInfo(userInfo)
+    }
+    
+    /**
+     Determines if the user credentials are present in the encrypted Okta store and are still valid
+     
+     Returns true if the credentials are valid, false otherwise
+     */
+    public func checkValidSavedCredentials() -> Bool {
+        if (repo.checkValidState() == nil) {
+            return true
+        } else {
+            return false
+        }
     }
     
     open func eventSetOktaUserInfo(_ userInfo: OktaUserInfo) {
@@ -407,4 +424,6 @@ open class OktaViewModel : ObservableObject {
     open func eventOnError(_ msg: String) {
         // Override event in usage application
     }
+    
+    
 }
