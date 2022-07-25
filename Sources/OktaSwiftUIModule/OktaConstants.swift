@@ -53,6 +53,7 @@ struct K
         static let medium16 = Font.system(size: 16.0, weight: .medium)
         static let medium17 = Font.system(size: 17.0, weight: .medium)
         static let medium18 = Font.system(size: 18.0, weight: .medium)
+        static let medium20 = Font.system(size: 20.0, weight: .medium)
         static let medium28 = Font.system(size: 28.0, weight: .medium)
         static let light14 = Font.system(size: 14.0, weight: .light)
         static let light16 = Font.system(size: 16.0, weight: .light)
