@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OktaAuthNative
+import LocalAuthentication
 import os
 
 // NOTE: Need this to make sure only iOS compile creates view
@@ -112,20 +113,20 @@ public struct OktaMainView<BottomContent:View>: View {
                     let onDemoModeClick =  { () -> Void in
                         oktaViewModel.demoMode()
                     }
+                    let biometricType = oktaViewModel.checkValidSavedCredentials() ? oktaViewModel.bioType : nil
                    
                     //-----------------------------------------------------
                     // Draw view
                     OktaLoginView(demoMode: demoMode,
+                                  isLoginEnabled: isLoginEnabled,
+                                  biometricType: biometricType,
                                   onLoginClick: onLoginClick,
                                   onDemoModeClick: onDemoModeClick,
-                                  isLoginEnabled: isLoginEnabled,
-                                  onTapUseBiometricCredentials: onTapUseBiometricCredentials,
-                                  bioMetricEnabled: oktaViewModel.checkValidSavedCredentials() && oktaViewModel.isBiometricEnabled)
+                                  onTapUseBiometricCredentials: onTapUseBiometricCredentials)
                         .padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //-----------------------------------------------
                     // Draw Accept Terms / Conditions
-                    
                     if #available(iOS 15.0, *) {
                         Text("By Signing in, you agree to the [Ameritas Online Privacy Notice](https://www.ameritas.com/about/online-privacy/) and [Legal/Terms of Use](https://www.ameritas.com/about/legal-terms-of-use).")
                             .font(K.BrandFont.regular16)
@@ -156,11 +157,12 @@ public struct OktaMainView<BottomContent:View>: View {
  */
 class MockOktaViewModel : OktaViewModel {
     
-    init(isMFA: Bool = false, isAuthenticated: Bool = false, isUserSet: Bool = false) {
+    init(isMFA: Bool = false, isAuthenticated: Bool = false, isUserSet: Bool = false, bioType: LABiometryType? = nil) {
         super.init(MockOktaRepositoryImpl(), true)
         super.isMFA = isMFA
         super.isAuthenticated = isAuthenticated
         super.isUserSet = isUserSet
+        super.bioType = bioType
         super.factors = OktaUtilMocks.getOktaFactors()
     }
 }
@@ -171,6 +173,8 @@ class MockOktaViewModel : OktaViewModel {
 struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
     static var previews: some View {
         let oktaViewModel : OktaViewModel = MockOktaViewModel()
+        let oktaTouchViewModel : OktaViewModel = MockOktaViewModel(bioType: .faceID)
+        let oktaFaceViewModel : OktaViewModel = MockOktaViewModel(bioType: .touchID)
         Group {
             OktaMainView(bottomContent: {
                 Text("© 2022 Ameritas Mutual Holding Company")
@@ -179,7 +183,7 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
                 Text("AgentMobileApplication/1.2_46 iPhone iOS/15.4")
                 .captionGray() })
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
-                .environmentObject(oktaViewModel)
+                .environmentObject(oktaFaceViewModel)
                 .previewDisplayName("Login Light Mode (iPhone 12)")
             
             OktaMainView(bottomContent: {})
@@ -187,7 +191,7 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
                 .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .dark)
-                .environmentObject(oktaViewModel)
+                .environmentObject(oktaTouchViewModel)
                 .previewDisplayName("Login Dark Mode (iPhone 12)")
             OktaMainView(bottomContent: {})
                 .preferredColorScheme(.dark)
@@ -205,7 +209,7 @@ struct OktaMainView_iPhone12_Login_Previews: PreviewProvider {
  */
 struct OktaMainView_iPod_Login_Previews: PreviewProvider {
     static var previews: some View {
-        let oktaViewModel : OktaViewModel = MockOktaViewModel()
+        let oktaViewModel : OktaViewModel = MockOktaViewModel(isMFA: true)
         Group {
             OktaMainView(bottomContent: {})
                 .previewDevice(PreviewDevice(rawValue: "iPod touch"))

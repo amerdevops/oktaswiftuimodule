@@ -8,6 +8,7 @@
 import Foundation
 import OktaOidc
 import OktaAuthNative
+import LocalAuthentication
 import os
 
 /**
@@ -49,10 +50,12 @@ open class OktaViewModel : ObservableObject {
     
     @Published
     public var showingOptions: Bool = false
-    
+
     @Published
     public var isBiometricEnabled: Bool = false
-    
+
+    @Published
+    public var bioType: LABiometryType? = nil
     
     let logger = Logger(subsystem: "com.ameritas.indiv.mobile.OktaSwiftUIModule", category: "OktaViewModel")
     
