@@ -18,8 +18,12 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(name: "OktaAuthNative", url: "https://github.com/okta/okta-auth-swift.git", from: "2.4.2"),
-        .package(name: "OktaOidc", url: "https://github.com/okta/okta-oidc-ios.git", from: "3.10.8")
+        // .package(name: "OktaAuthNative", url: "https://github.com/okta/okta-auth-swift.git", from: "2.4.2"),
+        // .package(name: "OktaOidc", url: "https://github.com/okta/okta-oidc-ios.git", from: "3.10.8")
+        // IJT-2687: Xcode 14.0 breaks... need latest package
+        // @see https://github.com/okta/okta-oidc-ios/pull/345
+        .package(name: "OktaAuthNative", url: "https://github.com/okta/okta-auth-swift.git", from: "2.4.3"),
+        .package(name: "OktaOidc", url: "https://github.com/okta/okta-oidc-ios.git", from: "3.11.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
