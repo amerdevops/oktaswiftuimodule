@@ -613,7 +613,7 @@ public class OktaRepositoryImpl : OktaRepository {
     
     func handleError(error: OktaError) -> String {
         switch error {
-            case .connectionError(let errorResponse):
+            case .connectionError(_):
                 return "E9999900" + ": " + error.description
             case .serverRespondedWithError(let errorResponse):
                 return (errorResponse.errorCode ?? "unknown") + ": " + error.description

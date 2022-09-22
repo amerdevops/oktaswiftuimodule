@@ -5,6 +5,7 @@
 //  Created by Nathan DeGroff on 12/10/21.
 //
 import SwiftUI
+import LocalAuthentication
 
 // NOTE: Need this to make sure only iOS compile creates view
 // System will fail compile because macOS doesn't support a few SwiftUI methods
@@ -15,13 +16,13 @@ import SwiftUI
  * Handle Username / password
  */
 public struct OktaLoginView: View {
+    var demoMode: Bool
+    var isLoginEnabled: Bool
+    var msg: String
+    var biometricType: LABiometryType?
     var onLoginClick: (_ name: String, _ cred: String) -> Void
     var onDemoModeClick: () -> Void
     var onTapUseBiometricCredentials: (() -> Void)?
-    var demoMode: Bool
-    var msg: String
-    var isLoginEnabled: Bool
-    var bioMetricEnabled: Bool
     
     @State var name: String = ""
     @State var cred: String = ""
@@ -29,19 +30,19 @@ public struct OktaLoginView: View {
 
     
     public init(demoMode: Bool,
-                onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
-                onDemoModeClick: @escaping () -> Void,
                 isLoginEnabled: Bool,
                 msg: String = "Welcome!",
-                onTapUseBiometricCredentials: (() -> Void)? = nil,
-                bioMetricEnabled: Bool = false) {
+                biometricType: LABiometryType? = nil,
+                onLoginClick: @escaping (_ name: String, _ cred: String) -> Void,
+                onDemoModeClick: @escaping () -> Void,
+                onTapUseBiometricCredentials: (() -> Void)? = nil) {
         self.onLoginClick = onLoginClick
         self.onDemoModeClick = onDemoModeClick
         self.demoMode = demoMode
         self.isLoginEnabled = isLoginEnabled
         self.msg = msg
         self.onTapUseBiometricCredentials = onTapUseBiometricCredentials
-        self.bioMetricEnabled = bioMetricEnabled
+        self.biometricType = biometricType
         UINavigationBar.appearance().backgroundColor = .none
     }
 
@@ -67,10 +68,11 @@ public struct OktaLoginView: View {
                 //-----------------------------------------------
                 // Draw Biometric credentials button to allow user to
                 // start the biometric process
-                BiometricLogin(enabled: bioMetricEnabled, onTap: onTapUseBiometricCredentials)
+                if let bioType = biometricType {
+                    BiometricLogin(biometricType: bioType, onTap: onTapUseBiometricCredentials)
+                }
             }
-            
-            
+
             VStack {
                 //-----------------------------------------------
                 // Draw Login Button
@@ -119,38 +121,61 @@ public struct OktaLoginView: View {
  Fragment that shows a prompt that the user can interact with to initiate the biometric login process
  */
 struct BiometricLogin: View {
-    var enabled = false
+    var biometricType: LABiometryType
     var onTap : (() -> Void)?
     var body: some View {
-        if(enabled) {
-
-                HStack(spacing: 0) {
-                    
-                    Image(systemName: "faceid")
-                        .font(K.BrandFont.medium20)
-                    
-                    Text("/")
-                        .font(K.BrandFont.medium20)
-                    
-                    Image(systemName: "touchid")
-                        .font(K.BrandFont.medium20)
-                    
-                    Button(action: onTap ?? {} ){
-                        Text("Use Biometric")
-                            .font(K.BrandFont.medium17)
-                            .tracking(0.30)
-                            .foregroundColor(K.BrandColor.blue2)
-                            .padding(.leading, 7)
-                            
-                    }
-                    
-                    Spacer()
-                }
-                .padding(.top, 5)
-                .padding(.leading, 5)
+        HStack(spacing: 0) {
             
-                Spacer()
+            switch biometricType {
+            case .none:
+                Image(systemName: "faceid")
+                    .font(K.BrandFont.medium20)
+                Text("/")
+                    .font(K.BrandFont.medium20)
+                Image(systemName: "touchid")
+                    .font(K.BrandFont.medium20)
+                Button(action: onTap ?? {} ){
+                    Text("Use Biometric")
+                        .font(K.BrandFont.medium17)
+                        .tracking(0.30)
+                        .foregroundColor(K.BrandColor.blue2)
+                        .padding(.leading, 7)
+                        
+                }
+            case .touchID:
+                Image(systemName: "touchid")
+                    .font(K.BrandFont.medium20)
+                Button(action: onTap ?? {} ){
+                    Text("Use Touch ID")
+                        .font(K.BrandFont.medium17)
+                        .tracking(0.30)
+                        .foregroundColor(K.BrandColor.blue2)
+                        .padding(.leading, 7)
+                }
+            case .faceID:
+                Image(systemName: "faceid")
+                    .font(K.BrandFont.medium20)
+                Button(action: onTap ?? {} ){
+                    Text("Use Face ID")
+                        .font(K.BrandFont.medium17)
+                        .tracking(0.30)
+                        .foregroundColor(K.BrandColor.blue2)
+                        .padding(.leading, 7)
+                }
+            @unknown default:
+                Text("Unknown Biometric Option")
+                    .font(K.BrandFont.medium17)
+                    .tracking(0.30)
+                    .foregroundColor(K.BrandColor.blue2)
+                    .padding(.leading, 7)
             }
+            
+            Spacer()
+        }
+        .padding(.top, 5)
+        .padding(.leading, 5)
+    
+        Spacer()
         
     }
 }
@@ -172,23 +197,34 @@ struct LoginView_Previews: PreviewProvider {
         
         Group {
             OktaLoginView( demoMode: false,
+                           isLoginEnabled: true,
+                           biometricType: LABiometryType.none,
                            onLoginClick: onLoginClick,
                            onDemoModeClick: onDemoModeClick,
-                           isLoginEnabled: true,
-                           onTapUseBiometricCredentials: onTapUseBiometricCredentials
-            )
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials )
             .background(Color(.systemBackground))
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light Mode")
             .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
+                           isLoginEnabled: true,
+                           biometricType: .touchID,
                            onLoginClick: onLoginClick,
                            onDemoModeClick: onDemoModeClick,
-                           isLoginEnabled: true,
-                           onTapUseBiometricCredentials: onTapUseBiometricCredentials)
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials )
             .background(Color(.systemBackground))
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark Mode")
+            .previewLayout(PreviewLayout.sizeThatFits)
+            OktaLoginView( demoMode: false,
+                           isLoginEnabled: true,
+                           biometricType: .faceID,
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick,
+                           onTapUseBiometricCredentials: onTapUseBiometricCredentials )
+            .background(Color(.systemBackground))
+            .environment(\.colorScheme, .light)
+            .previewDisplayName("Face ID Mode")
             .previewLayout(PreviewLayout.sizeThatFits)
         }
     }
@@ -205,24 +241,27 @@ struct LoginView_DyanmicTxt_Previews: PreviewProvider {
         }
         Group {
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                           onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
+                           isLoginEnabled: true,
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraSmall)
                 .previewDisplayName("Dynamic: Extra Small")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
+                           isLoginEnabled: true,
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
                 .previewDisplayName("Dynamic: XXXLarge")
                 .previewLayout(PreviewLayout.sizeThatFits)
             OktaLoginView( demoMode: false,
-                onLoginClick: onLoginClick,
-                onDemoModeClick: onDemoModeClick, isLoginEnabled: true )
+                           isLoginEnabled: true,
+                           onLoginClick: onLoginClick,
+                           onDemoModeClick: onDemoModeClick )
                 .background(Color(.systemBackground))
                 .environment(\.colorScheme, .light)
                 .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
