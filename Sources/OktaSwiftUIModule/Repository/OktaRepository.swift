@@ -440,15 +440,38 @@ public class OktaRepositoryImpl : OktaRepository {
         //---------------------------------------------------------------------
         // get state manager
         if let sm = self.stateManager {
-            do {
+            //---------------------------------------------------------------------
+            // Setup callback for revoking access token
+            let onRevokeCallback : (Bool, Error?) -> Void = { [weak self] success, err in
+                
                 //---------------------------------------------------------------
-                // Try to remove OIDC client from Keychain
-                try sm.removeFromSecureStorage()
-                self.stateManager = nil
-            } catch let error {
-                self.logger.error("\(error.localizedDescription, privacy: .public)")
-                return
+                // Success or fail... clear storage
+                self?.logger.log("LOGOUT Removing from secure storage")
+                do {
+                    //---------------------------------------------------------------
+                    // Try to remove OIDC client from Keychain
+                    try sm.removeFromSecureStorage()
+                    self?.stateManager = nil
+                } catch let error {
+                    self?.logger.error("\(error.localizedDescription, privacy: .public)")
+                    return
+                }
+                
+                //---------------------------------------------------------------
+                // Log success or fail
+                if !success {
+                    self?.logger.log("LOGOUT REVOKE SUCCESS")
+                } else {
+                    self?.logger.error("LOGOUT REVOKE FAIL")
+                    if let e = err {
+                        self?.logger.error("   err: \(e.localizedDescription)")
+                    }
+                }
             }
+
+            //---------------------------------------------------------------
+            // Revoke access token
+            sm.revoke(sm.accessToken, callback: onRevokeCallback)
         } else {
             self.logger.log("No OIDC State manager to logout from")
         }
