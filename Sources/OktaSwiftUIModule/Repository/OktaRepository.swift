@@ -437,41 +437,27 @@ public class OktaRepositoryImpl : OktaRepository {
      * Logout of app
      */
     public func logout() {
+        //---------------------------------------------------------------
+        // Clear Session
+        let storage = HTTPCookieStorage.shared
+        if let cookie = storage.cookies?.filter( {$0.name == "idx"} ).first {
+            storage.deleteCookie(cookie)
+        }
+        
         //---------------------------------------------------------------------
-        // get state manager
+        // Clear locally stored Okta State Manager
         if let sm = self.stateManager {
-            //---------------------------------------------------------------------
-            // Setup callback for revoking access token
-            let onRevokeCallback : (Bool, Error?) -> Void = { [weak self] success, err in
-                
-                //---------------------------------------------------------------
-                // Success or fail... clear storage
-                self?.logger.log("LOGOUT Removing from secure storage")
-                do {
-                    //---------------------------------------------------------------
-                    // Try to remove OIDC client from Keychain
-                    try sm.removeFromSecureStorage()
-                    self?.stateManager = nil
-                } catch let error {
-                    self?.logger.error("\(error.localizedDescription, privacy: .public)")
-                    return
-                }
-                
-                //---------------------------------------------------------------
-                // Log success or fail
-                if !success {
-                    self?.logger.log("LOGOUT REVOKE SUCCESS")
-                } else {
-                    self?.logger.error("LOGOUT REVOKE FAIL")
-                    if let e = err {
-                        self?.logger.error("   err: \(e.localizedDescription)")
-                    }
-                }
-            }
 
-            //---------------------------------------------------------------
-            // Revoke access token
-            sm.revoke(sm.accessToken, callback: onRevokeCallback)
+            self.logger.log("LOGOUT Removing from secure storage")
+            do {
+                //---------------------------------------------------------------
+                // Try to remove OIDC client from Keychain
+                try sm.removeFromSecureStorage()
+                self.stateManager = nil
+            } catch let error {
+                self.logger.error("\(error.localizedDescription, privacy: .public)")
+                return
+            }
         } else {
             self.logger.log("No OIDC State manager to logout from")
         }
