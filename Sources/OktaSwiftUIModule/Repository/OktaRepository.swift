@@ -437,9 +437,18 @@ public class OktaRepositoryImpl : OktaRepository {
      * Logout of app
      */
     public func logout() {
+        //---------------------------------------------------------------
+        // Clear Session
+        let storage = HTTPCookieStorage.shared
+        if let cookie = storage.cookies?.filter( {$0.name == "idx"} ).first {
+            storage.deleteCookie(cookie)
+        }
+        
         //---------------------------------------------------------------------
-        // get state manager
+        // Clear locally stored Okta State Manager
         if let sm = self.stateManager {
+
+            self.logger.log("LOGOUT Removing from secure storage")
             do {
                 //---------------------------------------------------------------
                 // Try to remove OIDC client from Keychain
